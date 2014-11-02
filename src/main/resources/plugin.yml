@@ -1,0 +1,7 @@
+name: WorldFuscator
+version: ${project.build.version}
+description: Worldfuscator plugin
+website: 
+author: postremus
+main: de.pro_crafting.worldfuscator.WorldFuscator
+depend: [ProtocolLib, WorldGuard]

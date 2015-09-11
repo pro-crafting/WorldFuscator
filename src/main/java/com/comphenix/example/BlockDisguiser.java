@@ -105,7 +105,6 @@ public class BlockDisguiser {
     	BlockChangeArray array = packetWrapper.getRecordDataArray();
     	int chunkX = packetWrapper.getChunkX();
     	int chunkZ = packetWrapper.getChunkZ();
-		System.out.println("chunk: "+chunkX+"; "+chunkZ);
     	for (int i=0; i<array.getSize();i++) {
     		BlockChange change = array.getBlockChange(i);
     		int relativeX = change.getRelativeX();
@@ -116,7 +115,6 @@ public class BlockDisguiser {
     		if (relativeZ < 0) {
     			relativeZ = 15+relativeZ;
     		}
-    		System.out.println("relative: "+relativeX+"; "+relativeZ);
     		int x = chunkX * 16 + Math.abs(relativeX);
     		int y = change.getAbsoluteY();
     		int z = chunkZ * 16 +  Math.abs(relativeZ);

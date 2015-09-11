@@ -28,7 +28,7 @@ class ChunkCoordinate implements Serializable {
 		return fromBlock(loc.getWorld(), loc.getBlockX(), loc.getBlockZ());
 	}
 
-	@Override
+	
 	public int hashCode() {
 		return Objects.hashCode(worldID, chunkX, chunkZ);
 	}
@@ -45,7 +45,7 @@ class ChunkCoordinate implements Serializable {
 		return worldID;
 	}
 
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -57,7 +57,7 @@ class ChunkCoordinate implements Serializable {
 		return true;
 	}
 
-	@Override
+	
 	public String toString() {
 		return "[worldID: " + worldID + ", chunkX: " + chunkX + ", chunkZ: " + chunkZ + "]";
 	}

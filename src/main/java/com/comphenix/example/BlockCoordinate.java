@@ -24,12 +24,12 @@ class BlockCoordinate implements Serializable {
 		this(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 	}
 	
-	@Override
+	
 	public int hashCode() {
 		return Arrays.hashCode(new int[] {x, y, z });
 	}
 
-	@Override
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -57,7 +57,7 @@ class BlockCoordinate implements Serializable {
 		return world.getBlockAt(x, y, z);
 	}
 	
-	@Override
+	
 	public String toString() {
 		return "[x: " + x + ", y: " + y + ", z: " + z + "]";
 	}

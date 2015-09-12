@@ -85,7 +85,7 @@ public class BlockDisguiser {
 						for (int posZ=0;posZ<16;posZ++) {
 							int offset = blockIndex + posX + posZ * 16 + posY * 256;
 							if (data.length > offset) {
-								data[offset] = (byte) translateBlockID(world, posX+originX, posY+originY, posZ+originZ, data[offset] & 0xFF, player);
+								data[offset] = (byte) plugin.translateBlockID(world, posX+originX, posY+originY, posZ+originZ, data[offset] & 0xFF, player);
 							}
 						}
 					}
@@ -97,7 +97,7 @@ public class BlockDisguiser {
 	
     private void translateBlockChange(PacketContainer packet, World world, Player player) throws FieldAccessException {
     	WrapperPlayServerBlockChange packetWrapper = new WrapperPlayServerBlockChange(packet);
-    	packetWrapper.setBlockType(Material.getMaterial(translateBlockID(world, packetWrapper.getX(), packetWrapper.getY(), packetWrapper.getZ(), packetWrapper.getBlockType().getId(), player)));
+    	packetWrapper.setBlockType(Material.getMaterial(plugin.translateBlockID(world, packetWrapper.getX(), packetWrapper.getY(), packetWrapper.getZ(), packetWrapper.getBlockType().getId(), player)));
     }
     
     private void translateMultiBlockChange(PacketContainer packet, World world, Player player) throws FieldAccessException {
@@ -120,29 +120,9 @@ public class BlockDisguiser {
     		int x = chunkX * 16 + Math.abs(relativeX);
     		int y = change.getAbsoluteY();
     		int z = chunkZ * 16 +  Math.abs(relativeZ);
-    		int id = translateBlockID(world, x, y, z, change.getBlockID(), player);
+    		int id = plugin.translateBlockID(world, x, y, z, change.getBlockID(), player);
     		change.setBlockID(id);
     	}
     	packetWrapper.setRecordData(array);
     }
-    
-	private int translateBlockID(World world, int x, int y, int z, int blockID,
-			Player player) {
-
-		if (blockID == 29 || blockID == 36 || blockID == 69 || blockID == 70
-				|| blockID == 72 || blockID == 76 || blockID == 77
-				|| blockID == 96 || blockID == 107 || blockID == 123
-				|| blockID == 124 || blockID == 131 || blockID == 143
-				|| blockID == 147 || blockID == 148 || blockID == 151
-				|| blockID == 152 || blockID == 154 || blockID == 158
-				|| blockID == 148 || blockID == 36 || blockID == 75
-				|| blockID == 149 || blockID == 150 || blockID == 93
-				|| blockID == 94 || blockID == 55) {
-			if (this.plugin.hasRights(player, x, y, z, world)) {
-				return blockID;
-			}
-			return 121;
-		}
-		return blockID;
-	}
 }

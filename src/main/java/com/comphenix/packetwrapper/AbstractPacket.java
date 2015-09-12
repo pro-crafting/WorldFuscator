@@ -41,8 +41,9 @@ public abstract class AbstractPacket {
 		if (handle == null)
 			throw new IllegalArgumentException("Packet handle cannot be NULL.");
 		if (!Objects.equal(handle.getType(), type))
-			throw new IllegalArgumentException(handle.getHandle() + " is not a packet of type " + type);
-
+			throw new IllegalArgumentException(
+					handle.getHandle() + " is not a packet of type " + type);
+		
 		this.handle = handle;
 	}
 
@@ -53,7 +54,7 @@ public abstract class AbstractPacket {
 	public PacketContainer getHandle() {
 		return handle;
 	}
-
+	
 	/**
 	 * Send the current packet to the given receiver.
 	 * @param receiver - the receiver.
@@ -66,29 +67,13 @@ public abstract class AbstractPacket {
 			throw new RuntimeException("Cannot send packet.", e);
 		}
 	}
-
+	
 	/**
 	 * Simulate receiving the current packet from the given sender.
 	 * @param sender - the sender.
 	 * @throws RuntimeException If the packet cannot be received.
-	 * @deprecated Misspelled. recieve -> receive
-	 * @see #receivePacket(Player)
 	 */
-	@Deprecated
 	public void recievePacket(Player sender) {
-		try {
-			ProtocolLibrary.getProtocolManager().recieveClientPacket(sender, getHandle());
-		} catch (Exception e) {
-			throw new RuntimeException("Cannot recieve packet.", e);
-		}
-	}
-
-	/**
-	 * Simulate receiving the current packet from the given sender.
-	 * @param sender - the sender.
-	 * @throws RuntimeException if the packet cannot be received.
-	 */
-	public void receivePacket(Player sender) {
 		try {
 			ProtocolLibrary.getProtocolManager().recieveClientPacket(sender, getHandle());
 		} catch (Exception e) {

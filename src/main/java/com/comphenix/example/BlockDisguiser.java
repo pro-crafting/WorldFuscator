@@ -110,10 +110,12 @@ public class BlockDisguiser {
     		int relativeX = change.getRelativeX();
     		if (relativeX < 0) {
     			relativeX = 15+relativeX;
+    			System.out.println("wdx");
     		}
     		int relativeZ = change.getRelativeZ();
     		if (relativeZ < 0) {
     			relativeZ = 15+relativeZ;
+    			System.out.println("wdx");
     		}
     		int x = chunkX * 16 + Math.abs(relativeX);
     		int y = change.getAbsoluteY();
@@ -127,7 +129,7 @@ public class BlockDisguiser {
 	private int translateBlockID(World world, int x, int y, int z, int blockID,
 			Player player) {
 
-		if (blockID == 29 || blockID == 46 || blockID == 69 || blockID == 70
+		if (blockID == 29 || blockID == 36 || blockID == 69 || blockID == 70
 				|| blockID == 72 || blockID == 76 || blockID == 77
 				|| blockID == 96 || blockID == 107 || blockID == 123
 				|| blockID == 124 || blockID == 131 || blockID == 143

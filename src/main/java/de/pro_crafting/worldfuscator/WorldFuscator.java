@@ -1,6 +1,7 @@
 package de.pro_crafting.worldfuscator;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -12,6 +13,7 @@ import com.comphenix.example.BlockDisguiser;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public class WorldFuscator extends JavaPlugin {
 	private WorldGuardPlugin wg;
@@ -41,8 +43,14 @@ public class WorldFuscator extends JavaPlugin {
 	public boolean hasRights(Player player, int x, int y, int z, World world) {
 		Location loc = new Location(world, x, y, z);
 		ApplicableRegionSet ars = wg.getRegionManager(world).getApplicableRegions(loc);
-		return ars.canBuild(wg.wrapPlayer(player))
-				|| ars.allows(DefaultFlag.ENABLE_SHOP);
+		Iterator<ProtectedRegion> it = ars.iterator();
+		while(it.hasNext()) {
+			ProtectedRegion rg = it.next();
+			if (rg.isMember(player.getName()) || rg.isOwner(player.getName())) {
+				return true;
+			}
+		}
+		return ars.allows(DefaultFlag.ENABLE_SHOP);
 	}
 	
 	public int translateBlockID(World world, int x, int y, int z, int blockId,

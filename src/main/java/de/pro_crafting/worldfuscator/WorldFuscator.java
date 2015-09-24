@@ -1,19 +1,18 @@
 package de.pro_crafting.worldfuscator;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import com.comphenix.example.BlockDisguiser;
+import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class WorldFuscator extends JavaPlugin {
 	private WorldGuardPlugin wg;
@@ -41,8 +40,7 @@ public class WorldFuscator extends JavaPlugin {
 	}
 	
 	public boolean hasRights(Player player, int x, int y, int z, World world) {
-		Location loc = new Location(world, x, y, z);
-		ApplicableRegionSet ars = wg.getRegionManager(world).getApplicableRegions(loc);
+		ApplicableRegionSet ars = wg.getRegionManager(world).getApplicableRegions(new Vector(x, y, z));
 		Iterator<ProtectedRegion> it = ars.iterator();
 		while(it.hasNext()) {
 			ProtectedRegion rg = it.next();

@@ -114,5 +114,12 @@
 			<version>5.9</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>com.sk89q</groupId>
+			<artifactId>worldedit</artifactId>
+			<version>5.6.3</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 </project>

@@ -107,19 +107,9 @@ public class BlockDisguiser {
     	int chunkZ = packetWrapper.getChunkZ();
     	for (int i=0; i<array.getSize();i++) {
     		BlockChange change = array.getBlockChange(i);
-    		int relativeX = change.getRelativeX();
-    		if (relativeX < 0) {
-    			relativeX = 15+relativeX;
-    			System.out.println("wdx");
-    		}
-    		int relativeZ = change.getRelativeZ();
-    		if (relativeZ < 0) {
-    			relativeZ = 15+relativeZ;
-    			System.out.println("wdx");
-    		}
-    		int x = chunkX * 16 + Math.abs(relativeX);
+    		int x = change.getAbsoluteX(chunkX);
     		int y = change.getAbsoluteY();
-    		int z = chunkZ * 16 +  Math.abs(relativeZ);
+    		int z = change.getAbsoluteX(chunkZ);
     		int id = plugin.translateBlockID(world, x, y, z, change.getBlockID(), player);
     		change.setBlockID(id);
     	}

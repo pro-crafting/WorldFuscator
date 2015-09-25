@@ -102,7 +102,7 @@ public class BlockChangeArray {
 		
 		/**
 		 * Set the relative z-axis position of current block change in the chunk.
-		 * @param relativeZ - relative block change location.
+		 * @param relativeX - relative block change location.
 		 * @return This block change, for chaining.
 		 */
 		public BlockChange setRelativeZ(int relativeX) {
@@ -127,15 +127,33 @@ public class BlockChangeArray {
 			setValue(absoluteY, 16, 0xFF0000);
 			return this;
 		}
-		
+
 		/**
-		 * Retrieve the absolute y-axis position of the current block change.
-		 * @return Y-axis position of the block change.
+		 * Set the absolute y-axis position of the current block change.
+		 * @param chunkX - the x position of the origin chunk
+		 * @return This block change, for chaining.
+		 */
+		public int getAbsoluteX(int chunkX) {
+			return (chunkX << 4) + getRelativeX();
+		}
+
+		/**
+		 * Set the absolute y-axis position of the current block change.
+		 * @return This block change, for chaining.
 		 */
 		public int getAbsoluteY() {
 			return getValue(16, 0xFF0000);
 		}
-		
+
+		/**
+		 * Set the absolute y-axis position of the current block change.
+		 * @param chunkZ - the x position of the origin chunk
+		 * @return This block change, for chaining.
+		 */
+		public int getAbsoluteZ(int chunkZ) {
+			return (chunkZ << 4) + getRelativeZ();
+		}
+
 		/**
 		 * Set the block ID of the current block change.
 		 * @param blockID - ID that the changed block will have.

@@ -25,7 +25,6 @@ public class WorldFuscator extends JavaPlugin {
 		hideIds = new ArrayList<Integer>();
 	    hideIds.add(29);
 	    hideIds.add(36);
-	    hideIds.add(46);
 	    hideIds.add(55);
 	    hideIds.add(75);
 	    hideIds.add(76);
@@ -54,10 +53,9 @@ public class WorldFuscator extends JavaPlugin {
 	public int translateBlockID(World world, int x, int y, int z, int blockId,
 			Player player) {
 		if (hideIds.contains(blockId)) {
-			if (this.hasRights(player, x, y, z, world)) {
-				return blockId;
+			if (!this.hasRights(player, x, y, z, world)) {
+				return 121;
 			}
-			return 121;
 		}
 		return blockId;
 	}

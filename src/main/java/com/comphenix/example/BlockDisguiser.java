@@ -109,7 +109,7 @@ public class BlockDisguiser {
     		BlockChange change = array.getBlockChange(i);
     		int x = change.getAbsoluteX(chunkX);
     		int y = change.getAbsoluteY();
-    		int z = change.getAbsoluteX(chunkZ);
+    		int z = change.getAbsoluteZ(chunkZ);
     		int id = plugin.translateBlockID(world, x, y, z, change.getBlockID(), player);
     		change.setBlockID(id);
     	}

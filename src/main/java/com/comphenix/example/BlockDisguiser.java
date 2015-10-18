@@ -43,13 +43,13 @@ public class BlockDisguiser {
 		final ChunkletProcessor processor = getChunkletProcessor();
 		
 		ProtocolLibrary.getProtocolManager().addPacketListener(
-		  listener = new PacketAdapter(plugin, ListenerPriority.NORMAL, PacketType.Play.Server.BLOCK_CHANGE, PacketType.Play.Server.MULTI_BLOCK_CHANGE,
+		  listener = new PacketAdapter(plugin, ListenerPriority.HIGHEST, PacketType.Play.Server.BLOCK_CHANGE, PacketType.Play.Server.MULTI_BLOCK_CHANGE,
 				  PacketType.Play.Server.MAP_CHUNK, PacketType.Play.Server.MAP_CHUNK_BULK) {
 			
 			public void onPacketSending(PacketEvent event) {
 				PacketContainer packet = event.getPacket();
 				World world = event.getPlayer().getWorld();
-				
+
 				if (event.getPacketType() == PacketType.Play.Server.BLOCK_CHANGE) {
 					translateBlockChange(packet, world, event.getPlayer());
 				} else if (event.getPacketType() == PacketType.Play.Server.MULTI_BLOCK_CHANGE) {

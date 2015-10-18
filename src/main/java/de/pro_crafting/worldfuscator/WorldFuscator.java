@@ -19,30 +19,15 @@ public class WorldFuscator extends JavaPlugin {
 	private List<Integer> hideIds;
 	
 	public void onEnable() {
-
+		this.saveDefaultConfig();
 		new BlockDisguiser(this);
 		wg = WorldGuardPlugin.getPlugin(WorldGuardPlugin.class);
-		hideIds = new ArrayList<Integer>();
-	    hideIds.add(29);
-	    hideIds.add(36);
-	    hideIds.add(55);
-	    hideIds.add(75);
-	    hideIds.add(76);
-	    hideIds.add(93);
-	    hideIds.add(94);
-	    hideIds.add(131);
-	    hideIds.add(149);
-	    hideIds.add(150);
-	    hideIds.add(152);
-	    hideIds.add(154);
-	    hideIds.add(158);
+		this.hideIds = this.getConfig().getIntegerList("hidden");
 	}
 	
 	public boolean hasRights(Player player, int x, int y, int z, World world) {
 		ApplicableRegionSet ars = wg.getRegionManager(world).getApplicableRegions(new Vector(x, y, z));
-		Iterator<ProtectedRegion> it = ars.iterator();
-		while(it.hasNext()) {
-			ProtectedRegion rg = it.next();
+		for (ProtectedRegion rg : ars) {
 			if (rg.isMember(player.getName()) || rg.isOwner(player.getName())) {
 				return true;
 			}

@@ -9,6 +9,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import de.pro_crafting.region.Region;
 import de.pro_crafting.region.events.RegionDomainChangeEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -52,12 +53,21 @@ public class WorldFuscator extends JavaPlugin implements Listener {
 
 	@EventHandler (priority = EventPriority.MONITOR)
 	public void handleDomainChange(RegionDomainChangeEvent event) {
+		if (event.getNewPlayers().containsAll(event.getOldPlayers())) {
+			return;
+		}
 		Region updatedRegion = event.getRegion();
 		World world = updatedRegion.getWorld();
-		for (int x = updatedRegion.getMin().getX(); x < updatedRegion.getMax().getX() + 16; x += 16) {
-			for (int z = updatedRegion.getMin().getZ(); z < updatedRegion.getMax().getZ() + 16; z += 16) {
-				world.refreshChunk(x/16, z/16);
+		final Chunk startChunk = updatedRegion.getMin().toLocation(world).getChunk();
+		final Chunk endChunk = updatedRegion.getMax().toLocation(world).getChunk();
+		Bukkit.getScheduler().runTaskLater(this, new Runnable() {
+			public void run() {
+				for (int cx = startChunk.getX(); cx <= endChunk.getX(); cx++) {
+					for (int cz = startChunk.getZ(); cz <= endChunk.getZ(); cz++) {
+						startChunk.getWorld().refreshChunk(cx, cz);
+					}
+				}
 			}
-		}
+		}, 20);
 	}
 }

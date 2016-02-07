@@ -53,9 +53,12 @@ public class WorldFuscator extends JavaPlugin implements Listener {
 
 	@EventHandler (priority = EventPriority.MONITOR)
 	public void handleDomainChange(RegionDomainChangeEvent event) {
-		if (event.getNewPlayers().containsAll(event.getOldPlayers())) {
+		if (event.getNewPlayers().size() == event.getOldPlayers().size() &&
+			event.getNewPlayers().containsAll(event.getOldPlayers()) &&
+			event.getOldPlayers().containsAll(event.getNewPlayers())) {
 			return;
 		}
+		Bukkit.broadcastMessage("2");
 		Region updatedRegion = event.getRegion();
 		World world = updatedRegion.getWorld();
 		final Chunk startChunk = updatedRegion.getMin().toLocation(world).getChunk();

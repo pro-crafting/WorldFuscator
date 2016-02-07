@@ -45,9 +45,12 @@ public class BlockDisguiser {
 				  PacketType.Play.Server.MAP_CHUNK, PacketType.Play.Server.MAP_CHUNK_BULK) {
 			
 			public void onPacketSending(PacketEvent event) {
+				if (ProtocolLibrary.getProtocolManager().getProtocolVersion(event.getPlayer()) > 5) {
+					return;
+				}
+
 				PacketContainer packet = event.getPacket();
 				World world = event.getPlayer().getWorld();
-
 				if (event.getPacketType() == PacketType.Play.Server.BLOCK_CHANGE) {
 					translateBlockChange(packet, world, event.getPlayer());
 				} else if (event.getPacketType() == PacketType.Play.Server.MULTI_BLOCK_CHANGE) {

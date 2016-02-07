@@ -1,11 +1,5 @@
 package com.comphenix.example;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-
 import com.comphenix.example.ChunkPacketProcessor.ChunkletProcessor;
 import com.comphenix.packetwrapper.BlockChangeArray;
 import com.comphenix.packetwrapper.BlockChangeArray.BlockChange;
@@ -18,8 +12,12 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.FieldAccessException;
-
 import de.pro_crafting.worldfuscator.WorldFuscator;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 /**
  * Simple class that can be used to alter the apperance of a number of blocks.
@@ -79,18 +77,21 @@ public class BlockDisguiser {
 				int originX = origin.getBlockX();
 				int originY = origin.getBlockY();
 				int originZ = origin.getBlockZ();
-				
-				for (int posX=0;posX<16;posX++) {
-					for (int posY=0;posY<16;posY++) {
-						for (int posZ=0;posZ<16;posZ++) {
+
+				for (int posY=0;posY<16;posY++) {
+					for (int posZ=0;posZ<16;posZ++) {
+						for (int posX=0;posX<16;posX++) {
 							int offset = blockIndex + posX + posZ * 16 + posY * 256;
 							if (data.length > offset) {
-								data[offset] = (byte) plugin.translateBlockID(world, posX+originX, posY+originY, posZ+originZ, data[offset] & 0xFF, player);
+								int absX = originX+posX;
+								int absY = originY+posY;
+								int absZ = originZ+posZ;
+
+								data[offset] = (byte) plugin.translateBlockID(world, absX, absY, absZ, world.getBlockAt(absX, absY, absZ).getTypeId(), player);
 							}
 						}
 					}
 				}
-				
 			}
 		};
 	}

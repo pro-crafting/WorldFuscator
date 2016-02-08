@@ -58,7 +58,6 @@ public class WorldFuscator extends JavaPlugin implements Listener {
 			event.getOldPlayers().containsAll(event.getNewPlayers())) {
 			return;
 		}
-		Bukkit.broadcastMessage("2");
 		Region updatedRegion = event.getRegion();
 		World world = updatedRegion.getWorld();
 		final Chunk startChunk = updatedRegion.getMin().toLocation(world).getChunk();

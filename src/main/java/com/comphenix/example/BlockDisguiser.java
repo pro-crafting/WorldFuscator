@@ -90,7 +90,7 @@ public class BlockDisguiser {
 								int absY = originY+posY;
 								int absZ = originZ+posZ;
 
-								data[offset] = (byte) plugin.translateBlockID(world, absX, absY, absZ, world.getBlockAt(absX, absY, absZ).getTypeId(), player);
+								data[offset] = (byte) plugin.translateBlockID(world, absX, absY, absZ, player);
 							}
 						}
 					}
@@ -101,7 +101,7 @@ public class BlockDisguiser {
 	
     private void translateBlockChange(PacketContainer packet, World world, Player player) throws FieldAccessException {
     	WrapperPlayServerBlockChange packetWrapper = new WrapperPlayServerBlockChange(packet);
-    	packetWrapper.setBlockType(Material.getMaterial(plugin.translateBlockID(world, packetWrapper.getX(), packetWrapper.getY(), packetWrapper.getZ(), packetWrapper.getBlockType().getId(), player)));
+    	packetWrapper.setBlockType(Material.getMaterial(plugin.translateBlockID(world, packetWrapper.getX(), packetWrapper.getY(), packetWrapper.getZ(), player)));
     }
     
     private void translateMultiBlockChange(PacketContainer packet, World world, Player player) throws FieldAccessException {
@@ -114,7 +114,7 @@ public class BlockDisguiser {
     		int x = change.getAbsoluteX(chunkX);
     		int y = change.getAbsoluteY();
     		int z = change.getAbsoluteZ(chunkZ);
-    		int id = plugin.translateBlockID(world, x, y, z, change.getBlockID(), player);
+    		int id = plugin.translateBlockID(world, x, y, z, player);
     		change.setBlockID(id);
     	}
     	packetWrapper.setRecordData(array);

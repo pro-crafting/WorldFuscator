@@ -42,7 +42,8 @@ public class WorldFuscator extends JavaPlugin implements Listener {
 		return ars.allows(DefaultFlag.ENABLE_SHOP);
 	}
 
-	public int translateBlockID(World world, int x, int y, int z, int blockId, Player player) {
+	public int translateBlockID(World world, int x, int y, int z, Player player) {
+		int blockId = world.getBlockAt(x, y, z).getTypeId();
 		if (hideIds.contains(blockId)) {
 			if (!this.hasRights(player, x, y, z, world)) {
 				return 121;

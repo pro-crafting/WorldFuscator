@@ -1,13 +1,14 @@
 package com.comphenix.example;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.reflect.StructureModifier;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.reflect.StructureModifier;
+import java.nio.ByteBuffer;
 
 /**
  * Used to process a chunk.
@@ -20,7 +21,7 @@ public class ChunkPacketProcessor {
 	 * @author Kristian
 	 */
 	public interface ChunkletProcessor {
-		public void processChunklet(Location origin, byte[] data, int blockIndex, int dataIndex, Player player);
+		public int processChunklet(Location origin, ByteBuffer buffer, Player player);
 	}
 	
 	// Useful Minecraft constants		
@@ -32,7 +33,7 @@ public class ChunkPacketProcessor {
     private int chunkX;
     private int chunkZ;
     private int chunkMask;
-    private int extraMask;
+    //private int extraMask;
     private int chunkSectionNumber;
     private int extraSectionNumber;
     private boolean hasContinous = true;
@@ -47,7 +48,7 @@ public class ChunkPacketProcessor {
     private ChunkPacketProcessor() {
     	// Use factory methods
     }
-    
+
     /**
      * Construct a chunk packet processor from a givne MAP_CHUNK packet.
      * @param packet - the map chunk packet.
@@ -56,33 +57,49 @@ public class ChunkPacketProcessor {
     public static ChunkPacketProcessor fromMapPacket(PacketContainer packet, World world) {
     	if (packet.getType() != PacketType.Play.Server.MAP_CHUNK)
     		throw new IllegalArgumentException(packet + " must be a MAP_CHUNK packet.");
-    	
-    	StructureModifier<Integer> ints = packet.getIntegers();
+        System.out.println("--------------------------");
+        StructureModifier<Integer> ints = packet.getIntegers();
     	StructureModifier<byte[]> byteArray = packet.getByteArrays();
-        
+        //System.out.println("ints: "+ints.size());
+        //System.out.println("bytes: "+byteArray.size());
         // Create an info objects
-    	ChunkPacketProcessor processor = new ChunkPacketProcessor();
+        ChunkPacketProcessor processor = new ChunkPacketProcessor();
+        processor.world = world;
+        processor.chunkX = ints.read(0); 	 // packet.a;
+        processor.chunkZ = ints.read(1); 	 // packet.b;
+        processor.chunkMask = ints.read(2);  // packet.c;
+        //processor.extraMask = ints.read(3);  // packet.d;
+        processor.data = byteArray.read(0);  // packet.inflatedBuffer;
+        processor.startIndex = 0;
+    	/*ChunkPacketProcessor processor = new ChunkPacketProcessor();
     	processor.world = world;
         processor.chunkX = ints.read(0); 	 // packet.a;
         processor.chunkZ = ints.read(1); 	 // packet.b;
         processor.chunkMask = ints.read(2);  // packet.c;
         processor.extraMask = ints.read(3);  // packet.d;
         processor.data = byteArray.read(1);  // packet.inflatedBuffer;
-        processor.startIndex = 0;
+        processor.startIndex = 0;*/
+        //packet.getByteArrays().write(0, new byte[processor.data.length]);
+        System.out.println("chunkx: "+processor.chunkX);
+        System.out.println("chunkz: "+processor.chunkZ);
+        System.out.println("chunkMask: "+processor.chunkMask); //TODO: VARINT!
+        System.out.println("data.length: "+processor.data.length);
+        //System.out.println("data: "+ processor.data);
 
         if (packet.getBooleans().size() > 0) {
         	processor.hasContinous = packet.getBooleans().read(0);
         }
+
         return processor;
     }
-    
+
     /**
      * Construct an array of chunk packet processors from a given MAP_CHUNK_BULK packet.
      * @param packet - the map chunk bulk packet.
      * @return The chunk packet processors.
      */
     public static ChunkPacketProcessor[] fromMapBulkPacket(PacketContainer packet, World world) {
-    	if (packet.getType() != PacketType.Play.Server.MAP_CHUNK_BULK)
+    	if (packet.getType() != PacketType.Play.Server.MAP_CHUNK)
     		throw new IllegalArgumentException(packet + " must be a MAP_CHUNK_BULK packet.");
     	
     	StructureModifier<int[]> intArrays = packet.getIntegerArrays();
@@ -105,7 +122,7 @@ public class ChunkPacketProcessor {
             processor.chunkX = x[chunkNum];
             processor.chunkZ = z[chunkNum];
             processor.chunkMask = chunkMask[chunkNum];
-            processor.extraMask = extraMask[chunkNum];
+            //processor.extraMask = extraMask[chunkNum];
             processor.hasContinous = true; // Always true
             processor.data = byteArrays.read(1); //packet.buildBuffer;
             
@@ -120,15 +137,15 @@ public class ChunkPacketProcessor {
         return processors;
     }
     
-    public void process(ChunkletProcessor processor, Player player) {
+    public void process(ChunkletProcessor processor, Player player, PacketContainer packet) {
         // Compute chunk number
         for (int i = 0; i < CHUNK_SEGMENTS; i++) {
             if ((chunkMask & (1 << i)) > 0) {
                 chunkSectionNumber++;
             }
-            if ((extraMask & (1 << i)) > 0) {
+            /*if ((extraMask & (1 << i)) > 0) {
                 extraSectionNumber++;
-            }
+            }*/
         }
         
         // There's no sun/moon in the end or in the nether, so Minecraft doesn't sent any skylight information
@@ -163,30 +180,27 @@ public class ChunkPacketProcessor {
         // Make sure the chunk is loaded 
         if (isChunkLoaded(world, chunkX, chunkZ)) {
             translate(processor, player);
+            packet.getByteArrays().write(0, data);
         }
     }
     
     private void translate(ChunkletProcessor processor, Player player) {
         // Loop over 16x16x16 chunks in the 16x256x16 column
-        int idIndexModifier = 0;
-        
-        int idOffset = startIndex;
-        int dataOffset = idOffset + chunkSectionNumber * 4096;
 
+        int idOffset = startIndex;
+        int chunkletStart = 0;
+        ByteBuffer buffer = ByteBuffer.wrap(data);
+        System.out.println("limit: "+buffer.limit());
         for (int i = 0; i < 16; i++) {
             // If the bitmask indicates this chunk is sent
             if ((chunkMask & 1 << i) > 0) {
-                int relativeIDStart = idIndexModifier * 4096;
-                int relativeDataStart = idIndexModifier * 2048;
-                
-                int blockIndex = idOffset + relativeIDStart;
-                int dataIndex = dataOffset + relativeDataStart;
 
                 // The lowest block (in x, y, z) in this chunklet
                 Location origin = new Location(world, chunkX << 4, i * 16, chunkZ << 4);
-             
-                processor.processChunklet(origin, data, blockIndex, dataIndex, player);
-                idIndexModifier++;
+                processor.processChunklet(origin, buffer, player);
+                //data = new byte[data.length];
+                System.out.println("new position: " + (buffer.position() + 2048 + 2048));
+                buffer.position(buffer.position() + 2048 + 2048);
             }
         }
     }

@@ -21,7 +21,7 @@ public class ChunkPacketProcessor {
 	 * @author Kristian
 	 */
 	public interface ChunkletProcessor {
-		public int processChunklet(Location origin, ByteBuffer buffer, Player player);
+		public void processChunklet(Location origin, ByteBuffer buffer, Player player);
 	}
 	
 	// Useful Minecraft constants		
@@ -33,9 +33,7 @@ public class ChunkPacketProcessor {
     private int chunkX;
     private int chunkZ;
     private int chunkMask;
-    //private int extraMask;
     private int chunkSectionNumber;
-    private int extraSectionNumber;
     private boolean hasContinous = true;
 
     private int startIndex;
@@ -57,34 +55,15 @@ public class ChunkPacketProcessor {
     public static ChunkPacketProcessor fromMapPacket(PacketContainer packet, World world) {
     	if (packet.getType() != PacketType.Play.Server.MAP_CHUNK)
     		throw new IllegalArgumentException(packet + " must be a MAP_CHUNK packet.");
-        System.out.println("--------------------------");
         StructureModifier<Integer> ints = packet.getIntegers();
     	StructureModifier<byte[]> byteArray = packet.getByteArrays();
-        //System.out.println("ints: "+ints.size());
-        //System.out.println("bytes: "+byteArray.size());
-        // Create an info objects
         ChunkPacketProcessor processor = new ChunkPacketProcessor();
         processor.world = world;
         processor.chunkX = ints.read(0); 	 // packet.a;
         processor.chunkZ = ints.read(1); 	 // packet.b;
         processor.chunkMask = ints.read(2);  // packet.c;
-        //processor.extraMask = ints.read(3);  // packet.d;
         processor.data = byteArray.read(0);  // packet.inflatedBuffer;
         processor.startIndex = 0;
-    	/*ChunkPacketProcessor processor = new ChunkPacketProcessor();
-    	processor.world = world;
-        processor.chunkX = ints.read(0); 	 // packet.a;
-        processor.chunkZ = ints.read(1); 	 // packet.b;
-        processor.chunkMask = ints.read(2);  // packet.c;
-        processor.extraMask = ints.read(3);  // packet.d;
-        processor.data = byteArray.read(1);  // packet.inflatedBuffer;
-        processor.startIndex = 0;*/
-        //packet.getByteArrays().write(0, new byte[processor.data.length]);
-        System.out.println("chunkx: "+processor.chunkX);
-        System.out.println("chunkz: "+processor.chunkZ);
-        System.out.println("chunkMask: "+processor.chunkMask); //TODO: VARINT!
-        System.out.println("data.length: "+processor.data.length);
-        //System.out.println("data: "+ processor.data);
 
         if (packet.getBooleans().size() > 0) {
         	processor.hasContinous = packet.getBooleans().read(0);
@@ -111,7 +90,6 @@ public class ChunkPacketProcessor {
         ChunkPacketProcessor[] processors = new ChunkPacketProcessor[x.length];
 
         int[] chunkMask = intArrays.read(2); // packet.a;
-        int[] extraMask = intArrays.read(3); // packet.b;
         int dataStartIndex = 0;
         
         for (int chunkNum = 0; chunkNum < processors.length; chunkNum++) {
@@ -122,7 +100,6 @@ public class ChunkPacketProcessor {
             processor.chunkX = x[chunkNum];
             processor.chunkZ = z[chunkNum];
             processor.chunkMask = chunkMask[chunkNum];
-            //processor.extraMask = extraMask[chunkNum];
             processor.hasContinous = true; // Always true
             processor.data = byteArrays.read(1); //packet.buildBuffer;
             
@@ -143,9 +120,6 @@ public class ChunkPacketProcessor {
             if ((chunkMask & (1 << i)) > 0) {
                 chunkSectionNumber++;
             }
-            /*if ((extraMask & (1 << i)) > 0) {
-                extraSectionNumber++;
-            }*/
         }
         
         // There's no sun/moon in the end or in the nether, so Minecraft doesn't sent any skylight information
@@ -167,8 +141,7 @@ public class ChunkPacketProcessor {
         // 
         // A section has 16 * 16 * 16 = 4096 blocks. 
         size = BYTES_PER_NIBBLE_PART * (
-        					(NIBBLES_REQUIRED + skylightCount) * chunkSectionNumber + 
-        					extraSectionNumber) + 
+        					(NIBBLES_REQUIRED + skylightCount) * chunkSectionNumber) +
         			(hasContinous ? BIOME_ARRAY_LENGTH : 0);
         
         blockSize = 4096 * chunkSectionNumber;
@@ -187,10 +160,7 @@ public class ChunkPacketProcessor {
     private void translate(ChunkletProcessor processor, Player player) {
         // Loop over 16x16x16 chunks in the 16x256x16 column
 
-        int idOffset = startIndex;
-        int chunkletStart = 0;
         ByteBuffer buffer = ByteBuffer.wrap(data);
-        System.out.println("limit: "+buffer.limit());
         for (int i = 0; i < 16; i++) {
             // If the bitmask indicates this chunk is sent
             if ((chunkMask & 1 << i) > 0) {
@@ -199,7 +169,6 @@ public class ChunkPacketProcessor {
                 Location origin = new Location(world, chunkX << 4, i * 16, chunkZ << 4);
                 processor.processChunklet(origin, buffer, player);
                 //data = new byte[data.length];
-                System.out.println("new position: " + (buffer.position() + 2048 + 2048));
                 buffer.position(buffer.position() + 2048 + 2048);
             }
         }

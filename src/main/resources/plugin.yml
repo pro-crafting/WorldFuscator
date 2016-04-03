@@ -4,4 +4,4 @@ description: Worldfuscator plugin
 website: 
 author: postremus
 main: de.pro_crafting.worldfuscator.WorldFuscator
-depend: [ProtocolLib]
+depend: [ProtocolLib, WorldGuard]

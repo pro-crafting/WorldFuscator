@@ -1,6 +1,7 @@
 package de.pro_crafting.worldfuscator;
 
 import com.comphenix.example.BlockDisguiser;
+import com.comphenix.example.State;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
@@ -26,8 +27,8 @@ public class WorldFuscator extends JavaPlugin implements Listener {
 	public void onEnable() {
 		this.saveDefaultConfig();
 		new BlockDisguiser(this);
-		wg = WorldGuardPlugin.getPlugin(WorldGuardPlugin.class);
-		this.hideIds = this.getConfig().getIntegerList("hidden");
+		wg = WorldGuardPlugin.inst();
+		this.hideIds =this.getConfig().getIntegerList("hidden");
 		Bukkit.getPluginManager().registerEvents(this, this);
 	}
 
@@ -42,14 +43,13 @@ public class WorldFuscator extends JavaPlugin implements Listener {
 		return ars.allows(DefaultFlag.ENABLE_SHOP);
 	}
 
-	public int translateBlockID(World world, int x, int y, int z, Player player) {
-		int blockId = world.getBlockAt(x, y, z).getTypeId();
-		if (hideIds.contains(blockId)) {
+	public int translateBlockID(World world, int x, int y, int z, Player player, State block) {
+		if (hideIds.contains(block.getId())) {
 			if (!this.hasRights(player, x, y, z, world)) {
 				return 121;
 			}
 		}
-		return blockId;
+		return block.getId();
 	}
 
 	@EventHandler (priority = EventPriority.MONITOR)

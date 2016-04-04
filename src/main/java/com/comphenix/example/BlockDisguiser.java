@@ -149,6 +149,7 @@ public class BlockDisguiser {
 			int id = plugin.translateBlockID(world, x, y, z, player, new State(change.getData().getType().getId(), change.getData().getData()));
 			change.setData(WrappedBlockData.createData(Material.getMaterial(id)));
 		}
+		packetWrapper.setRecords(array);
     }
 
 	// Aus dem 1.9.1 MC Server (PacketSerializer)

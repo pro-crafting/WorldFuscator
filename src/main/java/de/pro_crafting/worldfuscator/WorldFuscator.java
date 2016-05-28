@@ -31,11 +31,11 @@ public class WorldFuscator extends JavaPlugin implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, this);
 	}
 
-	public boolean hasRights(Player player, int x, int y, int z, World world) {
+	private boolean hasRights(Player player, int x, int y, int z, World world) {
 		ApplicableRegionSet ars = wg.getRegionManager(world).getApplicableRegions(new Vector(x, y, z));
 
 		for (ProtectedRegion rg : ars) {
-			if (rg.isMember(player.getName()) || rg.isOwner(player.getName()) || player.hasPermission("worldfuscator.bypass")) {
+			if (rg.isMember(player.getName()) || rg.isOwner(player.getName())) {
 				return true;
 			}
 		}

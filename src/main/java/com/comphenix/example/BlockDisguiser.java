@@ -49,6 +49,10 @@ public class BlockDisguiser {
 					return;
 				}
 
+				if (event.getPlayer().hasPermission("worldfuscator.bypass")) {
+					return;
+				}
+
 				PacketContainer packet = event.getPacket();
 				World world = event.getPlayer().getWorld();
 				if (event.getPacketType() == PacketType.Play.Server.BLOCK_CHANGE) {

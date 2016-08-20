@@ -135,8 +135,9 @@ public class BlockDisguiser {
 		int x = packetWrapper.getLocation().getX();
 		int y = packetWrapper.getLocation().getY();
 		int z = packetWrapper.getLocation().getZ();
-		int id = plugin.translateBlockID(world, x, y, z, player, new State(packetWrapper.getBlockData().getType().getId(), packetWrapper.getBlockData().getData()));
-		packetWrapper.setBlockData(WrappedBlockData.createData(Material.getMaterial(id)));
+		State blockState = new State(packetWrapper.getBlockData().getType().getId(), packetWrapper.getBlockData().getData());
+		int id = plugin.translateBlockID(world, x, y, z, player, blockState);
+		packetWrapper.setBlockData(WrappedBlockData.createData(Material.getMaterial(id), blockState.getData()));
     }
     
     private void translateMultiBlockChange(PacketContainer packet, World world, Player player) throws FieldAccessException {
@@ -146,8 +147,9 @@ public class BlockDisguiser {
 			int x = change.getAbsoluteX();
 			int y = change.getY();
 			int z = change.getAbsoluteZ();
-			int id = plugin.translateBlockID(world, x, y, z, player, new State(change.getData().getType().getId(), change.getData().getData()));
-			change.setData(WrappedBlockData.createData(Material.getMaterial(id)));
+			State blockState = new State(change.getData().getType().getId(), change.getData().getData());
+			int id = plugin.translateBlockID(world, x, y, z, player, blockState);
+			change.setData(WrappedBlockData.createData(Material.getMaterial(id), blockState.getData()));
 		}
 		packetWrapper.setRecords(array);
     }

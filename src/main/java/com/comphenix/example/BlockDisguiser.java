@@ -135,7 +135,7 @@ public class BlockDisguiser {
 		int x = packetWrapper.getLocation().getX();
 		int y = packetWrapper.getLocation().getY();
 		int z = packetWrapper.getLocation().getZ();
-		State blockState = new State(packetWrapper.getBlockData().getType().getId(), packetWrapper.getBlockData().getData());
+		State blockState = new State(packetWrapper.getBlockData());
 		int id = plugin.translateBlockID(world, x, y, z, player, blockState);
 		packetWrapper.setBlockData(WrappedBlockData.createData(Material.getMaterial(id), blockState.getData()));
     }
@@ -147,7 +147,7 @@ public class BlockDisguiser {
 			int x = change.getAbsoluteX();
 			int y = change.getY();
 			int z = change.getAbsoluteZ();
-			State blockState = new State(change.getData().getType().getId(), change.getData().getData());
+			State blockState = new State(change.getData());
 			int id = plugin.translateBlockID(world, x, y, z, player, blockState);
 			change.setData(WrappedBlockData.createData(Material.getMaterial(id), blockState.getData()));
 		}

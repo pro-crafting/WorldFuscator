@@ -47,23 +47,24 @@ public class BlockDisguiser {
 				  PacketType.Play.Server.MAP_CHUNK) {
 			
 			public void onPacketSending(PacketEvent event) {
-				int protoVersion = ProtocolLibrary.getProtocolManager().getProtocolVersion(event.getPlayer());
+				Player player = event.getPlayer();
+				int protoVersion = ProtocolLibrary.getProtocolManager().getProtocolVersion(player);
 				if (protoVersion < 107) {
 					return;
 				}
 
-				if (event.getPlayer().hasPermission("worldfuscator.bypass")) {
+				if (player.hasPermission("worldfuscator.bypass")) {
 					return;
 				}
 
 				PacketContainer packet = event.getPacket();
-				World world = event.getPlayer().getWorld();
+				World world = player.getWorld();
 				if (event.getPacketType() == PacketType.Play.Server.BLOCK_CHANGE) {
-					translateBlockChange(packet, world, event.getPlayer());
+					translateBlockChange(packet, world, player);
 				} else if (event.getPacketType() == PacketType.Play.Server.MULTI_BLOCK_CHANGE) {
-					translateMultiBlockChange(packet, world, event.getPlayer());
+					translateMultiBlockChange(packet, world, player);
 				} else if (event.getPacketType() == PacketType.Play.Server.MAP_CHUNK) {
-					ChunkPacketProcessor.fromMapPacket(packet, world).process(processor, event.getPlayer(), packet);
+					ChunkPacketProcessor.fromMapPacket(packet, world).process(processor, player, packet);
 				}
 			}
 		 });

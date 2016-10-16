@@ -34,9 +34,8 @@ public class WorldFuscator extends JavaPlugin implements Listener {
 
 	private boolean hasRights(Player player, int x, int y, int z, World world) {
 		ApplicableRegionSet ars = wg.getRegionManager(world).getApplicableRegions(new Vector(x, y, z));
-
 		for (ProtectedRegion rg : ars) {
-			if (rg.isMember(player.getName()) || rg.isOwner(player.getName())) {
+			if (rg.isMember(wg.wrapPlayer(player))) {
 				return true;
 			}
 		}

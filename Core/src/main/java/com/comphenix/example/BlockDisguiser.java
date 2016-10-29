@@ -12,7 +12,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.FieldAccessException;
 import com.comphenix.protocol.wrappers.MultiBlockChangeInfo;
 import com.comphenix.protocol.wrappers.WrappedBlockData;
-import de.pro_crafting.worldfuscator.WorldFuscator;
+import de.pro_crafting.worldfuscator.Core.WorldFuscator;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -32,7 +32,7 @@ public class BlockDisguiser {
 	
 	/**
 	 * Construct a new block changer.
-	 * @param parent - the owner plugin.
+	 * @param parent - the owner Plugin.
 	 */
 	public BlockDisguiser(WorldFuscator parent) {
 		registerListener(parent);
@@ -53,7 +53,7 @@ public class BlockDisguiser {
 					return;
 				}
 
-				if (player.hasPermission("worldfuscator.bypass")) {
+				if (player.hasPermission("Core.bypass")) {
 					return;
 				}
 

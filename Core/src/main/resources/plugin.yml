@@ -1,7 +1,7 @@
 name: WorldFuscator
 version: ${project.build.version}
-description: Worldfuscator plugin
+description: Worldfuscator Plugin
 website: 
 author: postremus
-main: de.pro_crafting.worldfuscator.WorldFuscator
+main: de.pro_crafting.worldfuscator.Plugin.WorldFuscator_Impl
 depend: [ProtocolLib, WorldGuard]

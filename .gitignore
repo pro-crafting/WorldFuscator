@@ -1,5 +1,5 @@
 /.idea
-/WorldFuscator.iml
+*.iml
 *.class
 
 # Package Files #

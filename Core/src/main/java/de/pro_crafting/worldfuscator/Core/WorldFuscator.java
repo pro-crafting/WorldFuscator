@@ -1,12 +1,7 @@
-package de.pro_crafting.worldfuscator;
+package de.pro_crafting.worldfuscator.Core;
 
 import com.comphenix.example.BlockDisguiser;
 import com.comphenix.example.State;
-import com.sk89q.worldedit.Vector;
-import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import de.pro_crafting.region.Region;
 import de.pro_crafting.region.events.RegionDomainChangeEvent;
 import org.bukkit.Bukkit;
@@ -20,27 +15,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
-public class WorldFuscator extends JavaPlugin implements Listener {
-	private WorldGuardPlugin wg;
+public abstract class WorldFuscator extends JavaPlugin implements Listener {
 	private List<Integer> hideIds;
 
 	public void onEnable() {
 		this.saveDefaultConfig();
 		new BlockDisguiser(this);
-		wg = WorldGuardPlugin.inst();
 		this.hideIds =this.getConfig().getIntegerList("hidden");
 		Bukkit.getPluginManager().registerEvents(this, this);
 	}
 
-	private boolean hasRights(Player player, int x, int y, int z, World world) {
-		ApplicableRegionSet ars = wg.getRegionManager(world).getApplicableRegions(new Vector(x, y, z));
-		for (ProtectedRegion rg : ars) {
-			if (rg.isMember(wg.wrapPlayer(player))) {
-				return true;
-			}
-		}
-		return ars.allows(DefaultFlag.ENABLE_SHOP);
-	}
+	protected abstract boolean hasRights(Player player, int x, int y, int z, World world);
 
 	public int translateBlockID(World world, int x, int y, int z, Player player, State block) {
 		if (hideIds.contains(block.getId())) {

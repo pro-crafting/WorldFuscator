@@ -10,7 +10,7 @@ import de.pro_crafting.worldfuscator.Core.WorldFuscator;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-public class WorldFuscator_Impl extends WorldFuscator {
+public class worldFuscatorImpl extends WorldFuscator {
     WorldGuardPlugin wg = WorldGuardPlugin.inst();
 
     protected boolean hasRights(Player player, int x, int y, int z, World world) {

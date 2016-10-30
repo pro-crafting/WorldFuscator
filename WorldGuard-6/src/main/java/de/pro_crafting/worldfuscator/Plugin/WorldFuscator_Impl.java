@@ -1,6 +1,7 @@
 package de.pro_crafting.worldfuscator.Plugin;
 
 import com.sk89q.worldedit.Vector;
+import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -14,8 +15,9 @@ public class WorldFuscator_Impl extends WorldFuscator {
 
     protected boolean hasRights(Player player, int x, int y, int z, World world) {
         ApplicableRegionSet ars = wg.getRegionManager(world).getApplicableRegions(new Vector(x, y, z));
+        LocalPlayer wgPlayer = wg.wrapPlayer(player);
         for (ProtectedRegion rg : ars) {
-            if (rg.isMember(wg.wrapPlayer(player))) {
+            if (rg.isMember(wgPlayer)) {
                 return true;
             }
         }

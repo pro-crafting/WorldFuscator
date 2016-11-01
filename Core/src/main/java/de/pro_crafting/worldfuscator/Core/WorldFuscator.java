@@ -30,10 +30,18 @@ public abstract class WorldFuscator extends JavaPlugin implements Listener {
 	public int translateBlockID(World world, int x, int y, int z, Player player, State block) {
 		if (hideIds.contains(block.getId())) {
 			if (!this.hasRights(player, x, y, z, world)) {
-				return 121;
+				return this.getObfuscationBlock();
 			}
 		}
 		return block.getId();
+	}
+
+	public int getObfuscationBlock() {
+		return 121;
+	}
+
+	public List<Integer> getHideIds() {
+		return this.hideIds;
 	}
 
 	@EventHandler (priority = EventPriority.MONITOR)

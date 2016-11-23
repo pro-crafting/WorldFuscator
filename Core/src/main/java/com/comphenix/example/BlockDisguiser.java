@@ -53,7 +53,7 @@ public class BlockDisguiser {
 					return;
 				}
 
-				if (player.hasPermission("Core.bypass")) {
+				if (player.hasPermission("worldfuscator.bypass")) {
 					return;
 				}
 

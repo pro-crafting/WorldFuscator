@@ -8,6 +8,9 @@ import org.bukkit.entity.Player;
 
 import java.nio.ByteBuffer;
 
+/**
+ * Implementation of http://wiki.vg/SMP_Map_Format
+ */
 public class MapPacketChunkletProcessor implements ChunkPacketProcessor.ChunkletProcessor {
     private final BlockTranslater blockTranslater;
     private final State[] emptyState = new State[0];
@@ -23,16 +26,8 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
         int originZ = origin.getBlockZ();
 
         int bitsPerBlock = buffer.get();
-        int paletteLength;
-        State[] palette = emptyState;
-        if (bitsPerBlock != 0) {
-            paletteLength = deserializeVarInt(buffer);
-            palette = new State[paletteLength];
-            for (int x = 0; x < paletteLength; x++) {
-                int state = deserializeVarInt(buffer);
-                palette[x] = new State(state >> 4, state & 0xF);
-            }
-        }
+        State[] palette = getPalette(buffer, bitsPerBlock);
+
         int dataLength = deserializeVarInt(buffer) * 8;
 
         int beforeData = buffer.position();
@@ -49,7 +44,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
                     int y = originY + posY;
                     int z = originZ + posZ;
 
-                    State blockStateBefore = palette[fS.get(index)];
+                    State blockStateBefore = getState(fS, palette, index);
                     int blockIdAfter = blockTranslater.translateBlockID(world, x, y, z, player, blockStateBefore);
 
                     if (blockStateBefore.getId() != blockIdAfter) {
@@ -64,8 +59,27 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
         buffer.position(beforeData + dataLength);
     }
 
+    State[] getPalette(ByteBuffer buffer, int bitsPerBlock) {
+        State[] palette = emptyState;
+        //The Palette is only sent, when we have less then 9 bits per block
+        if (bitsPerBlock < 9) {
+            int paletteLength = deserializeVarInt(buffer);
+            palette = new State[paletteLength];
+            for (int x = 0; x < paletteLength; x++) {
+                int state = deserializeVarInt(buffer);
+                palette[x] = new State(state >> 4, state & 0xF);
+            }
+        }
+        return palette;
+    }
+
+    State getState(FlexibleStorage storage, State[] palette, int index) {
+        int blockState = storage.get(index);
+        return palette[blockState];
+    }
+
     // Aus dem 1.9.1 MC Server (PacketSerializer)
-    public int deserializeVarInt(ByteBuffer buf) {
+    int deserializeVarInt(ByteBuffer buf) {
         int i = 0;
         int j = 0;
         for (; ; ) {

@@ -80,7 +80,7 @@ public class ChunkPacketProcessor {
         processor.chunkMask = ints.read(2);  // packet.c;
         processor.data = byteArray.read(0);  // packet.inflatedBuffer;
         processor.startIndex = 0;
-        if (processor.chunkX == -92 && processor.chunkZ == 100) {
+        if (processor.chunkX == -92 && processor.chunkZ == 99) {
             FileOutputStream fos = null;
             try {
                 fos = new FileOutputStream("/home/server/minecraft/110-network/logs/posi.bin");

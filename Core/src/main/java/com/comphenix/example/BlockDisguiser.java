@@ -35,9 +35,9 @@ public class BlockDisguiser {
 	 * @param parent - the owner Plugin.
 	 */
 	public BlockDisguiser(WorldFuscator parent) {
-		registerListener(parent);
 		this.plugin = parent;
 		this.mapPacketChunkletProcessor = new MapPacketChunkletProcessor(this.plugin.getTranslater());
+		registerListener(parent);
 	}
 	
 	private void registerListener(Plugin plugin) {

@@ -5,17 +5,15 @@ import com.comphenix.example.BlockDisguiser;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.List;
-
 public abstract class WorldFuscator extends JavaPlugin {
-	private List<Integer> hideIds;
 	private Configuration configuration;
 	private BlockTranslater translater;
 
 	public void onEnable() {
 		this.saveDefaultConfig();
-		new BlockDisguiser(this);
 		this.configuration = new Configuration(this.getConfig());
+		translater.setConfiguration(this.configuration);
+		new BlockDisguiser(this);
 		Bukkit.getPluginManager().registerEvents(new WorldFuscatorListener(this), this);
 	}
 

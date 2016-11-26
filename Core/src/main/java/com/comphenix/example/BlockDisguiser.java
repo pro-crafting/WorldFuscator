@@ -38,6 +38,8 @@ public class BlockDisguiser {
 		this.plugin = parent;
 		this.mapPacketChunkletProcessor = new MapPacketChunkletProcessor(this.plugin.getTranslater());
 		registerListener(parent);
+		ChunkPacketProcessor.dataFolder = parent.getDataFolder();
+		ChunkPacketProcessor.isDebugEnabled = parent.getConfiguration().isDebugEnabled();
 	}
 	
 	private void registerListener(Plugin plugin) {
@@ -54,10 +56,9 @@ public class BlockDisguiser {
 					return;
 				}
 
-				/*if (player.hasPermission("worldfuscator.bypass")) {
+				if (player.hasPermission("worldfuscator.bypass")) {
 					return;
-				})*/
-
+				}
 
 				PacketContainer packet = event.getPacket();
 				World world = player.getWorld();

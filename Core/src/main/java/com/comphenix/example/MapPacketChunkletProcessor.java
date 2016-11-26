@@ -29,10 +29,10 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
         State[] palette = getPalette(buffer, bitsPerBlock);
         int hideIndex = this.getHiddenPaletteIndex(palette);
 
-        int dataLength = deserializeVarInt(buffer) * 8;
+        int dataLength = deserializeVarInt(buffer);
 
         int beforeData = buffer.position();
-        long[] blockIndizes = new long[dataLength / 8];
+        long[] blockIndizes = new long[dataLength];
         buffer.asLongBuffer().get(blockIndizes);
 
         FlexibleStorage fS = new FlexibleStorage(bitsPerBlock, blockIndizes);
@@ -58,7 +58,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
 
         buffer.position(beforeData);
         buffer.asLongBuffer().put(blockIndizes);
-        buffer.position(beforeData + dataLength);
+        buffer.position(beforeData + (dataLength * 8));
     }
 
     State[] getPalette(ByteBuffer buffer, int bitsPerBlock) {

@@ -9,11 +9,10 @@ import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 /**
  * Used to process a chunk.
@@ -21,6 +20,7 @@ import java.util.Arrays;
  * @author Kristian
  */
 public class ChunkPacketProcessor {
+
     /**
 	 * Process the content of a single 16x16x16 chunklet in a 16x256x16 chunk.
 	 * @author Kristian
@@ -34,7 +34,10 @@ public class ChunkPacketProcessor {
 	protected static final int CHUNK_SEGMENTS = 16;
 	protected static final int NIBBLES_REQUIRED = 4;
 	protected static final int BIOME_ARRAY_LENGTH = 256;
-	
+
+    public static boolean isDebugEnabled;
+    public static File dataFolder;
+
     private int chunkX;
     private int chunkZ;
     private int chunkMask;
@@ -45,7 +48,7 @@ public class ChunkPacketProcessor {
 
     private byte[] data;
     private World world;
-    
+
     private ChunkPacketProcessor() {
     	// Use factory methods
     }
@@ -59,6 +62,7 @@ public class ChunkPacketProcessor {
         processor.data = data;  // packet.inflatedBuffer;
         processor.startIndex = 0;
         processor.hasContinous = hasContinous;
+        processor.writeDebugChunkFiles(processor);
         return processor;
     }
 
@@ -80,31 +84,40 @@ public class ChunkPacketProcessor {
         processor.chunkMask = ints.read(2);  // packet.c;
         processor.data = byteArray.read(0);  // packet.inflatedBuffer;
         processor.startIndex = 0;
-        if (processor.chunkX == -92 && processor.chunkZ == 99) {
-            FileOutputStream fos = null;
-            try {
-                fos = new FileOutputStream("/home/server/minecraft/110-network/logs/posi.bin");
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            try {
-                fos.write(processor.data);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        writeDebugChunkFiles(processor);
+        if (packet.getBooleans().size() > 0) {
+            processor.hasContinous = packet.getBooleans().read(0);
+        }
+
+        return processor;
+    }
+
+    private static void writeDebugChunkFiles(ChunkPacketProcessor processor) {
+        if (!isDebugEnabled) {
+            return;
+        }
+
+        File chunkFolder = new File(dataFolder, "chunks");
+        chunkFolder.mkdir();
+
+        File worldChunkFolder = new File(chunkFolder, processor.world.getName());
+        worldChunkFolder.mkdir();
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(new File(worldChunkFolder, processor.chunkX + "." + processor.chunkZ + ".chunk"));
+            fos.write(processor.data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
             try {
                 fos.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println(Arrays.toString(processor.data));
         }
-        if (packet.getBooleans().size() > 0) {
-        	processor.hasContinous = packet.getBooleans().read(0);
-        }
-
-        return processor;
     }
+
 
     public void process(ChunkletProcessor processor, Player player, PacketContainer packet) {
         // Compute chunk number

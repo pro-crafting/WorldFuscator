@@ -8,6 +8,9 @@ import org.bukkit.entity.Player;
 public class BlockTranslater {
     private Configuration configuration;
 
+    public BlockTranslater() {
+    }
+
     public BlockTranslater(Configuration configuration) {
         this.configuration = configuration;
     }
@@ -27,5 +30,9 @@ public class BlockTranslater {
 
     public Configuration getConfiguration() {
         return this.configuration;
+    }
+
+    void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
     }
 }

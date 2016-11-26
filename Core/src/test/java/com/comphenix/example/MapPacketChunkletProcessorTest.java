@@ -1,6 +1,9 @@
 package com.comphenix.example;
 
+import com.google.common.collect.Lists;
+
 import de.pro_crafting.worldfuscator.Core.BlockTranslater;
+import de.pro_crafting.worldfuscator.Core.Configuration;
 
 import org.apache.commons.io.IOUtils;
 import org.bukkit.Location;
@@ -11,6 +14,8 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class MapPacketChunkletProcessorTest {
     private byte[] data;
@@ -62,5 +67,41 @@ public class MapPacketChunkletProcessorTest {
         state = mapProcessor.getState(fS, palette, 16);
         assertEquals(121, state.getId());
         assertEquals(0, state.getData());
+    }
+
+    @Test
+    public void testGetHiddenPaletteIndexReturnsHideListIndex() {
+        State[] palette = new State[3];
+        palette[0] = new State(1, 0);
+        palette[1] = new State(2, 0);
+        palette[2] = new State(3, 0);
+
+        Configuration configuration = mock(Configuration.class);
+        when(configuration.getObfuscationBlock()).thenCallRealMethod();
+        when(configuration.getHideIds()).thenReturn(Lists.newArrayList(1, 3));
+
+        MapPacketChunkletProcessor mapProcessor = new MapPacketChunkletProcessor(new BlockTranslater(configuration));
+
+        int hiddenPaletteIndex = mapProcessor.getHiddenPaletteIndex(palette);
+
+        assertEquals(1, hiddenPaletteIndex);
+    }
+
+    @Test
+    public void testGetHiddenPaletteIndexReturnsPaletteIndex() {
+        State[] palette = new State[3];
+        palette[0] = new State(1, 0);
+        palette[1] = new State(2, 0);
+        palette[2] = new State(121, 0);
+
+        Configuration configuration = mock(Configuration.class);
+        when(configuration.getObfuscationBlock()).thenCallRealMethod();
+        when(configuration.getHideIds()).thenReturn(Lists.newArrayList(1));
+
+        MapPacketChunkletProcessor mapProcessor = new MapPacketChunkletProcessor(new BlockTranslater(configuration));
+
+        int hiddenPaletteIndex = mapProcessor.getHiddenPaletteIndex(palette);
+
+        assertEquals(2, hiddenPaletteIndex);
     }
 }

@@ -24,4 +24,8 @@ public class BlockTranslater {
         }
         return block.getId();
     }
+
+    public Configuration getConfiguration() {
+        return this.configuration;
+    }
 }

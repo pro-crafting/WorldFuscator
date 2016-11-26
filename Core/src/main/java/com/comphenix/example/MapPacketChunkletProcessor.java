@@ -27,12 +27,14 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
 
         int bitsPerBlock = buffer.get();
         State[] palette = getPalette(buffer, bitsPerBlock);
+        int hideIndex = this.getHiddenPaletteIndex(palette);
 
         int dataLength = deserializeVarInt(buffer) * 8;
 
         int beforeData = buffer.position();
         long[] blockIndizes = new long[dataLength / 8];
         buffer.asLongBuffer().get(blockIndizes);
+
         FlexibleStorage fS = new FlexibleStorage(bitsPerBlock, blockIndizes);
 
         for (int posY = 0; posY < 16; posY++) {
@@ -48,7 +50,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
                     int blockIdAfter = blockTranslater.translateBlockID(world, x, y, z, player, blockStateBefore);
 
                     if (blockStateBefore.getId() != blockIdAfter) {
-                        fS.set(index, 0);
+                        fS.set(index, hideIndex);
                     }
                 }
             }
@@ -61,7 +63,8 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
 
     State[] getPalette(ByteBuffer buffer, int bitsPerBlock) {
         State[] palette = emptyState;
-        //The Palette is only sent, when we have less then 9 bits per block
+        // The Palette is only sent, when we have less then 9 bits per block
+        // Otherwise, global palette is used
         if (bitsPerBlock < 9) {
             int paletteLength = deserializeVarInt(buffer);
             palette = new State[paletteLength];
@@ -76,6 +79,27 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
     State getState(FlexibleStorage storage, State[] palette, int index) {
         int blockState = storage.get(index);
         return palette[blockState];
+    }
+
+    int getHiddenPaletteIndex(State[] palette) {
+        // We first want to search if we have the obfuscation block in our palette
+        // because this is the optimal match
+        int hideId = blockTranslater.getConfiguration().getObfuscationBlock();
+        for (int i = 0; i < palette.length; i++) {
+            if (palette[i].getId() == hideId) {
+                return i;
+            }
+        }
+
+        // We should never obfuscate to a hidden block
+        for (int i = 0; i < palette.length; i++) {
+            if (!blockTranslater.getConfiguration().getHideIds().contains(palette[i].getId())) {
+                return i;
+            }
+        }
+
+        // For now, just returning the index 0 is good enough
+        return 0;
     }
 
     // Aus dem 1.9.1 MC Server (PacketSerializer)

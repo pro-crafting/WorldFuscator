@@ -20,6 +20,8 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * Simple class that can be used to alter the apperance of a number of blocks.
  * @author Kristian
@@ -60,7 +62,7 @@ public class BlockDisguiser {
 					return;
 				}
 
-				PacketContainer packet = event.getPacket();
+				PacketContainer packet = event.getPacket().shallowClone();
 				World world = player.getWorld();
 				if (event.getPacketType() == PacketType.Play.Server.BLOCK_CHANGE) {
 					translateBlockChange(packet, world, player);
@@ -68,6 +70,12 @@ public class BlockDisguiser {
 					translateMultiBlockChange(packet, world, player);
 				} else if (event.getPacketType() == PacketType.Play.Server.MAP_CHUNK) {
 					ChunkPacketProcessor.fromMapPacket(packet, world).process(processor, player, packet);
+				}
+				event.setCancelled(true);
+				try {
+					ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet, false);
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
 				}
 			}
 		 });

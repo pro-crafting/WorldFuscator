@@ -52,21 +52,23 @@ public class MapPacketChunkletProcessorTest {
         buffer.asLongBuffer().get(blockIndizes);
         FlexibleStorage fS = new FlexibleStorage(bitsPerBlock, blockIndizes);
 
-        State state = mapProcessor.getState(fS, palette, 0);
+        State state = mapProcessor.getState(fS, palette, 0, 1);
         assertEquals(35, state.getId());
         assertEquals(0, state.getData());
 
-        state = mapProcessor.getState(fS, palette, 1);
+        state = mapProcessor.getState(fS, palette, 1, 1);
         assertEquals(35, state.getId());
         assertEquals(1, state.getData());
 
-        state = mapProcessor.getState(fS, palette, 2);
+        state = mapProcessor.getState(fS, palette, 2, 1);
         assertEquals(35, state.getId());
         assertEquals(2, state.getData());
 
-        state = mapProcessor.getState(fS, palette, 16);
+        state = mapProcessor.getState(fS, palette, 16, 1);
         assertEquals(121, state.getId());
         assertEquals(0, state.getData());
+
+        //TODO: add tests for global palette
     }
 
     @Test

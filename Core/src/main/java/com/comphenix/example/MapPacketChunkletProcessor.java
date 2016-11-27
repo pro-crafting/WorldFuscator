@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
 public class MapPacketChunkletProcessor implements ChunkPacketProcessor.ChunkletProcessor {
     private final BlockTranslater blockTranslater;
     private final State[] emptyState = new State[0];
+    private static final State AIR = new State(0, 0);
 
     public MapPacketChunkletProcessor(BlockTranslater blockTranslater) {
         this.blockTranslater = blockTranslater;
@@ -46,7 +47,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
                     int y = originY + posY;
                     int z = originZ + posZ;
 
-                    State blockStateBefore = getState(fS, palette, index);
+                    State blockStateBefore = getState(fS, palette, index, bitsPerBlock);
                     int blockIdAfter = blockTranslater.translateBlockID(world, x, y, z, player, blockStateBefore);
 
                     if (blockStateBefore.getId() != blockIdAfter) {
@@ -76,9 +77,17 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
         return palette;
     }
 
-    State getState(FlexibleStorage storage, State[] palette, int index) {
+    State getState(FlexibleStorage storage, State[] palette, int index, int bitsPerBlock) {
         int blockState = storage.get(index);
-        return palette[blockState];
+        if (bitsPerBlock < 9) {
+            if (blockState < palette.length) {
+                return palette[blockState];
+            } else {
+                return AIR;
+            }
+        } else {
+            return new State(blockState >> 4, blockState & 0xF);
+        }
     }
 
     int getHiddenPaletteIndex(State[] palette) {

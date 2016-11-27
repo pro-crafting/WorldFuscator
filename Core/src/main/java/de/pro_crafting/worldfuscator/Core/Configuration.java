@@ -10,7 +10,7 @@ public class Configuration {
 
     public Configuration(FileConfiguration configuration) {
         this.hideIds = configuration.getIntegerList("hidden");
-        this.debugEnabled = configuration.getBoolean("debug.enabled", true);
+        this.debugEnabled = configuration.getBoolean("debug.enabled", false);
     }
 
     public int getObfuscationBlock() {
@@ -23,5 +23,9 @@ public class Configuration {
 
     public boolean isDebugEnabled() {
         return debugEnabled;
+    }
+
+    public void setDebugEnabled(boolean debugEnabled) {
+        this.debugEnabled = debugEnabled;
     }
 }

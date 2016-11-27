@@ -22,8 +22,14 @@ public class BlockTranslater {
     public int translateBlockID(World world, int x, int y, int z, Player player, State block) {
         if (configuration.getHideIds().contains(block.getId())) {
             if (!this.hasRights(player, x, y, z, world)) {
+                if (configuration.isDebugEnabled()) {
+                    System.out.println("No Rights: Translation for " + x + "|" + y + "|" + z + " for " + player.getName() + " block " + block);
+                }
                 return this.configuration.getObfuscationBlock();
             }
+        }
+        if (configuration.isDebugEnabled()) {
+            System.out.println("Passed: Translation for " + x + "|" + y + "|" + z + " for " + player.getName() + " block " + block);
         }
         return block.getId();
     }

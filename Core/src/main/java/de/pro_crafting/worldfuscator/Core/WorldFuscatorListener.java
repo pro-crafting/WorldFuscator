@@ -5,10 +5,15 @@ import de.pro_crafting.region.events.RegionDomainChangeEvent;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 
 
 public class WorldFuscatorListener implements Listener {
@@ -38,5 +43,33 @@ public class WorldFuscatorListener implements Listener {
                 }
             }
         }, 20);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void handlePlayerInteract(PlayerInteractEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND) {
+            return;
+        }
+
+        if (!event.hasItem()) {
+            return;
+        }
+
+        ItemStack item = event.getItem();
+
+        if (item.getType() != Material.BLAZE_ROD) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+        if (!player.hasPermission("worldfuscator.debug.toggle")) {
+            return;
+        }
+
+        boolean debugEnabled = this.plugin.getConfiguration().isDebugEnabled();
+        debugEnabled = !debugEnabled;
+        this.plugin.getConfiguration().setDebugEnabled(debugEnabled);
+
+        player.sendMessage("Debug ist nun auf " + debugEnabled);
     }
 }

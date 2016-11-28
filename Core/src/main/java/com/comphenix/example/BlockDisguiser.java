@@ -20,8 +20,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * Simple class that can be used to alter the apperance of a number of blocks.
  * @author Kristian
@@ -54,7 +52,8 @@ public class BlockDisguiser {
 			public void onPacketSending(PacketEvent event) {
 				Player player = event.getPlayer();
 				int protoVersion = ProtocolLibrary.getProtocolManager().getProtocolVersion(player);
-				if (protoVersion < 107) {
+                // 1.9
+                if (protoVersion < 107) {
 					return;
 				}
 
@@ -63,6 +62,7 @@ public class BlockDisguiser {
 				}
 
 				PacketContainer packet = event.getPacket().shallowClone();
+
 				World world = player.getWorld();
 				if (event.getPacketType() == PacketType.Play.Server.BLOCK_CHANGE) {
 					translateBlockChange(packet, world, player);
@@ -71,13 +71,9 @@ public class BlockDisguiser {
 				} else if (event.getPacketType() == PacketType.Play.Server.MAP_CHUNK) {
 					ChunkPacketProcessor.fromMapPacket(packet, world).process(processor, player, packet);
 				}
-				event.setCancelled(true);
-				try {
-					ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet, false);
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				}
-			}
+
+                event.setPacket(packet);
+            }
 		 });
 	}
 	
@@ -99,9 +95,9 @@ public class BlockDisguiser {
     }
     
     private void translateMultiBlockChange(PacketContainer packet, World world, Player player) throws FieldAccessException {
-    	WrapperPlayServerMultiBlockChange packetWrapper = new WrapperPlayServerMultiBlockChange(packet);
-    	MultiBlockChangeInfo[] array = packetWrapper.getRecords();
-		for (MultiBlockChangeInfo change : array) {
+        WrapperPlayServerMultiBlockChange packetWrapper = new WrapperPlayServerMultiBlockChange(packet);
+        MultiBlockChangeInfo[] array = packetWrapper.getRecords();
+        for (MultiBlockChangeInfo change : array) {
 			int x = change.getAbsoluteX();
 			int y = change.getY();
 			int z = change.getAbsoluteZ();

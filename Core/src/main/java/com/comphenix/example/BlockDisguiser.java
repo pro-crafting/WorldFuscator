@@ -61,16 +61,19 @@ public class BlockDisguiser {
 					return;
 				}
 
-				PacketContainer packet = event.getPacket().shallowClone();
+                PacketContainer packet = event.getPacket();
 
 				World world = player.getWorld();
 				if (event.getPacketType() == PacketType.Play.Server.BLOCK_CHANGE) {
-					translateBlockChange(packet, world, player);
-				} else if (event.getPacketType() == PacketType.Play.Server.MULTI_BLOCK_CHANGE) {
-					translateMultiBlockChange(packet, world, player);
-				} else if (event.getPacketType() == PacketType.Play.Server.MAP_CHUNK) {
-					ChunkPacketProcessor.fromMapPacket(packet, world).process(processor, player, packet);
-				}
+                    packet = packet.shallowClone();
+                    translateBlockChange(packet, world, player);
+                } else if (event.getPacketType() == PacketType.Play.Server.MULTI_BLOCK_CHANGE) {
+                    packet = packet.shallowClone();
+                    translateMultiBlockChange(packet, world, player);
+                } else if (event.getPacketType() == PacketType.Play.Server.MAP_CHUNK) {
+                    packet = packet.deepClone();
+                    ChunkPacketProcessor.fromMapPacket(packet, world).process(processor, player, packet);
+                }
 
                 event.setPacket(packet);
             }

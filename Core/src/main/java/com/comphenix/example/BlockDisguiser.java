@@ -71,12 +71,11 @@ public class BlockDisguiser {
                     packet = packet.shallowClone();
                     translateMultiBlockChange(packet, world, player);
                 } else if (event.getPacketType() == PacketType.Play.Server.MAP_CHUNK) {
-                    packet = packet.deepClone();
-                    ChunkPacketProcessor.fromMapPacket(packet, world).process(processor, player, packet);
-                }
-
-                event.setPacket(packet);
-            }
+					packet = ChunkPacketProcessor.clone(packet, world);
+					ChunkPacketProcessor.fromMapPacket(packet, world).process(processor, player, packet);
+				}
+				event.setPacket(packet);
+			}
 		 });
 	}
 	

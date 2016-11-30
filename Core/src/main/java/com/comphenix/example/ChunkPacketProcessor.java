@@ -3,6 +3,7 @@ package com.comphenix.example;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.reflect.StructureModifier;
+import com.comphenix.protocol.wrappers.nbt.NbtBase;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -13,10 +14,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.List;
 
 /**
  * Used to process a chunk.
- * 
+ *
  * @author Kristian
  */
 public class ChunkPacketProcessor {
@@ -41,19 +43,20 @@ public class ChunkPacketProcessor {
     private int chunkX;
     private int chunkZ;
     private int chunkMask;
-    private int chunkSectionNumber;
-    private boolean hasContinous = true;
+    private boolean isContinuous = true;
+    private byte[] data;
+    private List<NbtBase<?>> blockEntities;
 
+    private int chunkSectionNumber;
     private int startIndex;
 
-    private byte[] data;
     private World world;
 
     private ChunkPacketProcessor() {
     	// Use factory methods
     }
 
-    public static ChunkPacketProcessor from(World world, int chunkX, int chunkZ, int chunkMask, byte[] data, boolean hasContinous) {
+    public static ChunkPacketProcessor from(World world, int chunkX, int chunkZ, int chunkMask, byte[] data, boolean isContinuous) {
         ChunkPacketProcessor processor = new ChunkPacketProcessor();
         processor.world = world;
         processor.chunkX = chunkX;     // packet.a;
@@ -61,8 +64,8 @@ public class ChunkPacketProcessor {
         processor.chunkMask = chunkMask;  // packet.c;
         processor.data = data;  // packet.inflatedBuffer;
         processor.startIndex = 0;
-        processor.hasContinous = hasContinous;
-        processor.writeDebugChunkFiles(processor);
+        processor.isContinuous = isContinuous;
+        writeDebugChunkFiles(processor);
         return processor;
     }
 
@@ -79,15 +82,15 @@ public class ChunkPacketProcessor {
     	StructureModifier<byte[]> byteArray = packet.getByteArrays();
         ChunkPacketProcessor processor = new ChunkPacketProcessor();
         processor.world = world;
-        processor.chunkX = ints.read(0); 	 // packet.a;
-        processor.chunkZ = ints.read(1); 	 // packet.b;
-        processor.chunkMask = ints.read(2);  // packet.c;
-        processor.data = byteArray.read(0);  // packet.inflatedBuffer;
-        processor.startIndex = 0;
+
+        processor.chunkX = ints.read(0);
+        processor.chunkZ = ints.read(1);
+        processor.isContinuous = packet.getBooleans().read(0);
+        processor.chunkMask = ints.read(2);
+        processor.data = byteArray.read(0);
+        processor.blockEntities = packet.getListNbtModifier().read(0);
+
         writeDebugChunkFiles(processor);
-        if (packet.getBooleans().size() > 0) {
-            processor.hasContinous = packet.getBooleans().read(0);
-        }
 
         return processor;
     }
@@ -118,6 +121,29 @@ public class ChunkPacketProcessor {
         }
     }
 
+    public PacketContainer getNewChunkPacket() {
+        return clone(this);
+    }
+
+    public static PacketContainer clone(PacketContainer packet, World world) {
+        return ChunkPacketProcessor.fromMapPacket(packet, world).getNewChunkPacket();
+    }
+
+    public static PacketContainer clone(ChunkPacketProcessor processor) {
+        PacketContainer clone = new PacketContainer(PacketType.Play.Server.MAP_CHUNK);
+
+        StructureModifier<Integer> ints = clone.getIntegers();
+        StructureModifier<byte[]> bytes = clone.getByteArrays();
+
+        ints.write(0, processor.chunkX);
+        ints.write(1, processor.chunkZ);
+        clone.getBooleans().write(0, processor.isContinuous);
+        ints.write(2, processor.chunkMask);
+        bytes.write(0, processor.data.clone());
+        clone.getListNbtModifier().write(0, processor.blockEntities);
+
+        return clone;
+    }
 
     public void process(ChunkletProcessor processor, Player player, PacketContainer packet) {
         // Compute chunk number
@@ -150,7 +176,7 @@ public class ChunkPacketProcessor {
         // A section has 16 * 16 * 16 = 4096 blocks. 
         int size = BYTES_PER_NIBBLE_PART * (
                 (NIBBLES_REQUIRED + skylightCount) * chunkSectionNumber) +
-                (hasContinous ? BIOME_ARRAY_LENGTH : 0);
+                (isContinuous ? BIOME_ARRAY_LENGTH : 0);
 
         int blockSize = 4096 * chunkSectionNumber;
         

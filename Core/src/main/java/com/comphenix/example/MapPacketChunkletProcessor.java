@@ -38,6 +38,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
 
         FlexibleStorage fS = new FlexibleStorage(bitsPerBlock, blockIndizes);
 
+        boolean didFuscate = false;
         for (int posY = 0; posY < 16; posY++) {
             for (int posZ = 0; posZ < 16; posZ++) {
                 for (int posX = 0; posX < 16; posX++) {
@@ -52,13 +53,16 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
 
                     if (blockStateBefore.getId() != blockIdAfter) {
                         fS.set(index, hideIndex);
+                        didFuscate = true;
                     }
                 }
             }
         }
 
-        buffer.position(beforeData);
-        buffer.asLongBuffer().put(blockIndizes);
+        if (didFuscate) {
+            buffer.position(beforeData);
+            buffer.asLongBuffer().put(blockIndizes);
+        }
         buffer.position(beforeData + (dataLength * 8));
     }
 

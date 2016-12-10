@@ -51,11 +51,6 @@ public class BlockDisguiser {
 			
 			public void onPacketSending(PacketEvent event) {
 				Player player = event.getPlayer();
-				int protoVersion = ProtocolLibrary.getProtocolManager().getProtocolVersion(player);
-                // 1.9
-                if (protoVersion < 107) {
-					return;
-				}
 
 				if (player.hasPermission("worldfuscator.bypass")) {
 					return;

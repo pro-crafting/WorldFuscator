@@ -21,18 +21,26 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
     }
 
     public void processChunklet(Location origin, ByteBuffer buffer, Player player) {
+        int bitsPerBlock = buffer.get();
+        State[] palette = getPalette(buffer, bitsPerBlock);
+
+        int dataLength = deserializeVarInt(buffer);
+
+        int beforeData = buffer.position();
+        if (shouldHide(palette, bitsPerBlock)) {
+            tranlateChunkData(origin, buffer, player, bitsPerBlock, palette, dataLength, beforeData);
+        }
+        buffer.position(beforeData + (dataLength * 8));
+    }
+
+    private void tranlateChunkData(Location origin, ByteBuffer buffer, Player player, int bitsPerBlock, State[] palette, int dataLength, int beforeData) {
         World world = origin.getWorld();
         int originX = origin.getBlockX();
         int originY = origin.getBlockY();
         int originZ = origin.getBlockZ();
 
-        int bitsPerBlock = buffer.get();
-        State[] palette = getPalette(buffer, bitsPerBlock);
         int hideIndex = this.getHiddenPaletteIndex(palette);
 
-        int dataLength = deserializeVarInt(buffer);
-
-        int beforeData = buffer.position();
         long[] blockIndizes = new long[dataLength];
         buffer.asLongBuffer().get(blockIndizes);
 
@@ -63,7 +71,6 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
             buffer.position(beforeData);
             buffer.asLongBuffer().put(blockIndizes);
         }
-        buffer.position(beforeData + (dataLength * 8));
     }
 
     State[] getPalette(ByteBuffer buffer, int bitsPerBlock) {
@@ -113,6 +120,21 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
 
         // For now, just returning the index 0 is good enough
         return 0;
+    }
+
+    boolean shouldHide(State[] palette, int bitsPerBlock) {
+        //the palette is empty for the global palette
+        //so just asume we have to hide blocks
+        if (bitsPerBlock > 8) {
+            return true;
+        }
+
+        for (State paletteEntry : palette) {
+            if (blockTranslater.getConfiguration().getHideIds().contains(paletteEntry.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Aus dem 1.9.1 MC Server (PacketSerializer)

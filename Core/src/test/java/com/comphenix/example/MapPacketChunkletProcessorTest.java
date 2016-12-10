@@ -7,11 +7,14 @@ import de.pro_crafting.worldfuscator.Core.Configuration;
 
 import org.apache.commons.io.IOUtils;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -105,5 +108,38 @@ public class MapPacketChunkletProcessorTest {
         int hiddenPaletteIndex = mapProcessor.getHiddenPaletteIndex(palette);
 
         assertEquals(2, hiddenPaletteIndex);
+    }
+
+    @Test
+    @Ignore
+    public void testProcessChunklet() throws Exception {
+        Location location = mock(Location.class);
+        Player player = mock(Player.class);
+
+        Configuration configuration = mock(Configuration.class);
+        when(configuration.getObfuscationBlock()).thenCallRealMethod();
+        when(configuration.getHideIds()).thenReturn(Lists.newArrayList(0));
+
+        MapPacketChunkletProcessor mapProcessor = new MapPacketChunkletProcessor(new BlockTranslater(configuration));
+
+        for (int i = 0; i < 100; i++) {
+            byte[] data = Arrays.copyOf(this.data, this.data.length);
+            ByteBuffer buffer = ByteBuffer.wrap(data);
+            mapProcessor.processChunklet(location, buffer, player);
+        }
+
+    }
+
+    @Test
+    public void testShouldHide() throws Exception {
+        Configuration configuration = mock(Configuration.class);
+        when(configuration.getObfuscationBlock()).thenCallRealMethod();
+        when(configuration.getHideIds()).thenReturn(Lists.newArrayList(1, 2, 3, 4, 5, 6, 7));
+
+        MapPacketChunkletProcessor mapProcessor = new MapPacketChunkletProcessor(new BlockTranslater(configuration));
+
+        assertEquals(true, mapProcessor.shouldHide(null, 9));
+        assertEquals(true, mapProcessor.shouldHide(new State[]{new State(1, 0)}, 8));
+        assertEquals(false, mapProcessor.shouldHide(new State[]{}, 8));
     }
 }

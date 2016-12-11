@@ -9,6 +9,7 @@
 		<module>Core</module>
 		<module>WorldGuard-5</module>
 		<module>WorldGuard-6</module>
+		<module>WarGear</module>
 	</modules>
 
 	<properties>

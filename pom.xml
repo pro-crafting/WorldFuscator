@@ -3,7 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.pro_crafting</groupId>
 	<artifactId>WorldFuscator</artifactId>
+	<packaging>pom</packaging>
 	<version>0.2.0-SNAPSHOT</version>
+	<modules>
+		<module>Core</module>
+		<module>WorldGuard-5</module>
+		<module>WorldGuard-6</module>
+		<module>WarGear</module>
+	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -40,7 +47,9 @@
 				<configuration>
 					<verbose>true</verbose>
 					<fork>true</fork>
-					<compilerVersion>1.6</compilerVersion>
+					<compilerVersion>1.8</compilerVersion>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -55,10 +64,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.bukkit</groupId>
-			<artifactId>craftbukkit</artifactId>
-			<version>1.7.10-R0.1-SNAPSHOT</version>
-			<type>jar</type>
+			<groupId>com.destroystokyo.paper</groupId>
+			<artifactId>paper-api</artifactId>
+			<version>1.10.2-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -71,15 +79,8 @@
 		
 		<dependency>
 			<groupId>com.comphenix.protocol</groupId>
-			<artifactId>ProtocolLib</artifactId>
-			<version>3.6.4</version>
-			<scope>provided</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>com.sk89q</groupId>
-			<artifactId>worldguard</artifactId>
-			<version>5.9</version>
+			<artifactId>ProtocolLib-API</artifactId>
+			<version>4.1.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 

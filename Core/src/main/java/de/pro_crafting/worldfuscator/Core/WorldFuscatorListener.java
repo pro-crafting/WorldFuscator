@@ -15,6 +15,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
+
 
 public class WorldFuscatorListener implements Listener {
     private WorldFuscator plugin;
@@ -30,14 +32,25 @@ public class WorldFuscatorListener implements Listener {
                 event.getOldPlayers().containsAll(event.getNewPlayers())) {
             return;
         }
+
+        if (this.plugin.getConfiguration().isDebugEnabled()) {
+            Bukkit.getLogger().info("Chunk refresh of region: " + event.getRegion().getId());
+            Bukkit.getLogger().info("Old players: " + Arrays.toString(event.getOldPlayers().toArray()));
+            Bukkit.getLogger().info("New players: " + Arrays.toString(event.getNewPlayers().toArray()));
+        }
+
         Region updatedRegion = event.getRegion();
         World world = updatedRegion.getWorld();
         final Chunk startChunk = updatedRegion.getMin().toLocation(world).getChunk();
         final Chunk endChunk = updatedRegion.getMax().toLocation(world).getChunk();
+        final boolean debugEnabled = plugin.getConfiguration().isDebugEnabled();
         Bukkit.getScheduler().runTaskLater(this.plugin, new Runnable() {
             public void run() {
                 for (int cx = startChunk.getX(); cx <= endChunk.getX(); cx++) {
                     for (int cz = startChunk.getZ(); cz <= endChunk.getZ(); cz++) {
+                        if (debugEnabled) {
+                            Bukkit.getLogger().info("Refreshing Chunk: " + cx + "|" + cz);
+                        }
                         startChunk.getWorld().refreshChunk(cx, cz);
                     }
                 }
@@ -70,6 +83,6 @@ public class WorldFuscatorListener implements Listener {
         debugEnabled = !debugEnabled;
         this.plugin.getConfiguration().setDebugEnabled(debugEnabled);
 
-        player.sendMessage("Debug ist nun auf " + debugEnabled);
+        player.sendMessage("[WorldFuscator] Debug ist nun auf " + debugEnabled);
     }
 }

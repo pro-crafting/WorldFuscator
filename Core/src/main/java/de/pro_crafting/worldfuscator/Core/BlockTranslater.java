@@ -24,7 +24,6 @@ public class BlockTranslater {
             if (!this.hasRights(player, x, y, z, world)) {
                 if (configuration.isDebugEnabled()) {
                     System.out.println("No Rights: Translation for " + x + "|" + y + "|" + z + " for " + player.getName() + " block " + block);
-                    new Exception().printStackTrace();
                 }
                 return this.configuration.getObfuscationBlock();
             }

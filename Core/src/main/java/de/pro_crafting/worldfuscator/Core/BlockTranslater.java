@@ -1,44 +1,48 @@
 package de.pro_crafting.worldfuscator.Core;
 
 import com.comphenix.example.State;
-
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public class BlockTranslater {
-    private Configuration configuration;
 
-    public BlockTranslater() {
-    }
+  private Configuration configuration;
 
-    public BlockTranslater(Configuration configuration) {
-        this.configuration = configuration;
-    }
+  public BlockTranslater() {
+  }
 
-    protected boolean hasRights(Player player, int x, int y, int z, World world) {
-        return false;
-    }
+  public BlockTranslater(Configuration configuration) {
+    this.configuration = configuration;
+  }
 
-    public int translateBlockID(World world, int x, int y, int z, Player player, State block) {
-        if (configuration.getHideIds().contains(block.getId())) {
-            if (!this.hasRights(player, x, y, z, world)) {
-                if (configuration.isDebugEnabled()) {
-                    System.out.println("No Rights: Translation for " + x + "|" + y + "|" + z + " for " + player.getName() + " block " + block);
-                }
-                return this.configuration.getObfuscationBlock();
-            }
-        }
+  protected boolean hasRights(Player player, int x, int y, int z, World world) {
+    return false;
+  }
+
+  public int translateBlockID(World world, int x, int y, int z, Player player, State block) {
+    if (configuration.getHideIds().contains(block.getId())) {
+      if (!this.hasRights(player, x, y, z, world)) {
         if (configuration.isDebugEnabled()) {
-            System.out.println("Passed: Translation for " + x + "|" + y + "|" + z + " for " + player.getName() + " block " + block);
+          System.out.println(
+              "No Rights: Translation for " + x + "|" + y + "|" + z + " for " + player.getName()
+                  + " block " + block);
         }
-        return block.getId();
+        return this.configuration.getObfuscationBlock();
+      }
     }
+    if (configuration.isDebugEnabled()) {
+      System.out.println(
+          "Passed: Translation for " + x + "|" + y + "|" + z + " for " + player.getName()
+              + " block " + block);
+    }
+    return block.getId();
+  }
 
-    public Configuration getConfiguration() {
-        return this.configuration;
-    }
+  public Configuration getConfiguration() {
+    return this.configuration;
+  }
 
-    void setConfiguration(Configuration configuration) {
-        this.configuration = configuration;
-    }
+  void setConfiguration(Configuration configuration) {
+    this.configuration = configuration;
+  }
 }

@@ -4,32 +4,33 @@ import com.comphenix.protocol.wrappers.WrappedBlockData;
 import org.bukkit.Material;
 
 public class State {
-	private int id;
-	private int data;
 
-	public State(Material type, int data) {
-		this(type.getId(), data);
-	}
+  private int id;
+  private int data;
 
-	public State(WrappedBlockData blockData) {
-		this(blockData.getType(), blockData.getData());
-	}
+  public State(Material type, int data) {
+    this(type.getId(), data);
+  }
 
-	public State(int id, int data) {
-		this.id = id;
-		this.data = data;
-	}
+  public State(WrappedBlockData blockData) {
+    this(blockData.getType(), blockData.getData());
+  }
 
-	public int getId() {
-		return id;
-	}
+  public State(int id, int data) {
+    this.id = id;
+    this.data = data;
+  }
 
-	public int getData() {
-		return data;
-	}
+  public int getId() {
+    return id;
+  }
 
-	@Override
-	public String toString() {
-		return id+":"+data;
-	}
+  public int getData() {
+    return data;
+  }
+
+  @Override
+  public String toString() {
+    return id + ":" + data;
+  }
 }

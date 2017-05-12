@@ -33,128 +33,129 @@ import org.bukkit.inventory.ItemStack;
 
 
 public class WorldFuscatorListener implements Listener {
-    private WorldFuscator plugin;
-    private Method chunkHandle;
-    private final MapPacketChunkletProcessor processor;
-    private final Constructor<?> chunkPacketConstructor;
 
-    public WorldFuscatorListener(WorldFuscator plugin) {
-        this.plugin = plugin;
-        Class<?> craftChunk = MinecraftReflection.getCraftBukkitClass("CraftChunk");
-        try {
-            chunkHandle = craftChunk.getDeclaredMethod("getHandle");
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        Class<?> chunkPacketClass = MinecraftReflection
-            .getMinecraftClass("PacketPlayOutMapChunk");
-        chunkPacketConstructor = chunkPacketClass.getDeclaredConstructors()[0];
-        processor = new MapPacketChunkletProcessor(
-            this.plugin.getTranslater());
+  private final MapPacketChunkletProcessor processor;
+  private final Constructor<?> chunkPacketConstructor;
+  private WorldFuscator plugin;
+  private Method chunkHandle;
+
+  public WorldFuscatorListener(WorldFuscator plugin) {
+    this.plugin = plugin;
+    Class<?> craftChunk = MinecraftReflection.getCraftBukkitClass("CraftChunk");
+    try {
+      chunkHandle = craftChunk.getDeclaredMethod("getHandle");
+    } catch (NoSuchMethodException e) {
+      e.printStackTrace();
+    }
+    Class<?> chunkPacketClass = MinecraftReflection
+        .getMinecraftClass("PacketPlayOutMapChunk");
+    chunkPacketConstructor = chunkPacketClass.getDeclaredConstructors()[0];
+    processor = new MapPacketChunkletProcessor(
+        this.plugin.getTranslater());
+  }
+
+  @EventHandler(priority = EventPriority.MONITOR)
+  public void handleDomainChange(RegionDomainChangeEvent event) {
+    if (event.getNewPlayers().size() == event.getOldPlayers().size() &&
+        event.getNewPlayers().containsAll(event.getOldPlayers()) &&
+        event.getOldPlayers().containsAll(event.getNewPlayers())) {
+      return;
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void handleDomainChange(RegionDomainChangeEvent event) {
-        if (event.getNewPlayers().size() == event.getOldPlayers().size() &&
-            event.getNewPlayers().containsAll(event.getOldPlayers()) &&
-            event.getOldPlayers().containsAll(event.getNewPlayers())) {
-            return;
-        }
+    Set<UUID> playersToUpdate = new HashSet<>(event.getOldPlayers());
+    playersToUpdate.addAll(event.getNewPlayers());
 
-        Set<UUID> playersToUpdate = new HashSet<>(event.getOldPlayers());
-        playersToUpdate.addAll(event.getNewPlayers());
+    List<Player> onlinePlayers = new ArrayList<>();
 
-        List<Player> onlinePlayers = new ArrayList<>();
+    for (UUID uuid : playersToUpdate) {
+      Player player = Bukkit.getPlayer(uuid);
+      if (player != null) {
+        onlinePlayers.add(player);
+      }
+    }
 
-        for (UUID uuid : playersToUpdate) {
-            Player player = Bukkit.getPlayer(uuid);
-            if (player != null) {
-                onlinePlayers.add(player);
-            }
-        }
+    boolean debugEnabled = plugin.getConfiguration().isDebugEnabled();
+    if (debugEnabled) {
+      Bukkit.getLogger().info("Chunk refresh of region: " + event.getRegion().getId());
+      Bukkit.getLogger().info("Old players: " + Arrays.toString(event.getOldPlayers().toArray()));
+      Bukkit.getLogger().info("New players: " + Arrays.toString(event.getNewPlayers().toArray()));
+      Bukkit.getLogger()
+          .info("Player to update: " + Arrays.toString(playersToUpdate.toArray()));
+    }
 
-        boolean debugEnabled = plugin.getConfiguration().isDebugEnabled();
+    Set<Chunk> chunksToUpdate = new HashSet<>();
+    Region updatedRegion = event.getRegion();
+    World world = updatedRegion.getWorld();
+    Chunk startChunk = updatedRegion.getMin().toLocation(world).getChunk();
+    Chunk endChunk = updatedRegion.getMax().toLocation(world).getChunk();
+    for (int cx = startChunk.getX(); cx <= endChunk.getX(); cx++) {
+      for (int cz = startChunk.getZ(); cz <= endChunk.getZ(); cz++) {
         if (debugEnabled) {
-            Bukkit.getLogger().info("Chunk refresh of region: " + event.getRegion().getId());
-            Bukkit.getLogger().info("Old players: " + Arrays.toString(event.getOldPlayers().toArray()));
-            Bukkit.getLogger().info("New players: " + Arrays.toString(event.getNewPlayers().toArray()));
-            Bukkit.getLogger()
-                .info("Player to update: " + Arrays.toString(playersToUpdate.toArray()));
+          Bukkit.getLogger().info("Refreshing Chunk: " + cx + "|" + cz);
         }
 
-        Set<Chunk> chunksToUpdate = new HashSet<>();
-        Region updatedRegion = event.getRegion();
-        World world = updatedRegion.getWorld();
-        Chunk startChunk = updatedRegion.getMin().toLocation(world).getChunk();
-        Chunk endChunk = updatedRegion.getMax().toLocation(world).getChunk();
-        for (int cx = startChunk.getX(); cx <= endChunk.getX(); cx++) {
-            for (int cz = startChunk.getZ(); cz <= endChunk.getZ(); cz++) {
-                if (debugEnabled) {
-                    Bukkit.getLogger().info("Refreshing Chunk: " + cx + "|" + cz);
-                }
-
-                Chunk chunkAt = world.getChunkAt(cx, cz);
-                if (chunkAt.isLoaded()) {
-                    chunksToUpdate.add(chunkAt);
-                }
-            }
+        Chunk chunkAt = world.getChunkAt(cx, cz);
+        if (chunkAt.isLoaded()) {
+          chunksToUpdate.add(chunkAt);
         }
-
-        Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
-            updateChunks(onlinePlayers, chunksToUpdate);
-        }, 20);
-
+      }
     }
 
-    private void updateChunks(Collection<Player> players, Collection<Chunk> chunksToUpdate) {
-        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-        for (Chunk chunk : chunksToUpdate) {
-            try {
-                Object nativeChunk = chunkHandle.invoke(chunk);
-                Object chunkPacketNms = chunkPacketConstructor
-                    .newInstance(nativeChunk, '\uffff');
+    Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
+      updateChunks(onlinePlayers, chunksToUpdate);
+    }, 20);
 
-                PacketContainer packet = new PacketContainer(Server.MAP_CHUNK, chunkPacketNms);
+  }
 
-                for (Player player : players) {
-                    World world = chunk.getWorld();
-                    packet = ChunkPacketProcessor.clone(packet, world);
-                    ChunkPacketProcessor
-                        .fromMapPacket(packet, world).process(
-                        processor, player, packet);
-                    protocolManager.sendServerPacket(player, packet, false);
-                }
-            } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
-                e.printStackTrace();
-            }
+  private void updateChunks(Collection<Player> players, Collection<Chunk> chunksToUpdate) {
+    ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+    for (Chunk chunk : chunksToUpdate) {
+      try {
+        Object nativeChunk = chunkHandle.invoke(chunk);
+        Object chunkPacketNms = chunkPacketConstructor
+            .newInstance(nativeChunk, '\uffff');
+
+        PacketContainer packet = new PacketContainer(Server.MAP_CHUNK, chunkPacketNms);
+
+        for (Player player : players) {
+          World world = chunk.getWorld();
+          packet = ChunkPacketProcessor.clone(packet, world);
+          ChunkPacketProcessor
+              .fromMapPacket(packet, world).process(
+              processor, player, packet);
+          protocolManager.sendServerPacket(player, packet, false);
         }
+      } catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  @EventHandler(priority = EventPriority.MONITOR)
+  public void handlePlayerInteract(PlayerInteractEvent event) {
+    if (event.getHand() != EquipmentSlot.HAND) {
+      return;
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void handlePlayerInteract(PlayerInteractEvent event) {
-        if (event.getHand() != EquipmentSlot.HAND) {
-            return;
-        }
-
-        if (!event.hasItem()) {
-            return;
-        }
-
-        ItemStack item = event.getItem();
-
-        if (item.getType() != Material.BLAZE_ROD) {
-            return;
-        }
-
-        Player player = event.getPlayer();
-        if (!player.hasPermission("worldfuscator.debug.toggle")) {
-            return;
-        }
-
-        boolean debugEnabled = this.plugin.getConfiguration().isDebugEnabled();
-        debugEnabled = !debugEnabled;
-        this.plugin.getConfiguration().setDebugEnabled(debugEnabled);
-
-        player.sendMessage("[WorldFuscator] Debug ist nun auf " + debugEnabled);
+    if (!event.hasItem()) {
+      return;
     }
+
+    ItemStack item = event.getItem();
+
+    if (item.getType() != Material.BLAZE_ROD) {
+      return;
+    }
+
+    Player player = event.getPlayer();
+    if (!player.hasPermission("worldfuscator.debug.toggle")) {
+      return;
+    }
+
+    boolean debugEnabled = this.plugin.getConfiguration().isDebugEnabled();
+    debugEnabled = !debugEnabled;
+    this.plugin.getConfiguration().setDebugEnabled(debugEnabled);
+
+    player.sendMessage("[WorldFuscator] Debug ist nun auf " + debugEnabled);
+  }
 }

@@ -18,66 +18,71 @@
  */
 package com.comphenix.packetwrapper;
 
-import org.bukkit.Location;
-import org.bukkit.World;
-
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import com.comphenix.protocol.wrappers.WrappedBlockData;
+import org.bukkit.Location;
+import org.bukkit.World;
 
 public class WrapperPlayServerBlockChange extends AbstractPacket {
-    public static final PacketType TYPE = PacketType.Play.Server.BLOCK_CHANGE;
 
-    public WrapperPlayServerBlockChange() {
-        super(new PacketContainer(TYPE), TYPE);
-        handle.getModifier().writeDefaults();
-    }
+  public static final PacketType TYPE = PacketType.Play.Server.BLOCK_CHANGE;
 
-    public WrapperPlayServerBlockChange(PacketContainer packet) {
-        super(packet, TYPE);
-    }
+  public WrapperPlayServerBlockChange() {
+    super(new PacketContainer(TYPE), TYPE);
+    handle.getModifier().writeDefaults();
+  }
 
-    /**
-     * Retrieve Location.
-     * <p>
-     * Notes: block Coordinates
-     * @return The current Location
-     */
-    public BlockPosition getLocation() {
-        return handle.getBlockPositionModifier().read(0);
-    }
+  public WrapperPlayServerBlockChange(PacketContainer packet) {
+    super(packet, TYPE);
+  }
 
-    /**
-     * Set Location.
-     * @param value - new value.
-     */
-    public void setLocation(BlockPosition value) {
-        handle.getBlockPositionModifier().write(0, value);
-    }
+  /**
+   * Retrieve Location.
+   * <p>
+   * Notes: block Coordinates
+   *
+   * @return The current Location
+   */
+  public BlockPosition getLocation() {
+    return handle.getBlockPositionModifier().read(0);
+  }
 
-    /**
-     * Retrieve the Bukkit Location.
-     * @param world World for the location
-     * @return Bukkit Location
-     */
-    public Location getBukkitLocation(World world) {
-        return getLocation().toVector().toLocation(world);
-    }
+  /**
+   * Set Location.
+   *
+   * @param value - new value.
+   */
+  public void setLocation(BlockPosition value) {
+    handle.getBlockPositionModifier().write(0, value);
+  }
 
-    /**
-     * Retrieve Block Data.
-     * @return The current Block Data
-     */
-    public WrappedBlockData getBlockData() {
-        return handle.getBlockData().read(0);
-    }
+  /**
+   * Retrieve the Bukkit Location.
+   *
+   * @param world World for the location
+   * @return Bukkit Location
+   */
+  public Location getBukkitLocation(World world) {
+    return getLocation().toVector().toLocation(world);
+  }
 
-    /**
-     * Set Block Data.
-     * @param value - new value.
-     */
-    public void setBlockData(WrappedBlockData value) {
-        handle.getBlockData().write(0, value);
-    }
+  /**
+   * Retrieve Block Data.
+   *
+   * @return The current Block Data
+   */
+  public WrappedBlockData getBlockData() {
+    return handle.getBlockData().read(0);
+  }
+
+  /**
+   * Set Block Data.
+   *
+   * @param value - new value.
+   */
+  public void setBlockData(WrappedBlockData value) {
+    handle.getBlockData().write(0, value);
+  }
 }

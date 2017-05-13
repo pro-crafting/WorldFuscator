@@ -4,7 +4,7 @@ import de.pro_crafting.wg.WarGear;
 import de.pro_crafting.wg.arena.Arena;
 import de.pro_crafting.wg.arena.ArenaPosition;
 import de.pro_crafting.wg.group.PlayerRole;
-import de.pro_crafting.worldfuscator.Core.BlockTranslater;
+import de.pro_crafting.worldfuscator.Core.BlockTranslator;
 import de.pro_crafting.worldfuscator.Core.WorldFuscator;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -13,11 +13,11 @@ import org.bukkit.entity.Player;
 public class WorldFuscatorImpl extends WorldFuscator {
 
   public void onEnable() {
-    setTranslater(new Translater());
+    setTranslater(new Translator());
     super.onEnable();
   }
 
-  private class Translater extends BlockTranslater {
+  private class Translator extends BlockTranslator {
 
     WarGear warGear = WarGear.getPlugin(WarGear.class);
 

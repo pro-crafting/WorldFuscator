@@ -8,7 +8,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import de.pro_crafting.worldfuscator.Core.BlockTranslater;
+import de.pro_crafting.worldfuscator.Core.BlockTranslator;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import org.apache.commons.io.IOUtils;
@@ -26,7 +26,7 @@ public class ChunkPacketProcessorTest {
 
   @Mock
   private MapPacketChunkletProcessor mapProcessor = new MapPacketChunkletProcessor(
-      new BlockTranslater(null));
+      new BlockTranslator(null));
 
   private byte[] data;
 

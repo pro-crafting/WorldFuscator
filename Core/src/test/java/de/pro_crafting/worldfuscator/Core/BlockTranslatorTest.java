@@ -16,10 +16,10 @@ import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class BlockTranslaterTest {
+public class BlockTranslatorTest {
 
   @Spy
-  BlockTranslater translater = new BlockTranslater();
+  BlockTranslator translater = new BlockTranslator();
 
   @Test
   public void testTranslateBlockID() throws Exception {

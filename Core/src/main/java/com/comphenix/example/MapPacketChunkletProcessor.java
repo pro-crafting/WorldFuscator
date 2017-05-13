@@ -1,6 +1,6 @@
 package com.comphenix.example;
 
-import de.pro_crafting.worldfuscator.Core.BlockTranslater;
+import de.pro_crafting.worldfuscator.Core.BlockTranslator;
 import java.nio.ByteBuffer;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -12,11 +12,11 @@ import org.bukkit.entity.Player;
 public class MapPacketChunkletProcessor implements ChunkPacketProcessor.ChunkletProcessor {
 
   private static final State AIR = new State(0, 0);
-  private final BlockTranslater blockTranslater;
+  private final BlockTranslator blockTranslator;
   private final State[] emptyState = new State[0];
 
-  public MapPacketChunkletProcessor(BlockTranslater blockTranslater) {
-    this.blockTranslater = blockTranslater;
+  public MapPacketChunkletProcessor(BlockTranslator blockTranslator) {
+    this.blockTranslator = blockTranslator;
   }
 
   public void processChunklet(Location origin, ByteBuffer buffer, Player player) {
@@ -57,7 +57,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
           int z = originZ + posZ;
 
           State blockStateBefore = getState(fS, palette, index, bitsPerBlock);
-          int blockIdAfter = blockTranslater
+          int blockIdAfter = blockTranslator
               .translateBlockID(world, x, y, z, player, blockStateBefore);
 
           if (blockStateBefore.getId() != blockIdAfter) {
@@ -105,7 +105,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
   int getHiddenPaletteIndex(State[] palette) {
     // We first want to search if we have the obfuscation block in our palette
     // because this is the optimal match
-    int hideId = blockTranslater.getConfiguration().getObfuscationBlock();
+    int hideId = blockTranslator.getConfiguration().getObfuscationBlock();
     for (int i = 0; i < palette.length; i++) {
       if (palette[i].getId() == hideId) {
         return i;
@@ -114,7 +114,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
 
     // We should never obfuscate to a hidden block
     for (int i = 0; i < palette.length; i++) {
-      if (!blockTranslater.getConfiguration().getHideIds().contains(palette[i].getId())) {
+      if (!blockTranslator.getConfiguration().getHideIds().contains(palette[i].getId())) {
         return i;
       }
     }
@@ -131,7 +131,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
     }
 
     for (State paletteEntry : palette) {
-      if (blockTranslater.getConfiguration().getHideIds().contains(paletteEntry.getId())) {
+      if (blockTranslator.getConfiguration().getHideIds().contains(paletteEntry.getId())) {
         return true;
       }
     }

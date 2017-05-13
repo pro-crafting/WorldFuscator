@@ -6,7 +6,7 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import de.pro_crafting.worldfuscator.Core.BlockTranslater;
+import de.pro_crafting.worldfuscator.Core.BlockTranslator;
 import de.pro_crafting.worldfuscator.Core.WorldFuscator;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -14,11 +14,11 @@ import org.bukkit.entity.Player;
 public class WorldFuscatorImpl extends WorldFuscator {
 
   public void onEnable() {
-    setTranslater(new Translater());
+    setTranslater(new Translator());
     super.onEnable();
   }
 
-  private class Translater extends BlockTranslater {
+  private class Translator extends BlockTranslator {
 
     WorldGuardPlugin wg = WorldGuardPlugin.inst();
 

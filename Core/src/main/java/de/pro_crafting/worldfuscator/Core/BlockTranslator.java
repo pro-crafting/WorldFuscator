@@ -4,14 +4,14 @@ import com.comphenix.example.State;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-public class BlockTranslater {
+public class BlockTranslator {
 
   private Configuration configuration;
 
-  public BlockTranslater() {
+  public BlockTranslator() {
   }
 
-  public BlockTranslater(Configuration configuration) {
+  public BlockTranslator(Configuration configuration) {
     this.configuration = configuration;
   }
 

@@ -9,7 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public abstract class WorldFuscator extends JavaPlugin {
 
   private Configuration configuration;
-  private BlockTranslater translater;
+  private BlockTranslator translater;
 
   public void onEnable() {
     MinecraftVersion minecraftVersion = ProtocolLibrary.getProtocolManager().getMinecraftVersion();
@@ -31,11 +31,11 @@ public abstract class WorldFuscator extends JavaPlugin {
     return this.configuration;
   }
 
-  public BlockTranslater getTranslater() {
+  public BlockTranslator getTranslater() {
     return translater;
   }
 
-  protected void setTranslater(BlockTranslater translater) {
+  protected void setTranslater(BlockTranslator translater) {
     this.translater = translater;
   }
 }

@@ -3,7 +3,7 @@ package com.comphenix.example;
 import com.comphenix.example.ChunkPacketProcessor.ChunkletProcessor;
 import com.comphenix.packetwrapper.WrapperPlayServerBlockChange;
 import com.comphenix.packetwrapper.WrapperPlayServerMultiBlockChange;
-import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.PacketType.Play.Server;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
@@ -48,8 +48,8 @@ public class BlockDisguiser {
 
     ProtocolLibrary.getProtocolManager().addPacketListener(
         listener = new PacketAdapter(plugin, ListenerPriority.HIGHEST,
-            PacketType.Play.Server.BLOCK_CHANGE, PacketType.Play.Server.MULTI_BLOCK_CHANGE,
-            PacketType.Play.Server.MAP_CHUNK) {
+            Server.BLOCK_CHANGE, Server.MULTI_BLOCK_CHANGE,
+            Server.MAP_CHUNK) {
 
           public void onPacketSending(PacketEvent event) {
             Player player = event.getPlayer();
@@ -61,13 +61,13 @@ public class BlockDisguiser {
             PacketContainer packet = event.getPacket();
 
             World world = player.getWorld();
-            if (event.getPacketType() == PacketType.Play.Server.BLOCK_CHANGE) {
+            if (event.getPacketType() == Server.BLOCK_CHANGE) {
               packet = packet.shallowClone();
               translateBlockChange(packet, world, player);
-            } else if (event.getPacketType() == PacketType.Play.Server.MULTI_BLOCK_CHANGE) {
+            } else if (event.getPacketType() == Server.MULTI_BLOCK_CHANGE) {
               packet = packet.shallowClone();
               translateMultiBlockChange(packet, world, player);
-            } else if (event.getPacketType() == PacketType.Play.Server.MAP_CHUNK) {
+            } else if (event.getPacketType() == Server.MAP_CHUNK) {
               packet = ChunkPacketProcessor.clone(packet, world);
               ChunkPacketProcessor.fromMapPacket(packet, world).process(processor, player, packet);
             }

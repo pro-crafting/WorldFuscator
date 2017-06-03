@@ -15,7 +15,7 @@
     <dependency>
       <groupId>de.pro_crafting</groupId>
       <artifactId>Core</artifactId>
-      <version>0.2.0-SNAPSHOT</version>
+      <version>0.2.1-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
 

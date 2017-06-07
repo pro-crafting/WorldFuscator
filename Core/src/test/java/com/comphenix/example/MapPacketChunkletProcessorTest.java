@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.Lists;
 import de.pro_crafting.worldfuscator.Core.BlockTranslator;
 import de.pro_crafting.worldfuscator.Core.Configuration;
+import de.pro_crafting.worldfuscator.Core.VarIntUtil;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -50,7 +51,7 @@ public class MapPacketChunkletProcessorTest {
     int bitsPerBlock = buffer.get();
     State[] palette = mapProcessor.getPalette(buffer, bitsPerBlock);
 
-    int dataLength = mapProcessor.deserializeVarInt(buffer);
+    int dataLength = VarIntUtil.deserializeVarInt(buffer);
 
     long[] blockIndizes = new long[dataLength];
     buffer.asLongBuffer().get(blockIndizes);

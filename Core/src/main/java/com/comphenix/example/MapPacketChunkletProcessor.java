@@ -1,6 +1,7 @@
 package com.comphenix.example;
 
 import de.pro_crafting.worldfuscator.Core.BlockTranslator;
+import de.pro_crafting.worldfuscator.Core.VarIntUtil;
 import java.nio.ByteBuffer;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -23,7 +24,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
     int bitsPerBlock = buffer.get();
     State[] palette = getPalette(buffer, bitsPerBlock);
 
-    int dataLength = deserializeVarInt(buffer);
+    int dataLength = VarIntUtil.deserializeVarInt(buffer);
 
     int beforeData = buffer.position();
     if (shouldHide(palette, bitsPerBlock)) {
@@ -79,10 +80,10 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
     // The Palette is only sent, when we have less then 9 bits per block
     // Otherwise, global palette is used
     if (bitsPerBlock < 9) {
-      int paletteLength = deserializeVarInt(buffer);
+      int paletteLength = VarIntUtil.deserializeVarInt(buffer);
       palette = new State[paletteLength];
       for (int x = 0; x < paletteLength; x++) {
-        int state = deserializeVarInt(buffer);
+        int state = VarIntUtil.deserializeVarInt(buffer);
         palette[x] = new State(state >> 4, state & 0xF);
       }
     }
@@ -136,23 +137,5 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
       }
     }
     return false;
-  }
-
-  // Aus dem 1.9.1 MC Server (PacketSerializer)
-  int deserializeVarInt(ByteBuffer buf) {
-    int i = 0;
-    int j = 0;
-    for (; ; ) {
-      int k = buf.get();
-
-      i |= (k & 0x7F) << j++ * 7;
-      if (j > 5) {
-        throw new RuntimeException("VarInt too big");
-      }
-      if ((k & 0x80) != 128) {
-        break;
-      }
-    }
-    return i;
   }
 }

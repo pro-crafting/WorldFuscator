@@ -10,6 +10,7 @@ public abstract class WorldFuscator extends JavaPlugin {
 
   private Configuration configuration;
   private BlockTranslator translater;
+  private WorldRefresher worldRefresher;
 
   public void onEnable() {
     MinecraftVersion minecraftVersion = ProtocolLibrary.getProtocolManager().getMinecraftVersion();
@@ -25,6 +26,7 @@ public abstract class WorldFuscator extends JavaPlugin {
     translater.setConfiguration(this.configuration);
     new BlockDisguiser(this);
     Bukkit.getPluginManager().registerEvents(new WorldFuscatorListener(this), this);
+    this.worldRefresher = new WorldRefresher(this);
   }
 
   public Configuration getConfiguration() {
@@ -37,5 +39,9 @@ public abstract class WorldFuscator extends JavaPlugin {
 
   protected void setTranslater(BlockTranslator translater) {
     this.translater = translater;
+  }
+
+  public WorldRefresher getWorldRefresher() {
+    return worldRefresher;
   }
 }

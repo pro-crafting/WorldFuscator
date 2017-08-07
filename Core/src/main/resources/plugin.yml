@@ -4,5 +4,5 @@ description: Worldfuscator Plugin
 website: 
 author: postremus
 main: de.pro_crafting.worldfuscator.Plugin.WorldFuscatorImpl
-depend: [ProtocolLib, WorldGuard]
-soft-depend: [WarGear]
+depend: [ProtocolLib]
+soft-depend: [WarGear, WorldGuard]

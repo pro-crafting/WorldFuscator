@@ -2,7 +2,7 @@ package de.pro_crafting.worldfuscator.Plugin;
 
 import static org.bukkit.event.EventPriority.MONITOR;
 
-import de.pro_crafting.wg.WarGear;
+import net.myplayplanet.wg.WarGear;
 import de.pro_crafting.wg.arena.Arena;
 import de.pro_crafting.wg.arena.ArenaPosition;
 import de.pro_crafting.wg.event.GroupUpdateEvent;

@@ -1,7 +1,7 @@
 package com.comphenix.example;
 
-import de.pro_crafting.worldfuscator.Core.BlockTranslator;
-import de.pro_crafting.worldfuscator.Core.VarIntUtil;
+import net.myplayplanet.worldfuscator.Core.BlockTranslator;
+import net.myplayplanet.worldfuscator.Core.VarIntUtil;
 import java.nio.ByteBuffer;
 import org.bukkit.Location;
 import org.bukkit.World;

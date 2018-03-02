@@ -1,4 +1,4 @@
-package de.pro_crafting.worldfuscator.Core;
+package net.myplayplanet.worldfuscator.Core;
 
 import com.comphenix.example.ChunkPacketProcessor;
 import com.comphenix.example.MapPacketChunkletProcessor;
@@ -7,7 +7,6 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.utility.MinecraftReflection;
-import de.pro_crafting.common.Point;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -18,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import net.myplayplanet.blockgenerator.Point;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;

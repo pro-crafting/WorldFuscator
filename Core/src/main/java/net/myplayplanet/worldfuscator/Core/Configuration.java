@@ -1,4 +1,4 @@
-package de.pro_crafting.worldfuscator.Core;
+package net.myplayplanet.worldfuscator.Core;
 
 import java.util.List;
 import org.bukkit.configuration.file.FileConfiguration;

@@ -1,16 +1,17 @@
-package de.pro_crafting.worldfuscator.Plugin;
+package net.myplayplanet.worldfuscator.Plugin;
 
 import static org.bukkit.event.EventPriority.MONITOR;
 
-import net.myplayplanet.wg.WarGear;
-import de.pro_crafting.wg.arena.Arena;
-import de.pro_crafting.wg.arena.ArenaPosition;
-import de.pro_crafting.wg.event.GroupUpdateEvent;
-import de.pro_crafting.wg.group.GroupMember;
-import de.pro_crafting.wg.group.PlayerRole;
-import de.pro_crafting.wg.model.WgRegion;
-import de.pro_crafting.worldfuscator.Core.BlockTranslator;
-import de.pro_crafting.worldfuscator.Core.WorldFuscator;
+import net.myplayplanet.blockgenerator.Point;
+import net.myplayplanet.wargearfight.WarGear;
+import net.myplayplanet.wargearfight.arena.Arena;
+import net.myplayplanet.wargearfight.arena.ArenaPosition;
+import net.myplayplanet.wargearfight.event.GroupUpdateEvent;
+import net.myplayplanet.wargearfight.group.GroupMember;
+import net.myplayplanet.wargearfight.group.PlayerRole;
+import net.myplayplanet.wargearfight.model.WgRegion;
+import net.myplayplanet.worldfuscator.Core.BlockTranslator;
+import net.myplayplanet.worldfuscator.Core.WorldFuscator;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -73,8 +74,8 @@ public class WorldFuscatorImpl extends WorldFuscator {
       WgRegion region = event.getPlayerGroupKey().getRegion();
       getWorldRefresher().updateArea(
           region.getWorld(),
-          region.getMin(),
-          region.getMax(),
+          new Point(region.getMin().getX(), region.getMin().getY(), region.getMin().getZ()),
+          new Point(region.getMax().getX(), region.getMax().getY(), region.getMax().getZ()),
           oldPlayers,
           newPlayers
       );

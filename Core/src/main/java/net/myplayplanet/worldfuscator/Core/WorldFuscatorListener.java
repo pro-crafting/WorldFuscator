@@ -1,6 +1,7 @@
-package de.pro_crafting.worldfuscator.Core;
+package net.myplayplanet.worldfuscator.Core;
 
-import de.pro_crafting.region.events.RegionDomainChangeEvent;
+
+import net.myplayplanet.region.events.RegionDomainChangeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

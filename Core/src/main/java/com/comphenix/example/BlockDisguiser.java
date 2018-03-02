@@ -12,7 +12,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.FieldAccessException;
 import com.comphenix.protocol.wrappers.MultiBlockChangeInfo;
 import com.comphenix.protocol.wrappers.WrappedBlockData;
-import de.pro_crafting.worldfuscator.Core.WorldFuscator;
+import net.myplayplanet.worldfuscator.Core.WorldFuscator;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;

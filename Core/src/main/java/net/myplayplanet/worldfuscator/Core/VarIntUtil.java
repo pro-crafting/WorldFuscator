@@ -1,4 +1,4 @@
-package de.pro_crafting.worldfuscator.Core;
+package net.myplayplanet.worldfuscator.Core;
 
 import java.nio.ByteBuffer;
 

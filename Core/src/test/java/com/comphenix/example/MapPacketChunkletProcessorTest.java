@@ -5,9 +5,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Lists;
-import de.pro_crafting.worldfuscator.Core.BlockTranslator;
-import de.pro_crafting.worldfuscator.Core.Configuration;
-import de.pro_crafting.worldfuscator.Core.VarIntUtil;
+import net.myplayplanet.worldfuscator.Core.BlockTranslator;
+import net.myplayplanet.worldfuscator.Core.Configuration;
+import net.myplayplanet.worldfuscator.Core.VarIntUtil;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Arrays;

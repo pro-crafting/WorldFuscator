@@ -4,7 +4,7 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.nbt.NbtBase;
-import de.pro_crafting.worldfuscator.Core.VarIntUtil;
+import net.myplayplanet.worldfuscator.Core.VarIntUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

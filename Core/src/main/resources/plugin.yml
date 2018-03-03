@@ -5,4 +5,4 @@ website:
 author: postremus
 main: net.myplayplanet.worldfuscator.Plugin.WorldFuscatorImpl
 depend: [ProtocolLib]
-soft-depend: [WarGear, WorldGuard]
+soft-depend: [WarGear-Fight, WorldGuard]

@@ -15,9 +15,9 @@ public abstract class WorldFuscator extends JavaPlugin {
   public void onEnable() {
     MinecraftVersion minecraftVersion = ProtocolLibrary.getProtocolManager().getMinecraftVersion();
 
-    // Only activate this plugin for minecraft 1.9 and up
-    if (MinecraftVersion.BOUNTIFUL_UPDATE.compareTo(minecraftVersion) > 0) {
-      Bukkit.getLogger().info("This plugin only works for 1.9.0 and up");
+    // Only activate this plugin for minecraft 1.13 and up
+    if (MinecraftVersion.AQUATIC_UPDATE.compareTo(minecraftVersion) > 0) {
+      Bukkit.getLogger().info("This plugin only works for 1.13.0 and up");
       Bukkit.getPluginManager().disablePlugin(this);
       return;
     }

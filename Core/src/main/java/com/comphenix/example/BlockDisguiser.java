@@ -90,9 +90,13 @@ public class BlockDisguiser {
     int y = packetWrapper.getLocation().getY();
     int z = packetWrapper.getLocation().getZ();
     State blockState = new State(packetWrapper.getBlockData());
-    int id = plugin.getTranslator().translateBlockID(world, x, y, z, player, blockState);
-    packetWrapper
-        .setBlockData(WrappedBlockData.createData(Material.getMaterial(id), blockState.getData()));
+    Material changedTo = plugin.getTranslator().translateBlockMaterial(world, x, y, z, player, blockState);
+
+    if (changedTo != null) {
+      // TODO: How to do this with aquatic update? without depcrecation?
+        packetWrapper
+                .setBlockData(WrappedBlockData.createData(changedTo, blockState.getData()));
+    }
   }
 
   private void translateMultiBlockChange(PacketContainer packet, World world, Player player)
@@ -104,8 +108,12 @@ public class BlockDisguiser {
       int y = change.getY();
       int z = change.getAbsoluteZ();
       State blockState = new State(change.getData());
-      int id = plugin.getTranslator().translateBlockID(world, x, y, z, player, blockState);
-      change.setData(WrappedBlockData.createData(Material.getMaterial(id), blockState.getData()));
+      Material changedTo = plugin.getTranslator().translateBlockMaterial(world, x, y, z, player, blockState);
+
+      if (changedTo != null) {
+        // TODO: How to do this with aquatic update? without depcrecation?
+        change.setData(WrappedBlockData.createData(changedTo, blockState.getData()));
+      }
     }
     packetWrapper.setRecords(array);
   }

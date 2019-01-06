@@ -1,7 +1,8 @@
 name: WorldFuscator
 version: ${project.build.version}
 description: Worldfuscator Plugin
-website: 
+website:
+api-version: 1.13
 author: postremus
 main: net.myplayplanet.worldfuscator.Plugin.WorldFuscatorImpl
 depend: [ProtocolLib]

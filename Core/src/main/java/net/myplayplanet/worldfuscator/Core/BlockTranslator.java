@@ -1,6 +1,7 @@
 package net.myplayplanet.worldfuscator.Core;
 
 import com.comphenix.example.State;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -19,8 +20,8 @@ public class BlockTranslator {
     return false;
   }
 
-  public int translateBlockID(World world, int x, int y, int z, Player player, State block) {
-    if (configuration.getHideIds().contains(block.getId())) {
+  public Material translateBlockMaterial(World world, int x, int y, int z, Player player, State block) {
+    if (configuration.getHideMaterials().contains(block.getMaterial())) {
       if (!this.hasRights(player, x, y, z, world)) {
         if (configuration.isDebugEnabled()) {
           System.out.println(
@@ -35,7 +36,7 @@ public class BlockTranslator {
           "Passed: Translation for " + x + "|" + y + "|" + z + " for " + player.getName()
               + " block " + block);
     }
-    return block.getId();
+    return null;
   }
 
   public Configuration getConfiguration() {

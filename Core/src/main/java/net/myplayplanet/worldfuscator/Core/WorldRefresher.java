@@ -6,26 +6,42 @@ import com.comphenix.protocol.PacketType.Play.Server;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
-import net.minecraft.server.v1_12_R1.ChunkProviderServer;
-import net.minecraft.server.v1_12_R1.PacketPlayOutMapChunk;
+import com.comphenix.protocol.utility.MinecraftReflection;
 import net.myplayplanet.blockgenerator.Point;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 
 public class WorldRefresher {
 
   private final WorldFuscator plugin;
   private MapPacketChunkletProcessor processor;
+  private Method chunkHandle;
+  private Constructor<?> chunkPacketConstructor;
+
 
   public WorldRefresher(WorldFuscator plugin) {
     this.plugin = plugin;
     processor = new MapPacketChunkletProcessor(
         this.plugin.getTranslator());
+
+    Class<?> craftChunk = MinecraftReflection.getCraftBukkitClass("CraftChunk");
+    try {
+      chunkHandle = craftChunk.getDeclaredMethod("getHandle");
+    } catch (NoSuchMethodException e) {
+      e.printStackTrace();
+    }
+
+    Class<?> chunkPacketClass = MinecraftReflection
+            .getMinecraftClass("PacketPlayOutMapChunk");
+    chunkPacketConstructor = chunkPacketClass.getDeclaredConstructors()[0];
+
   }
 
   public void updateArea(World world, Point min, Point max, Collection<UUID> oldMembers,
@@ -82,11 +98,10 @@ public class WorldRefresher {
     ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
     for (Chunk chunk : chunksToUpdate) {
       try {
-        ChunkProviderServer providerServer = ((org.bukkit.craftbukkit.v1_12_R1.CraftWorld)chunk.getWorld()).getHandle().getChunkProviderServer();
-        net.minecraft.server.v1_12_R1.Chunk nmsChunk = providerServer.getChunkAt(chunk.getX(), chunk.getZ());
-        PacketPlayOutMapChunk packetPlayOutMapChunk = new PacketPlayOutMapChunk(nmsChunk, 65535);
+        Object nativeChunk = chunkHandle.invoke(chunk);
+        Object chunkPacketNms = chunkPacketConstructor.newInstance(nativeChunk, '\uffff');
 
-        PacketContainer packet = new PacketContainer(Server.MAP_CHUNK, packetPlayOutMapChunk);
+        PacketContainer packet = new PacketContainer(Server.MAP_CHUNK, chunkPacketNms);
 
         for (Player player : players) {
           World world = chunk.getWorld();
@@ -96,7 +111,7 @@ public class WorldRefresher {
               processor, player, packet);
           protocolManager.sendServerPacket(player, packet, false);
         }
-      } catch (InvocationTargetException e) {
+      } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
         e.printStackTrace();
       }
     }

@@ -32,17 +32,17 @@ public class BlockTranslatorTest {
     when(configuration.getHideIds()).thenReturn(Lists.newArrayList(1, 2, 3));
 
     // We excpect the same block id to be returned, when this id is not in the config
-    int translated = translater.translateBlockID(world, 0, 0, 0, player, new State(4, 0));
+    int translated = translater.translateBlockMaterial(world, 0, 0, 0, player, new State(4, 0));
     assertEquals(4, translated);
 
     // Should return the obfuscation block, when hasRights returns false
-    translated = translater.translateBlockID(world, 0, 0, 0, player, new State(2, 0));
+    translated = translater.translateBlockMaterial(world, 0, 0, 0, player, new State(2, 0));
     assertEquals(configuration.getObfuscationBlock(), translated);
 
     // Should return the normal block, when hasRights returns false
     when(translater.hasRights(any(Player.class), anyInt(), anyInt(), anyInt(), any(World.class)))
         .thenReturn(true);
-    translated = translater.translateBlockID(world, 0, 0, 0, player, new State(2, 0));
+    translated = translater.translateBlockMaterial(world, 0, 0, 0, player, new State(2, 0));
     assertEquals(2, translated);
   }
 }

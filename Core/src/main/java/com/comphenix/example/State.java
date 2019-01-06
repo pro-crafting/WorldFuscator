@@ -5,24 +5,20 @@ import org.bukkit.Material;
 
 public class State {
 
-  private int id;
+  private Material material;
   private int data;
 
   public State(Material type, int data) {
-    this(type.getId(), data);
+    this.material = type;
+    this.data = data;
   }
 
   public State(WrappedBlockData blockData) {
     this(blockData.getType(), blockData.getData());
   }
 
-  public State(int id, int data) {
-    this.id = id;
-    this.data = data;
-  }
-
-  public int getId() {
-    return id;
+  public Material getMaterial() {
+    return material;
   }
 
   public int getData() {
@@ -31,6 +27,6 @@ public class State {
 
   @Override
   public String toString() {
-    return id + ":" + data;
+    return material + ":" + data;
   }
 }

@@ -4,6 +4,7 @@ import net.myplayplanet.worldfuscator.Core.BlockTranslator;
 import net.myplayplanet.worldfuscator.Core.VarIntUtil;
 import java.nio.ByteBuffer;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -12,7 +13,7 @@ import org.bukkit.entity.Player;
  */
 public class MapPacketChunkletProcessor implements ChunkPacketProcessor.ChunkletProcessor {
 
-  private static final State AIR = new State(0, 0);
+  private static final State AIR = new State(Material.AIR, 0);
   private final BlockTranslator blockTranslator;
   private final State[] emptyState = new State[0];
 
@@ -21,7 +22,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
   }
 
   public void processChunklet(Location origin, ByteBuffer buffer, Player player) {
-    int bitsPerBlock = buffer.get();
+    byte bitsPerBlock = buffer.get();
     State[] palette = getPalette(buffer, bitsPerBlock);
 
     int dataLength = VarIntUtil.deserializeVarInt(buffer);
@@ -59,7 +60,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
 
           State blockStateBefore = getState(fS, palette, index, bitsPerBlock);
           int blockIdAfter = blockTranslator
-              .translateBlockID(world, x, y, z, player, blockStateBefore);
+              .translateBlockMaterial(world, x, y, z, player, blockStateBefore);
 
           if (blockStateBefore.getId() != blockIdAfter) {
             fS.set(index, hideIndex);
@@ -75,7 +76,8 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
     }
   }
 
-  State[] getPalette(ByteBuffer buffer, int bitsPerBlock) {
+  State[] getPalette(ByteBuffer buffer, byte bitsPerBlock) {
+    // TODO: https://wiki.vg/Chunk_Format#Palettes
     State[] palette = emptyState;
     // The Palette is only sent, when we have less then 9 bits per block
     // Otherwise, global palette is used

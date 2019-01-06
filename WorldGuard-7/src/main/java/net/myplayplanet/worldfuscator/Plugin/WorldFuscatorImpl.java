@@ -19,7 +19,7 @@ import org.bukkit.entity.Player;
 public class WorldFuscatorImpl extends WorldFuscator {
 
   public void onEnable() {
-    setTranslater(new Translator());
+    setTranslator(new Translator());
     super.onEnable();
   }
 

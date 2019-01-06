@@ -6,18 +6,6 @@ import com.comphenix.protocol.PacketType.Play.Server;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.utility.MinecraftReflection;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
 import net.minecraft.server.v1_12_R1.ChunkProviderServer;
 import net.minecraft.server.v1_12_R1.PacketPlayOutMapChunk;
 import net.myplayplanet.blockgenerator.Point;
@@ -25,6 +13,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 public class WorldRefresher {
 
@@ -34,7 +25,7 @@ public class WorldRefresher {
   public WorldRefresher(WorldFuscator plugin) {
     this.plugin = plugin;
     processor = new MapPacketChunkletProcessor(
-        this.plugin.getTranslater());
+        this.plugin.getTranslator());
   }
 
   public void updateArea(World world, Point min, Point max, Collection<UUID> oldMembers,

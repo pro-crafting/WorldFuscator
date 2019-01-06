@@ -37,14 +37,14 @@ public class BlockDisguiser {
    */
   public BlockDisguiser(WorldFuscator parent) {
     this.plugin = parent;
-    this.mapPacketChunkletProcessor = new MapPacketChunkletProcessor(this.plugin.getTranslater());
+    this.mapPacketChunkletProcessor = new MapPacketChunkletProcessor(this.plugin.getTranslator());
     registerListener(parent);
     ChunkPacketProcessor.dataFolder = parent.getDataFolder();
     ChunkPacketProcessor.isDebugEnabled = parent.getConfiguration().isDebugEnabled();
   }
 
   private void registerListener(Plugin plugin) {
-    final ChunkletProcessor processor = new MapPacketChunkletProcessor(this.plugin.getTranslater());
+    final ChunkletProcessor processor = new MapPacketChunkletProcessor(this.plugin.getTranslator());
 
     ProtocolLibrary.getProtocolManager().addPacketListener(
         listener = new PacketAdapter(plugin, ListenerPriority.HIGHEST,
@@ -90,7 +90,7 @@ public class BlockDisguiser {
     int y = packetWrapper.getLocation().getY();
     int z = packetWrapper.getLocation().getZ();
     State blockState = new State(packetWrapper.getBlockData());
-    int id = plugin.getTranslater().translateBlockID(world, x, y, z, player, blockState);
+    int id = plugin.getTranslator().translateBlockID(world, x, y, z, player, blockState);
     packetWrapper
         .setBlockData(WrappedBlockData.createData(Material.getMaterial(id), blockState.getData()));
   }
@@ -104,7 +104,7 @@ public class BlockDisguiser {
       int y = change.getY();
       int z = change.getAbsoluteZ();
       State blockState = new State(change.getData());
-      int id = plugin.getTranslater().translateBlockID(world, x, y, z, player, blockState);
+      int id = plugin.getTranslator().translateBlockID(world, x, y, z, player, blockState);
       change.setData(WrappedBlockData.createData(Material.getMaterial(id), blockState.getData()));
     }
     packetWrapper.setRecords(array);

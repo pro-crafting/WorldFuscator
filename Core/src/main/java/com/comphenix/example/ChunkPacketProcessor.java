@@ -5,15 +5,16 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.nbt.NbtBase;
 import net.myplayplanet.worldfuscator.Core.VarIntUtil;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.World.Environment;
+import org.bukkit.entity.Player;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.World.Environment;
-import org.bukkit.entity.Player;
 
 /**
  * Used to process a chunk.
@@ -27,8 +28,10 @@ public class ChunkPacketProcessor {
   protected static final int CHUNK_SEGMENTS = 16;
   protected static final int NIBBLES_REQUIRED = 4;
   protected static final int BIOME_ARRAY_LENGTH = 256;
+
   public static boolean isDebugEnabled;
   public static File dataFolder;
+
   private int chunkX;
   private int chunkZ;
   private int chunkMask;

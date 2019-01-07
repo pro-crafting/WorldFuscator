@@ -93,9 +93,8 @@ public class BlockDisguiser {
     Material changedTo = plugin.getTranslator().translateBlockMaterial(world, x, y, z, player, blockState);
 
     if (changedTo != null) {
-      // TODO: How to do this with aquatic update? without depcrecation?
         packetWrapper
-                .setBlockData(WrappedBlockData.createData(changedTo, blockState.getData()));
+                .setBlockData(WrappedBlockData.createData(changedTo));
     }
   }
 
@@ -111,8 +110,7 @@ public class BlockDisguiser {
       Material changedTo = plugin.getTranslator().translateBlockMaterial(world, x, y, z, player, blockState);
 
       if (changedTo != null) {
-        // TODO: How to do this with aquatic update? without depcrecation?
-        change.setData(WrappedBlockData.createData(changedTo, blockState.getData()));
+        change.setData(WrappedBlockData.createData(changedTo));
       }
     }
     packetWrapper.setRecords(array);

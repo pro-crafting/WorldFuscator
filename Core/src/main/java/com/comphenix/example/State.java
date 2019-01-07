@@ -3,30 +3,25 @@ package com.comphenix.example;
 import com.comphenix.protocol.wrappers.WrappedBlockData;
 import org.bukkit.Material;
 
+// TODO: Remove this class
 public class State {
 
   private Material material;
-  private int data;
 
-  public State(Material type, int data) {
+  public State(Material type) {
     this.material = type;
-    this.data = data;
   }
 
   public State(WrappedBlockData blockData) {
-    this(blockData.getType(), blockData.getData());
+    this(blockData.getType());
   }
 
   public Material getMaterial() {
     return material;
   }
 
-  public int getData() {
-    return data;
-  }
-
   @Override
   public String toString() {
-    return material + ":" + data;
+    return material + "";
   }
 }

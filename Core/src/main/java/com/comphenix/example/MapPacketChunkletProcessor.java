@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
  */
 public class MapPacketChunkletProcessor implements ChunkPacketProcessor.ChunkletProcessor {
 
-  private static final State AIR = new State(Material.AIR, 0);
+  private static final State AIR = new State(Material.AIR);
   private final BlockTranslator blockTranslator;
   private final State[] emptyState = new State[0];
 
@@ -76,10 +76,10 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
     }
   }
 
-  State[] getPalette(ByteBuffer buffer, byte bitsPerBlock) {
+  State[] getPalet1te(ByteBuffer buffer, byte bitsPerBlock) {
     // TODO: https://wiki.vg/Chunk_Format#Palettes
     State[] palette = emptyState;
-    // The Palette is only sent, when we have less then 9 bits per block
+    // The Palette is only sent when we have less then 9 bits per block
     // Otherwise, global palette is used
     if (bitsPerBlock < 9) {
       int paletteLength = VarIntUtil.deserializeVarInt(buffer);

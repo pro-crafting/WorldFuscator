@@ -13,6 +13,7 @@ import com.comphenix.protocol.reflect.FieldAccessException;
 import com.comphenix.protocol.wrappers.MultiBlockChangeInfo;
 import com.comphenix.protocol.wrappers.WrappedBlockData;
 import net.myplayplanet.worldfuscator.Core.WorldFuscator;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -89,7 +90,8 @@ public class BlockDisguiser {
     int y = packetWrapper.getLocation().getY();
     int z = packetWrapper.getLocation().getZ();
 
-    if (plugin.getTranslator().needsTranslation(world, x, y, z, player)) {
+    Material type = packetWrapper.getBlockData().getType();
+    if (this.plugin.getConfiguration().getHideMaterials().contains(type) && plugin.getTranslator().needsTranslation(world, x, y, z, player)) {
         packetWrapper
                 .setBlockData(WrappedBlockData.createData(this.plugin.getConfiguration().getPreferredObfuscationBlock()));
     }
@@ -103,8 +105,8 @@ public class BlockDisguiser {
       int x = change.getAbsoluteX();
       int y = change.getY();
       int z = change.getAbsoluteZ();
-
-      if (plugin.getTranslator().needsTranslation(world, x, y, z, player)) {
+        Material type = change.getData().getType();
+        if (this.plugin.getConfiguration().getHideMaterials().contains(type) && plugin.getTranslator().needsTranslation(world, x, y, z, player)) {
         change.setData(WrappedBlockData.createData(this.plugin.getConfiguration().getPreferredObfuscationBlock()));
       }
     }

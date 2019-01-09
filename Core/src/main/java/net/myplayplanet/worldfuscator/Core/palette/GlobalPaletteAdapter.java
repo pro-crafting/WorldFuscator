@@ -24,13 +24,13 @@ public class GlobalPaletteAdapter {
     private Method getCombinedId;
 
     public GlobalPaletteAdapter() {
-        Class<?> craftMagicNumbers = MinecraftReflection.getCraftBukkitClass("CraftMagicNumbers");
+        Class<?> craftMagicNumbers = MinecraftReflection.getCraftBukkitClass("util.CraftMagicNumbers");
         try {
             getBlock = craftMagicNumbers.getDeclaredMethod("getBlock", Material.class);
 
             Class<?> blockClass = MinecraftReflection.getBlockClass();
             getStates = blockClass.getDeclaredMethod("getStates");
-            getCombinedId = blockClass.getDeclaredMethod("getCombinedId");
+            getCombinedId = blockClass.getMethod("getCombinedId", MinecraftReflection.getIBlockDataClass());
 
             Class<?> blockStateList = MinecraftReflection.getMinecraftClass("BlockStateList");
             getStateList = blockStateList.getDeclaredMethod("a");
@@ -53,7 +53,7 @@ public class GlobalPaletteAdapter {
                 ImmutableList<Object> casted = (ImmutableList<Object>)stateList;
 
                 for (Object blockData : casted) {
-                    int id = (int) getCombinedId.invoke(blockData);
+                    int id = (int) getCombinedId.invoke(block, blockData);
                     materialToGlobalPaletteId.put(material, id);
                 }
 

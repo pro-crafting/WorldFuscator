@@ -22,7 +22,10 @@ public class BlockTranslator {
 
   public BlockTranslator(Configuration configuration) {
     this.configuration = configuration;
+    updatePaletteIds();
+  }
 
+  private void updatePaletteIds() {
     // Initialize list with global palette ids to hide
     Set<Material> hideMaterials = configuration.getHideMaterials();
     for (Material hideMaterial : hideMaterials) {
@@ -58,6 +61,7 @@ public class BlockTranslator {
 
   void setConfiguration(Configuration configuration) {
     this.configuration = configuration;
+    updatePaletteIds();
   }
 
   public List<Integer> getHiddenGlobalPaletteIds() {

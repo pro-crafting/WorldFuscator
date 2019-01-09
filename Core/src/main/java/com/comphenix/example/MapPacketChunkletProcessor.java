@@ -30,13 +30,13 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
 
     int beforeData = buffer.position();
     if (palette.containsAny(blockTranslator.getHiddenGlobalPaletteIds())) {
-      tranlateChunkData(origin, buffer, player, bitsPerBlock, palette, dataLength, beforeData);
+      translateChunkData(origin, buffer, player, bitsPerBlock, palette, dataLength, beforeData);
     }
     buffer.position(beforeData + (dataLength * 8));
   }
 
-  private void tranlateChunkData(Location origin, ByteBuffer buffer, Player player,
-      int bitsPerBlock, Palette palette, int dataLength, int beforeData) {
+  private void translateChunkData(Location origin, ByteBuffer buffer, Player player,
+                                  int bitsPerBlock, Palette palette, int dataLength, int beforeData) {
     World world = origin.getWorld();
     int originX = origin.getBlockX();
     int originY = origin.getBlockY();
@@ -75,7 +75,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
 
           int paletteIdBefore = getPaletteId(fS, index);
 
-          if (!hiddenPaletteIds.contains(paletteIdBefore) && blockTranslator.needsTranslation(world, x, y, z, player)) {
+          if (hiddenPaletteIds.contains(paletteIdBefore) && blockTranslator.needsTranslation(world, x, y, z, player)) {
             fS.set(index, obfuscationPaletteId);
             didFuscate = true;
           }

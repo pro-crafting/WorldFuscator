@@ -27,7 +27,7 @@ public class Configuration {
     this.debugEnabled = configuration.getBoolean("debug.enabled", false);
   }
 
-  public Material getObfuscationBlock() {
+  public Material getPreferredObfuscationBlock() {
     return Material.END_STONE;
   }
 

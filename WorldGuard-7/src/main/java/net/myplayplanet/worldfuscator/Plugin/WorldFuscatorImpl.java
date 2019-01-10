@@ -1,7 +1,7 @@
 package net.myplayplanet.worldfuscator.Plugin;
 
+import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
@@ -36,7 +36,7 @@ public class WorldFuscatorImpl extends WorldFuscator {
       // TODO: Maybe use new Spatial Queries api for performance reasons?
 
       RegionManager manager = container.get(new BukkitWorld(world));
-      ApplicableRegionSet ars = manager.getApplicableRegions(BlockVector3.at(x, y, z));
+      ApplicableRegionSet ars = manager.getApplicableRegions(Vector.toBlockPoint(x, y, z));
 
       for (ProtectedRegion rg : ars) {
         if (rg.isMember(wgPlayer)) {

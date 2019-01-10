@@ -9,7 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>WarGear</artifactId>
+  <artifactId>WorldFuscator-WarGear</artifactId>
 
   <dependencies>
     <dependency>
@@ -27,7 +27,6 @@
   </dependencies>
 
   <build>
-    <finalName>${project.parent.artifactId}-${project.artifactId}-${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

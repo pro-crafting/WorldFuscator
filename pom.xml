@@ -14,7 +14,8 @@
   </modules>
 
   <properties>
-    <projectVersion>0.2.2</projectVersion>
+    <!-- HACK: Overwrite parents projectversion with our own -->
+    <projectVersion>${project.version}</projectVersion>
   </properties>
 
   <parent>

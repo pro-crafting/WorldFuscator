@@ -40,9 +40,10 @@ public class GlobalPaletteAdapter {
     }
 
     /**
-     * Get the id of a material from the global palette. This id is also used when transfering the state of a block through the network.
+     * Get all possible state ids of a material from the global palette. For example, a stair has a state id for every rotation it can be in.
+     * This id is also used when transfering the state of a block through the network.
      * @param material
-     * @return
+     * @return all possible state ids, never null
      */
     public Collection<Integer> getAllStateIds(Material material) {
         if (!materialToGlobalPaletteId.containsKey(material)) {

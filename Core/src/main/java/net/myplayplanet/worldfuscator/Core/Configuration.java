@@ -1,24 +1,38 @@
 package net.myplayplanet.worldfuscator.Core;
 
-import java.util.List;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class Configuration {
 
-  private List<Integer> hideIds;
+  private Set<Material> hideMaterials = new HashSet<>();
   private boolean debugEnabled;
 
   public Configuration(FileConfiguration configuration) {
-    this.hideIds = configuration.getIntegerList("hidden");
+    // read material names and get values of Material enum
+    List<String> materialNames = configuration.getStringList("hidden-materials");
+    if (materialNames != null) {
+      for (String materialName : materialNames) {
+        Material material = Material.matchMaterial(materialName, false);
+        if (material != null) {
+          hideMaterials.add(material);
+        }
+      }
+    }
+
     this.debugEnabled = configuration.getBoolean("debug.enabled", false);
   }
 
-  public int getObfuscationBlock() {
-    return 121;
+  public Material getPreferredObfuscationBlock() {
+    return Material.END_STONE;
   }
 
-  public List<Integer> getHideIds() {
-    return this.hideIds;
+  public Set<Material> getHideMaterials() {
+    return this.hideMaterials;
   }
 
   public boolean isDebugEnabled() {

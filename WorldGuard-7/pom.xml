@@ -5,30 +5,43 @@
   <parent>
     <artifactId>WorldFuscator</artifactId>
     <groupId>net.myplayplanet</groupId>
-    <version>0.2.2-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>WorldGuard-6</artifactId>
+  <artifactId>WorldFuscator-WorldGuard-7</artifactId>
+
+  <repositories>
+    <repository>
+      <id>pp-public</id>
+      <url>https://nexus.myplayplanet.net/repository/public/</url>
+    </repository>
+  </repositories>
 
   <dependencies>
     <dependency>
       <groupId>net.myplayplanet</groupId>
       <artifactId>Core</artifactId>
-      <version>0.2.2-SNAPSHOT</version>
+      <version>${project.parent.version}</version>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
+      <groupId>com.boydti</groupId>
+      <artifactId>FastAsyncWorldEdit</artifactId>
+      <version>7.0.0</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>com.sk89q</groupId>
-      <artifactId>worldguard</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
+      <artifactId>worldguard-api</artifactId>
+      <version>7.0.0</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
 
   <build>
-    <finalName>${parent.artifactId}-${artifactId}-${version}</finalName>
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

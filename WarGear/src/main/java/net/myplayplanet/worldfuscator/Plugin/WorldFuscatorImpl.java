@@ -26,7 +26,7 @@ import org.bukkit.event.Listener;
 public class WorldFuscatorImpl extends WorldFuscator {
 
   public void onEnable() {
-    setTranslater(new Translator());
+    setTranslator(new Translator());
     super.onEnable();
     Bukkit.getPluginManager().registerEvents(new WarGearListener(), this);
   }

@@ -37,14 +37,14 @@ public class BlockDisguiser {
    */
   public BlockDisguiser(WorldFuscator parent) {
     this.plugin = parent;
-    this.mapPacketChunkletProcessor = new MapPacketChunkletProcessor(this.plugin.getTranslater());
+    this.mapPacketChunkletProcessor = new MapPacketChunkletProcessor(this.plugin.getTranslator());
     registerListener(parent);
     ChunkPacketProcessor.dataFolder = parent.getDataFolder();
     ChunkPacketProcessor.isDebugEnabled = parent.getConfiguration().isDebugEnabled();
   }
 
   private void registerListener(Plugin plugin) {
-    final ChunkletProcessor processor = new MapPacketChunkletProcessor(this.plugin.getTranslater());
+    final ChunkletProcessor processor = new MapPacketChunkletProcessor(this.plugin.getTranslator());
 
     ProtocolLibrary.getProtocolManager().addPacketListener(
         listener = new PacketAdapter(plugin, ListenerPriority.HIGHEST,
@@ -89,10 +89,12 @@ public class BlockDisguiser {
     int x = packetWrapper.getLocation().getX();
     int y = packetWrapper.getLocation().getY();
     int z = packetWrapper.getLocation().getZ();
-    State blockState = new State(packetWrapper.getBlockData());
-    int id = plugin.getTranslater().translateBlockID(world, x, y, z, player, blockState);
-    packetWrapper
-        .setBlockData(WrappedBlockData.createData(Material.getMaterial(id), blockState.getData()));
+
+    Material type = packetWrapper.getBlockData().getType();
+    if (this.plugin.getConfiguration().getHideMaterials().contains(type) && plugin.getTranslator().needsTranslation(world, x, y, z, player)) {
+        packetWrapper
+                .setBlockData(WrappedBlockData.createData(this.plugin.getConfiguration().getPreferredObfuscationBlock()));
+    }
   }
 
   private void translateMultiBlockChange(PacketContainer packet, World world, Player player)
@@ -103,9 +105,10 @@ public class BlockDisguiser {
       int x = change.getAbsoluteX();
       int y = change.getY();
       int z = change.getAbsoluteZ();
-      State blockState = new State(change.getData());
-      int id = plugin.getTranslater().translateBlockID(world, x, y, z, player, blockState);
-      change.setData(WrappedBlockData.createData(Material.getMaterial(id), blockState.getData()));
+        Material type = change.getData().getType();
+        if (this.plugin.getConfiguration().getHideMaterials().contains(type) && plugin.getTranslator().needsTranslation(world, x, y, z, player)) {
+        change.setData(WrappedBlockData.createData(this.plugin.getConfiguration().getPreferredObfuscationBlock()));
+      }
     }
     packetWrapper.setRecords(array);
   }

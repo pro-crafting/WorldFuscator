@@ -5,15 +5,16 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.nbt.NbtBase;
 import net.myplayplanet.worldfuscator.Core.VarIntUtil;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.World.Environment;
+import org.bukkit.entity.Player;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.World.Environment;
-import org.bukkit.entity.Player;
 
 /**
  * Used to process a chunk.
@@ -27,12 +28,14 @@ public class ChunkPacketProcessor {
   protected static final int CHUNK_SEGMENTS = 16;
   protected static final int NIBBLES_REQUIRED = 4;
   protected static final int BIOME_ARRAY_LENGTH = 256;
+
   public static boolean isDebugEnabled;
   public static File dataFolder;
+
   private int chunkX;
   private int chunkZ;
-  private int chunkMask;
-  private boolean isContinuous = true;
+  private int primaryBitMask;
+  private boolean isFullChunk;
   private byte[] data;
   private List<NbtBase<?>> blockEntities;
   private int chunkSectionNumber;
@@ -49,10 +52,10 @@ public class ChunkPacketProcessor {
     processor.world = world;
     processor.chunkX = chunkX;     // packet.a;
     processor.chunkZ = chunkZ;     // packet.b;
-    processor.chunkMask = chunkMask;  // packet.c;
+    processor.primaryBitMask = chunkMask;  // packet.c;
     processor.data = data;  // packet.inflatedBuffer;
     processor.startIndex = 0;
-    processor.isContinuous = isContinuous;
+    processor.isFullChunk = isContinuous;
     writeDebugChunkFiles(processor);
     return processor;
   }
@@ -75,8 +78,8 @@ public class ChunkPacketProcessor {
 
     processor.chunkX = ints.read(0);
     processor.chunkZ = ints.read(1);
-    processor.isContinuous = packet.getBooleans().read(0);
-    processor.chunkMask = ints.read(2);
+    processor.isFullChunk = packet.getBooleans().read(0);
+    processor.primaryBitMask = ints.read(2);
     processor.data = byteArray.read(0);
 
     processor.blockEntities = packet.getListNbtModifier().read(0);
@@ -108,8 +111,8 @@ public class ChunkPacketProcessor {
     ByteBuffer bb = ByteBuffer.wrap(buffer);
     bb.putInt(processor.chunkX);
     bb.putInt(processor.chunkZ);
-    bb.put(processor.isContinuous ? (byte) 0x01 : (byte) 0x00);
-    VarIntUtil.serializeVarInt(bb, processor.chunkMask);
+    bb.put(processor.isFullChunk ? (byte) 0x01 : (byte) 0x00);
+    VarIntUtil.serializeVarInt(bb, processor.primaryBitMask);
     VarIntUtil.serializeVarInt(bb, processor.data.length);
     bb.put(processor.data);
     //TODO: Implement Biomes and BlockEntities
@@ -134,8 +137,8 @@ public class ChunkPacketProcessor {
 
     ints.write(0, processor.chunkX);
     ints.write(1, processor.chunkZ);
-    clone.getBooleans().write(0, processor.isContinuous);
-    ints.write(2, processor.chunkMask);
+    clone.getBooleans().write(0, processor.isFullChunk);
+    ints.write(2, processor.primaryBitMask);
     bytes.write(0, processor.data.clone());
     clone.getListNbtModifier().write(0, processor.blockEntities);
 
@@ -149,7 +152,7 @@ public class ChunkPacketProcessor {
   public void process(ChunkletProcessor processor, Player player, PacketContainer packet) {
     // Compute chunk number
     for (int i = 0; i < CHUNK_SEGMENTS; i++) {
-      if ((chunkMask & (1 << i)) > 0) {
+      if ((primaryBitMask & (1 << i)) > 0) {
         chunkSectionNumber++;
       }
     }
@@ -177,7 +180,7 @@ public class ChunkPacketProcessor {
     // A section has 16 * 16 * 16 = 4096 blocks.
     int size = BYTES_PER_NIBBLE_PART * (
         (NIBBLES_REQUIRED + skylightCount) * chunkSectionNumber) +
-        (isContinuous ? BIOME_ARRAY_LENGTH : 0);
+        (isFullChunk ? BIOME_ARRAY_LENGTH : 0);
 
     int blockSize = 4096 * chunkSectionNumber;
 
@@ -200,7 +203,7 @@ public class ChunkPacketProcessor {
     ByteBuffer buffer = ByteBuffer.wrap(data);
     for (int i = 0; i < 16; i++) {
       // If the bitmask indicates this chunk is sent
-      if ((chunkMask & 1 << i) > 0) {
+      if ((primaryBitMask & 1 << i) > 0) {
 
         // The lowest block (in x, y, z) in this chunklet
         Location origin = new Location(world, chunkX << 4, i * 16, chunkZ << 4);

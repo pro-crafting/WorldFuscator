@@ -17,6 +17,13 @@ This works based on permissions, and, dependeing on which plugin is installed, e
 
 ## Debug Mode
 The debug mode prints information about the fuscation in the console. It also allows to save chunks as .mcp files.
+.mcp files contain every information sent by the server about a chunk saved into a file.
+This includes:
+* Blocks & Block State
+* Lighting
+* Tile Entities
+* Biome
+
 This is enabled either by changing the configuration file, or by wielding the mighty BLAZE_ROD.
 
 ## Example Configuration

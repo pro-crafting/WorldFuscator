@@ -16,15 +16,19 @@ This works based on permissions, and, dependeing on which plugin is installed, e
 * Fuscates to Ender Stone (NON CHANGEABLE)
 
 ## Debug Mode
-The debug mode prints information about the fuscation in the console. It also allows to save chunks as .mcp files.
-.mcp files contain every information sent by the server about a chunk saved into a file.
+The debug mode prints information about the fuscation in the console. It also allows to save chunks as .mcdp files.
+.mcdp files contain every information sent by the server about a chunk saved into a file.
 This includes:
 * Blocks & Block State
 * Lighting
 * Tile Entities
 * Biome
 
+At the same time, .chunk files are written. These contain only informaion about the blocks.
+
 This is enabled either by changing the configuration file, or by wielding the mighty BLAZE_ROD.
+
+The files are saved in plugins/WorldFuscator/chunks/<worldname>/
 
 ## Example Configuration
 ```

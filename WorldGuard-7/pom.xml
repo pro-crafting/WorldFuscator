@@ -21,7 +21,7 @@
   <dependencies>
     <dependency>
       <groupId>net.myplayplanet</groupId>
-      <artifactId>Core</artifactId>
+      <artifactId>WorldFuscator-Core</artifactId>
       <version>${project.parent.version}</version>
       <scope>compile</scope>
     </dependency>

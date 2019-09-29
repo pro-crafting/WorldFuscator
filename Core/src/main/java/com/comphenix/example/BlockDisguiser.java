@@ -71,6 +71,7 @@ public class BlockDisguiser {
               packet = ChunkPacketProcessor.clone(packet, world);
               ChunkPacketProcessor.fromMapPacket(packet, world).process(processor, player, packet);
             }
+
             event.setPacket(packet);
           }
         });

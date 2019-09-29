@@ -72,7 +72,7 @@ public class ChunkPacketProcessor {
     }
 
     StructureModifier<Integer> ints = packet.getIntegers();
-    StructureModifier<byte[]> byteArray = packet.getByteArrays();
+    StructureModifier<byte[]> byteArray = packet.getByteArrays() ;
     ChunkPacketProcessor processor = new ChunkPacketProcessor();
     processor.world = world;
 

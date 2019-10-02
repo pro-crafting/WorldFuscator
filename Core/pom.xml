@@ -2,14 +2,19 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <parent>
-    <artifactId>WorldFuscator</artifactId>
-    <groupId>net.myplayplanet</groupId>
-    <version>0.3.0-SNAPSHOT</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>WorldFuscator</artifactId>
+        <groupId>net.myplayplanet</groupId>
+        <version>1.14.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>WorldFuscator-Core</artifactId>
+    <version>1.14.0-SNAPSHOT</version>
 
-  <artifactId>WorldFuscator-Core</artifactId>
+    <properties>
+        <projectVersion>1.14.0</projectVersion>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -24,19 +29,17 @@
     </build>
 
     <dependencies>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>2.2.15</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>2.5</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
-
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>2.2.15</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.5</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

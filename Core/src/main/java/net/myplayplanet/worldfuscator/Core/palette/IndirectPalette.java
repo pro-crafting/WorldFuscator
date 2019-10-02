@@ -10,10 +10,12 @@ public class IndirectPalette implements Palette{
 
     public IndirectPalette(ByteBuffer buffer) {
         int paletteLength = VarIntUtil.deserializeVarInt(buffer);
+
         for (int sectionIndex = 0; sectionIndex < paletteLength; sectionIndex++) {
             int globalPaletteId = VarIntUtil.deserializeVarInt(buffer);
             globalPaletteIdToPaletteIndex.put(globalPaletteId, sectionIndex);
         }
+
     }
 
     @Override

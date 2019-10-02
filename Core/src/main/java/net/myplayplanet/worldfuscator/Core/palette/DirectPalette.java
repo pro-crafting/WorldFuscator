@@ -15,7 +15,7 @@ public class DirectPalette implements Palette {
     /**
      * Uses the global palette, therefore always true
      * @param materials materials to search for
-     * @return
+     * @return No further description provided
      */
     @Override
     public boolean containsAny(Collection<Integer> materials) {

@@ -43,14 +43,12 @@ public class BlockTranslator {
   public boolean needsTranslation(World world, int x, int y, int z, Player player) {
     if (!this.hasRights(player, x, y, z, world)) {
       if (configuration.isDebugEnabled()) {
-        System.out.println(
-            "No Rights: Translation for " + x + "|" + y + "|" + z + " for " + player.getName());
+        System.out.println("No Rights: Translation for " + x + "|" + y + "|" + z + " for " + player.getName());
       }
       return true;
     }
     if (configuration.isDebugEnabled()) {
-      System.out.println(
-          "Passed: Translation for " + x + "|" + y + "|" + z + " for " + player.getName());
+      System.out.println("Passed: Translation for " + x + "|" + y + "|" + z + " for " + player.getName());
     }
     return false;
   }

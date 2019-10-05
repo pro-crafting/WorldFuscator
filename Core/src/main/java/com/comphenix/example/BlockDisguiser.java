@@ -3,6 +3,7 @@ package com.comphenix.example;
 import com.comphenix.example.ChunkPacketProcessor.ChunkletProcessor;
 import com.comphenix.packetwrapper.WrapperPlayServerBlockChange;
 import com.comphenix.packetwrapper.WrapperPlayServerMultiBlockChange;
+import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.PacketType.Play.Server;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.ListenerPriority;
@@ -13,6 +14,7 @@ import com.comphenix.protocol.reflect.FieldAccessException;
 import com.comphenix.protocol.wrappers.MultiBlockChangeInfo;
 import com.comphenix.protocol.wrappers.WrappedBlockData;
 import net.myplayplanet.worldfuscator.Core.WorldFuscator;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -48,8 +50,7 @@ public class BlockDisguiser {
 
     ProtocolLibrary.getProtocolManager().addPacketListener(
         listener = new PacketAdapter(plugin, ListenerPriority.HIGHEST,
-            Server.BLOCK_CHANGE, Server.MULTI_BLOCK_CHANGE,
-            Server.MAP_CHUNK) {
+                Server.BLOCK_CHANGE, Server.MULTI_BLOCK_CHANGE, Server.MAP_CHUNK) {
 
           public void onPacketSending(PacketEvent event) {
             Player player = event.getPlayer();
@@ -68,9 +69,10 @@ public class BlockDisguiser {
               packet = packet.shallowClone();
               translateMultiBlockChange(packet, world, player);
             } else if (event.getPacketType() == Server.MAP_CHUNK) {
-              packet = ChunkPacketProcessor.clone(packet, world);
+              packet = packet.deepClone();
               ChunkPacketProcessor.fromMapPacket(packet, world).process(processor, player, packet);
             }
+
             event.setPacket(packet);
           }
         });

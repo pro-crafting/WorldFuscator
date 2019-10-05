@@ -5,12 +5,13 @@ import java.util.Collection;
 
 public interface Palette {
     /**
-     * Initializes the correct Palette type based upon bitsPerblock. <br/>
+     * Initializes the correct Palette type based upon bitsPerblock.
      * The palette may be read and advanced to a position after the palette
+     * @param bitsPerBlock No further description provided
      * @param buffer chunk data packet, positioned after full chunk boolean
-     * @return
+     * @return No further description provided
      */
-    static Palette getInstance(byte bitsPerBlock, ByteBuffer buffer) {
+    static Palette getInstance( byte bitsPerBlock, ByteBuffer buffer) {
         if (bitsPerBlock < 9) {
             return new IndirectPalette(buffer);
         } else {
@@ -27,15 +28,15 @@ public interface Palette {
 
     /**
      * Checks if this palette contains the specified global palette block state identifier
-     * @param globalPaletteId
+     * @param globalPaletteId No further description provided
      * @return true if this palette contains the specified global palette block state identifier, otherwise false
      */
     boolean contains(Integer globalPaletteId);
 
     /**
      * Searches for any palette index whose global palette id does not exists in the given list of ids
-     * @param globalPaletteIds
-     * @return
+     * @param globalPaletteIds No further description provided
+     * @return No further description provided
      */
     Integer searchAnyNonMatching(Collection<Integer> globalPaletteIds);
 
@@ -48,7 +49,7 @@ public interface Palette {
 
     /**
      * Translate a global palette id to the corresponding pallte index. The palette index is always used in the chunk packet.
-     * @param globalPaletteId
+     * @param globalPaletteId No further description provided
      * @return palette index
      */
     Integer translate(Integer globalPaletteId);

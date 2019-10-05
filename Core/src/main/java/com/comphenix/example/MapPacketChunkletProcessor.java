@@ -22,13 +22,16 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
   }
 
   public void processChunklet(Location origin, ByteBuffer buffer, Player player) {
-    byte bitsPerBlock = buffer.get();
-    Palette palette = Palette.getInstance(bitsPerBlock, buffer);
 
+    short blockCount = buffer.getShort();
+    byte bitsPerBlock = buffer.get();
+
+    Palette palette = Palette.getInstance(bitsPerBlock, buffer);
 
     int dataLength = VarIntUtil.deserializeVarInt(buffer);
 
     int beforeData = buffer.position();
+
     if (palette.containsAny(blockTranslator.getHiddenGlobalPaletteIds())) {
       translateChunkData(origin, buffer, player, bitsPerBlock, palette, dataLength, beforeData);
     }
@@ -42,7 +45,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
     int originY = origin.getBlockY();
     int originZ = origin.getBlockZ();
 
-    int obfuscationPaletteId = -1;
+    int obfuscationPaletteId;
     // We can only use the preferred obfuscation block, if it actually exists in the palette.
     // If it does not exists, we fall back to any other block state from the palette
     // which is not part of the hidden blocks
@@ -61,7 +64,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
     long[] blockIndizes = new long[dataLength];
     buffer.asLongBuffer().get(blockIndizes);
 
-    FlexibleStorage fS = new FlexibleStorage(bitsPerBlock, blockIndizes);
+    FlexibleStorage flexibleStorage = new FlexibleStorage(bitsPerBlock, blockIndizes);
 
     boolean didFuscate = false;
     for (int posY = 0; posY < 16; posY++) {
@@ -73,10 +76,10 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
           int y = originY + posY;
           int z = originZ + posZ;
 
-          int paletteIdBefore = getPaletteId(fS, index);
+          int paletteIdBefore = flexibleStorage.get(index);
 
           if (hiddenPaletteIds.contains(paletteIdBefore) && blockTranslator.needsTranslation(world, x, y, z, player)) {
-            fS.set(index, obfuscationPaletteId);
+            flexibleStorage.set(index, obfuscationPaletteId);
             didFuscate = true;
           }
         }
@@ -85,7 +88,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
 
     if (didFuscate) {
       buffer.position(beforeData);
-      buffer.asLongBuffer().put(blockIndizes);
+      buffer.asLongBuffer().put(flexibleStorage.getData());
     }
   }
 

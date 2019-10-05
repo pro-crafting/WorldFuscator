@@ -4,8 +4,11 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.nbt.NbtBase;
+import lombok.Getter;
+import lombok.Setter;
 import net.myplayplanet.worldfuscator.Core.VarIntUtil;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
@@ -13,7 +16,9 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -32,14 +37,35 @@ public class ChunkPacketProcessor {
   public static boolean isDebugEnabled;
   public static File dataFolder;
 
+  @Getter
+  @Setter
   private int chunkX;
+  @Getter
+  @Setter
   private int chunkZ;
+  @Getter
+  @Setter
   private int primaryBitMask;
+  @Getter
+  @Setter
   private boolean isFullChunk;
+  @Getter
+  @Setter
+  private int dataSize;
+  @Getter
+  @Setter
   private byte[] data;
+  @Getter
+  @Setter
   private List<NbtBase<?>> blockEntities;
+  @Getter
+  @Setter
   private int chunkSectionNumber;
+  @Getter
+  @Setter
   private int startIndex;
+  @Getter
+  @Setter
   private World world;
 
   private ChunkPacketProcessor() {
@@ -64,6 +90,7 @@ public class ChunkPacketProcessor {
    * Construct a chunk packet processor from a givne MAP_CHUNK packet.
    *
    * @param packet - the map chunk packet.
+   * @param world No further description provided
    * @return The chunk packet processor.
    */
   public static ChunkPacketProcessor fromMapPacket(PacketContainer packet, World world) {
@@ -71,18 +98,19 @@ public class ChunkPacketProcessor {
       throw new IllegalArgumentException(packet + " must be a MAP_CHUNK packet.");
     }
 
+
     StructureModifier<Integer> ints = packet.getIntegers();
     StructureModifier<byte[]> byteArray = packet.getByteArrays();
     ChunkPacketProcessor processor = new ChunkPacketProcessor();
-    processor.world = world;
 
-    processor.chunkX = ints.read(0);
-    processor.chunkZ = ints.read(1);
-    processor.isFullChunk = packet.getBooleans().read(0);
-    processor.primaryBitMask = ints.read(2);
-    processor.data = byteArray.read(0);
+    processor.setWorld(world);
+    processor.setChunkX(ints.read(0));
+    processor.setChunkZ(ints.read(1));
+    processor.setFullChunk(packet.getBooleans().read(0));
+    processor.setPrimaryBitMask(ints.read(2));
+    processor.setData(byteArray.read(0));
 
-    processor.blockEntities = packet.getListNbtModifier().read(0);
+    processor.setBlockEntities(packet.getListNbtModifier().read(0));
 
     writeDebugChunkFiles(processor);
 
@@ -184,14 +212,12 @@ public class ChunkPacketProcessor {
 
     int blockSize = 4096 * chunkSectionNumber;
 
-    if (startIndex + blockSize > data.length) {
-      return;
-    }
-
     // Make sure the chunk is loaded
     if (isChunkLoaded(world, chunkX, chunkZ)) {
+
       translate(processor, player);
       if (packet != null) {
+
         packet.getByteArrays().write(0, data);
       }
     }
@@ -200,7 +226,8 @@ public class ChunkPacketProcessor {
   private void translate(ChunkletProcessor processor, Player player) {
     // Loop over 16x16x16 chunks in the 16x256x16 column
 
-    ByteBuffer buffer = ByteBuffer.wrap(data);
+    ByteBuffer buffer = ByteBuffer.wrap(this.data);
+
     for (int i = 0; i < 16; i++) {
       // If the bitmask indicates this chunk is sent
       if ((primaryBitMask & 1 << i) > 0) {
@@ -208,9 +235,9 @@ public class ChunkPacketProcessor {
         // The lowest block (in x, y, z) in this chunklet
         Location origin = new Location(world, chunkX << 4, i * 16, chunkZ << 4);
         processor.processChunklet(origin, buffer, player);
-        buffer.position(buffer.position() + 2048 + 2048);
       }
     }
+    this.data = buffer.array();
   }
 
   private boolean isChunkLoaded(World world, int x, int z) {

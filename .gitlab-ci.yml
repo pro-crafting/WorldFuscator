@@ -72,7 +72,7 @@ update_base_image:
     - git config --global user.email "${GITLAB_USER_EMAIL}"
     - git add --all
     - git commit -m "Updated WarshipFight!"
-    - git push http://${GITLAB_USER_LOGIN}:${PERSONAL_ACCESS_TOKEN}@gitlab.com/MyPlayPlanet/Docker-Images/warship_fight_image.git HEAD:${CI_COMMIT_REF_NAME}
+    - git push http://${GITLAB_USER_LOGIN}:${PERSONAL_ACCESS_TOKEN}@gitlab.com/MyPlayPlanet/Docker-Images/fight_server_image.git HEAD:${CI_COMMIT_REF_NAME}
   only:
     - test
     - develop

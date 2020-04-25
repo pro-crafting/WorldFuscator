@@ -3,42 +3,34 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
+        <groupId>com.pro-crafting.mc</groupId>
         <artifactId>WorldFuscator</artifactId>
-        <groupId>net.myplayplanet</groupId>
-        <version>1.14.0-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+
     <artifactId>WorldFuscator-Core</artifactId>
-    <version>1.14.0-SNAPSHOT</version>
-
-    <properties>
-        <projectVersion>1.14.0</projectVersion>
-    </properties>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <dependencies>
+        <!-- External Dependencies -->
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>${version.protocollib}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Test Dependencies -->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>2.2.15</version>
+            <version>${version.mockito}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.5</version>
+            <version>${version.commons-io}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

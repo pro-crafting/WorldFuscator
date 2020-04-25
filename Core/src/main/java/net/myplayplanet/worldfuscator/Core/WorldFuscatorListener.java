@@ -1,8 +1,6 @@
 package net.myplayplanet.worldfuscator.Core;
 
 
-import net.myplayplanet.region.events.RegionDomainChangeEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,8 +19,9 @@ public class WorldFuscatorListener implements Listener {
     this.plugin = plugin;
   }
 
-  @EventHandler(priority = EventPriority.MONITOR)
-  public void handleDomainChange(RegionDomainChangeEvent event) {
+  // TODO: Fix this shit
+  /*@EventHandler(priority = EventPriority.MONITOR)*/
+ /* public void handleDomainChange(RegionDomainChangeEvent event) {
     if (plugin.getConfiguration().isDebugEnabled()) {
       Bukkit.getLogger().info("Chunk refresh of region: " + event.getRegion().getId());
     }
@@ -32,7 +31,7 @@ public class WorldFuscatorListener implements Listener {
         event.getOldPlayers(),
         event.getNewPlayers()
     );
-  }
+  }*/
 
   @EventHandler(priority = EventPriority.MONITOR)
   public void handlePlayerInteract(PlayerInteractEvent event) {

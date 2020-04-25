@@ -7,7 +7,6 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.utility.MinecraftReflection;
-import net.myplayplanet.blockgenerator.Point;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.World;
@@ -16,7 +15,13 @@ import org.bukkit.entity.Player;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public class WorldRefresher {
 
@@ -44,8 +49,8 @@ public class WorldRefresher {
 
   }
 
-  public void updateArea(World world, Point min, Point max, Collection<UUID> oldMembers,
-      Collection<UUID> newMembers) {
+  public void updateArea(World world, de.pro_crafting.common.Point min, de.pro_crafting.common.Point max, Collection<UUID> oldMembers,
+                         Collection<UUID> newMembers) {
     if (newMembers.size() == oldMembers.size() &&
         newMembers.containsAll(oldMembers) &&
         oldMembers.containsAll(newMembers)) {

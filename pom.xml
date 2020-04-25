@@ -3,26 +3,28 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>com.pro-crafting</groupId>
+    <artifactId>pc-parent</artifactId>
+    <version>9</version>
+  </parent>
+
   <artifactId>WorldFuscator</artifactId>
   <packaging>pom</packaging>
   <version>1.14.0-SNAPSHOT</version>
+
+  <scm>
+    <connection>scm:git@github.com:pro-crafting/WorldFuscator.git</connection>
+    <url>https://github.com/pro-crafting/WorldFuscator</url>
+    <developerConnection>scm:git:git@github.com:pro-crafting/WorldFuscator.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
 
   <modules>
     <module>Core</module>
     <module>WorldGuard-7</module>
     <module>WarGear</module>
   </modules>
-
-  <properties>
-    <!-- HACK: Overwrite parents projectversion with our own -->
-    <projectVersion>1.14.0</projectVersion>
-  </properties>
-
-  <parent>
-    <artifactId>MyPlayPlanet</artifactId>
-    <groupId>net.myplayplanet</groupId>
-    <version>1.14.0-SNAPSHOT</version>
-  </parent>
 
   <repositories>
     <repository>

@@ -13,51 +13,37 @@ import org.bukkit.inventory.ItemStack;
 
 public class WorldFuscatorListener implements Listener {
 
-  private WorldFuscator plugin;
+    private WorldFuscator plugin;
 
-  public WorldFuscatorListener(WorldFuscator plugin) {
-    this.plugin = plugin;
-  }
-
-  // TODO: Fix this shit
-  /*@EventHandler(priority = EventPriority.MONITOR)*/
- /* public void handleDomainChange(RegionDomainChangeEvent event) {
-    if (plugin.getConfiguration().isDebugEnabled()) {
-      Bukkit.getLogger().info("Chunk refresh of region: " + event.getRegion().getId());
-    }
-    this.plugin.getWorldRefresher().updateArea(event.getRegion().getWorld(),
-        event.getRegion().getMin(),
-        event.getRegion().getMax(),
-        event.getOldPlayers(),
-        event.getNewPlayers()
-    );
-  }*/
-
-  @EventHandler(priority = EventPriority.MONITOR)
-  public void handlePlayerInteract(PlayerInteractEvent event) {
-    if (event.getHand() != EquipmentSlot.HAND) {
-      return;
+    public WorldFuscatorListener(WorldFuscator plugin) {
+        this.plugin = plugin;
     }
 
-    if (!event.hasItem()) {
-      return;
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void handlePlayerInteract(PlayerInteractEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND) {
+            return;
+        }
+
+        if (!event.hasItem()) {
+            return;
+        }
+
+        ItemStack item = event.getItem();
+
+        if (item.getType() != Material.BLAZE_ROD) {
+            return;
+        }
+
+        Player player = event.getPlayer();
+        if (!player.hasPermission("worldfuscator.debug.toggle")) {
+            return;
+        }
+
+        boolean debugEnabled = this.plugin.getConfiguration().isDebugEnabled();
+        debugEnabled = !debugEnabled;
+        this.plugin.getConfiguration().setDebugEnabled(debugEnabled);
+
+        player.sendMessage("[WorldFuscator] Debug ist nun auf " + debugEnabled);
     }
-
-    ItemStack item = event.getItem();
-
-    if (item.getType() != Material.BLAZE_ROD) {
-      return;
-    }
-
-    Player player = event.getPlayer();
-    if (!player.hasPermission("worldfuscator.debug.toggle")) {
-      return;
-    }
-
-    boolean debugEnabled = this.plugin.getConfiguration().isDebugEnabled();
-    debugEnabled = !debugEnabled;
-    this.plugin.getConfiguration().setDebugEnabled(debugEnabled);
-
-    player.sendMessage("[WorldFuscator] Debug ist nun auf " + debugEnabled);
-  }
 }

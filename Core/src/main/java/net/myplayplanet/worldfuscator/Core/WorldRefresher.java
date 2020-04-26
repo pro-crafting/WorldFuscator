@@ -25,100 +25,100 @@ import java.util.UUID;
 
 public class WorldRefresher {
 
-  private final WorldFuscator plugin;
-  private MapPacketChunkletProcessor processor;
-  private Method chunkHandle;
-  private Constructor<?> chunkPacketConstructor;
+    private final WorldFuscator plugin;
+    private MapPacketChunkletProcessor processor;
+    private Method chunkHandle;
+    private Constructor<?> chunkPacketConstructor;
 
 
-  public WorldRefresher(WorldFuscator plugin) {
-    this.plugin = plugin;
-    processor = new MapPacketChunkletProcessor(
-        this.plugin.getTranslator());
+    public WorldRefresher(WorldFuscator plugin) {
+        this.plugin = plugin;
+        processor = new MapPacketChunkletProcessor(
+                this.plugin.getTranslator());
 
-    Class<?> craftChunk = MinecraftReflection.getCraftBukkitClass("CraftChunk");
-    try {
-      chunkHandle = craftChunk.getDeclaredMethod("getHandle");
-    } catch (NoSuchMethodException e) {
-      e.printStackTrace();
+        Class<?> craftChunk = MinecraftReflection.getCraftBukkitClass("CraftChunk");
+        try {
+            chunkHandle = craftChunk.getDeclaredMethod("getHandle");
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+
+        Class<?> chunkPacketClass = MinecraftReflection
+                .getMinecraftClass("PacketPlayOutMapChunk");
+        chunkPacketConstructor = chunkPacketClass.getDeclaredConstructors()[0];
+
     }
 
-    Class<?> chunkPacketClass = MinecraftReflection
-            .getMinecraftClass("PacketPlayOutMapChunk");
-    chunkPacketConstructor = chunkPacketClass.getDeclaredConstructors()[0];
+    public void updateArea(World world, de.pro_crafting.common.Point min, de.pro_crafting.common.Point max, Collection<UUID> oldMembers,
+                           Collection<UUID> newMembers) {
+        if (newMembers.size() == oldMembers.size() &&
+                newMembers.containsAll(oldMembers) &&
+                oldMembers.containsAll(newMembers)) {
+            return;
+        }
 
-  }
+        Set<UUID> playersToUpdate = new HashSet<>(oldMembers);
+        playersToUpdate.addAll(newMembers);
 
-  public void updateArea(World world, de.pro_crafting.common.Point min, de.pro_crafting.common.Point max, Collection<UUID> oldMembers,
-                         Collection<UUID> newMembers) {
-    if (newMembers.size() == oldMembers.size() &&
-        newMembers.containsAll(oldMembers) &&
-        oldMembers.containsAll(newMembers)) {
-      return;
-    }
+        List<Player> onlinePlayers = new ArrayList<>();
 
-    Set<UUID> playersToUpdate = new HashSet<>(oldMembers);
-    playersToUpdate.addAll(newMembers);
+        for (UUID uuid : playersToUpdate) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null) {
+                onlinePlayers.add(player);
+            }
+        }
 
-    List<Player> onlinePlayers = new ArrayList<>();
-
-    for (UUID uuid : playersToUpdate) {
-      Player player = Bukkit.getPlayer(uuid);
-      if (player != null) {
-        onlinePlayers.add(player);
-      }
-    }
-
-    boolean debugEnabled = plugin.getConfiguration().isDebugEnabled();
-    if (debugEnabled) {
-      Bukkit.getLogger().info("Old players: " + Arrays.toString(oldMembers.toArray()));
-      Bukkit.getLogger().info("New players: " + Arrays.toString(newMembers.toArray()));
-      Bukkit.getLogger()
-          .info("Player to update: " + Arrays.toString(playersToUpdate.toArray()));
-    }
-
-    Set<Chunk> chunksToUpdate = new HashSet<>();
-    Chunk startChunk = min.toLocation(world).getChunk();
-    Chunk endChunk = max.toLocation(world).getChunk();
-    for (int cx = startChunk.getX(); cx <= endChunk.getX(); cx++) {
-      for (int cz = startChunk.getZ(); cz <= endChunk.getZ(); cz++) {
+        boolean debugEnabled = plugin.getConfiguration().isDebugEnabled();
         if (debugEnabled) {
-          Bukkit.getLogger().info("Refreshing Chunk: " + cx + "|" + cz);
+            Bukkit.getLogger().info("Old players: " + Arrays.toString(oldMembers.toArray()));
+            Bukkit.getLogger().info("New players: " + Arrays.toString(newMembers.toArray()));
+            Bukkit.getLogger()
+                    .info("Player to update: " + Arrays.toString(playersToUpdate.toArray()));
         }
 
-        Chunk chunkAt = world.getChunkAt(cx, cz);
-        if (chunkAt.isLoaded()) {
-          chunksToUpdate.add(chunkAt);
+        Set<Chunk> chunksToUpdate = new HashSet<>();
+        Chunk startChunk = min.toLocation(world).getChunk();
+        Chunk endChunk = max.toLocation(world).getChunk();
+        for (int cx = startChunk.getX(); cx <= endChunk.getX(); cx++) {
+            for (int cz = startChunk.getZ(); cz <= endChunk.getZ(); cz++) {
+                if (debugEnabled) {
+                    Bukkit.getLogger().info("Refreshing Chunk: " + cx + "|" + cz);
+                }
+
+                Chunk chunkAt = world.getChunkAt(cx, cz);
+                if (chunkAt.isLoaded()) {
+                    chunksToUpdate.add(chunkAt);
+                }
+            }
         }
-      }
+
+        Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
+            updateChunks(onlinePlayers, chunksToUpdate);
+        }, 20);
+
     }
 
-    Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
-      updateChunks(onlinePlayers, chunksToUpdate);
-    }, 20);
+    private void updateChunks(Collection<Player> players, Collection<Chunk> chunksToUpdate) {
+        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+        for (Chunk chunk : chunksToUpdate) {
+            try {
+                Object nativeChunk = chunkHandle.invoke(chunk);
+                Object chunkPacketNms = chunkPacketConstructor.newInstance(nativeChunk, '\uffff');
 
-  }
+                PacketContainer packet = new PacketContainer(Server.MAP_CHUNK, chunkPacketNms);
 
-  private void updateChunks(Collection<Player> players, Collection<Chunk> chunksToUpdate) {
-    ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-    for (Chunk chunk : chunksToUpdate) {
-      try {
-        Object nativeChunk = chunkHandle.invoke(chunk);
-        Object chunkPacketNms = chunkPacketConstructor.newInstance(nativeChunk, '\uffff');
-
-        PacketContainer packet = new PacketContainer(Server.MAP_CHUNK, chunkPacketNms);
-
-        for (Player player : players) {
-          World world = chunk.getWorld();
-          packet = ChunkPacketProcessor.clone(packet, world);
-          ChunkPacketProcessor
-              .fromMapPacket(packet, world).process(
-              processor, player, packet);
-          protocolManager.sendServerPacket(player, packet, false);
+                for (Player player : players) {
+                    World world = chunk.getWorld();
+                    packet = ChunkPacketProcessor.clone(packet, world);
+                    ChunkPacketProcessor
+                            .fromMapPacket(packet, world).process(
+                            processor, player, packet);
+                    protocolManager.sendServerPacket(player, packet, false);
+                }
+            } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
+                e.printStackTrace();
+            }
         }
-      } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {
-        e.printStackTrace();
-      }
     }
-  }
 }

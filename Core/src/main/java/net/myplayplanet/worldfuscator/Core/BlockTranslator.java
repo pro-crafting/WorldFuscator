@@ -11,62 +11,62 @@ import java.util.Set;
 
 public class BlockTranslator {
 
-  private GlobalPaletteAdapter globalPaletteAdapter = new GlobalPaletteAdapter();
+    private GlobalPaletteAdapter globalPaletteAdapter = new GlobalPaletteAdapter();
 
-  private Configuration configuration;
-  private List<Integer> hiddenGlobalPaletteIds = new ArrayList<>();
-  private Integer preferedObfuscationGlobalPaletteId;
+    private Configuration configuration;
+    private List<Integer> hiddenGlobalPaletteIds = new ArrayList<>();
+    private Integer preferedObfuscationGlobalPaletteId;
 
-  public BlockTranslator() {
-  }
-
-  public BlockTranslator(Configuration configuration) {
-    this.configuration = configuration;
-    updatePaletteIds();
-  }
-
-  private void updatePaletteIds() {
-    // Initialize list with global palette ids to hide
-    Set<Material> hideMaterials = configuration.getHideMaterials();
-    for (Material hideMaterial : hideMaterials) {
-      hiddenGlobalPaletteIds.addAll(globalPaletteAdapter.getAllStateIds(hideMaterial));
+    public BlockTranslator() {
     }
 
-    // TODO: Use default block state instead of any
-    preferedObfuscationGlobalPaletteId = globalPaletteAdapter.getAllStateIds(configuration.getPreferredObfuscationBlock()).iterator().next();
-  }
-
-  protected boolean hasRights(Player player, int x, int y, int z, World world) {
-    return false;
-  }
-
-  public boolean needsTranslation(World world, int x, int y, int z, Player player) {
-    if (!this.hasRights(player, x, y, z, world)) {
-      if (configuration.isDebugEnabled()) {
-        System.out.println("No Rights: Translation for " + x + "|" + y + "|" + z + " for " + player.getName());
-      }
-      return true;
+    public BlockTranslator(Configuration configuration) {
+        this.configuration = configuration;
+        updatePaletteIds();
     }
-    if (configuration.isDebugEnabled()) {
-      System.out.println("Passed: Translation for " + x + "|" + y + "|" + z + " for " + player.getName());
+
+    private void updatePaletteIds() {
+        // Initialize list with global palette ids to hide
+        Set<Material> hideMaterials = configuration.getHideMaterials();
+        for (Material hideMaterial : hideMaterials) {
+            hiddenGlobalPaletteIds.addAll(globalPaletteAdapter.getAllStateIds(hideMaterial));
+        }
+
+        // TODO: Use default block state instead of any
+        preferedObfuscationGlobalPaletteId = globalPaletteAdapter.getAllStateIds(configuration.getPreferredObfuscationBlock()).iterator().next();
     }
-    return false;
-  }
 
-  public Configuration getConfiguration() {
-    return this.configuration;
-  }
+    protected boolean hasRights(Player player, int x, int y, int z, World world) {
+        return false;
+    }
 
-  void setConfiguration(Configuration configuration) {
-    this.configuration = configuration;
-    updatePaletteIds();
-  }
+    public boolean needsTranslation(World world, int x, int y, int z, Player player) {
+        if (!this.hasRights(player, x, y, z, world)) {
+            if (configuration.isDebugEnabled()) {
+                System.out.println("No Rights: Translation for " + x + "|" + y + "|" + z + " for " + player.getName());
+            }
+            return true;
+        }
+        if (configuration.isDebugEnabled()) {
+            System.out.println("Passed: Translation for " + x + "|" + y + "|" + z + " for " + player.getName());
+        }
+        return false;
+    }
 
-  public List<Integer> getHiddenGlobalPaletteIds() {
-    return hiddenGlobalPaletteIds;
-  }
+    public Configuration getConfiguration() {
+        return this.configuration;
+    }
 
-  public Integer getPreferedObfuscationGlobalPaletteId() {
-    return preferedObfuscationGlobalPaletteId;
-  }
+    void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
+        updatePaletteIds();
+    }
+
+    public List<Integer> getHiddenGlobalPaletteIds() {
+        return hiddenGlobalPaletteIds;
+    }
+
+    public Integer getPreferedObfuscationGlobalPaletteId() {
+        return preferedObfuscationGlobalPaletteId;
+    }
 }

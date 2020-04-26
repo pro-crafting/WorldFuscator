@@ -3,9 +3,13 @@ package net.myplayplanet.worldfuscator.Core.palette;
 import net.myplayplanet.worldfuscator.Core.VarIntUtil;
 
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class IndirectPalette implements Palette{
+public class IndirectPalette implements Palette {
     private Map<Integer, Integer> globalPaletteIdToPaletteIndex = new HashMap<>();
 
     public IndirectPalette(ByteBuffer buffer) {

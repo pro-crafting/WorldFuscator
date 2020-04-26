@@ -42,6 +42,7 @@ public class GlobalPaletteAdapter {
     /**
      * Get all possible state ids of a material from the global palette. For example, a stair has a state id for every rotation it can be in.
      * This id is also used when transfering the state of a block through the network.
+     *
      * @param material No further description provided
      * @return all possible state ids, never null
      */
@@ -51,7 +52,7 @@ public class GlobalPaletteAdapter {
                 Object block = getBlock.invoke(null, material);
                 Object states = getStates.invoke(block);
                 Object stateList = getStateList.invoke(states);
-                ImmutableList<Object> casted = (ImmutableList<Object>)stateList;
+                ImmutableList<Object> casted = (ImmutableList<Object>) stateList;
 
                 for (Object blockData : casted) {
                     int id = (int) getCombinedId.invoke(block, blockData);

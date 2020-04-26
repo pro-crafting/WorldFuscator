@@ -1,6 +1,6 @@
 package com.pro_crafting.mc.worldfuscator.worldguard7;
 
-import com.pro_crafting.mc.worldfuscator.BlockTranslator;
+import com.pro_crafting.mc.worldfuscator.engine.BlockTranslator;
 import com.pro_crafting.mc.worldfuscator.WorldFuscator;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;

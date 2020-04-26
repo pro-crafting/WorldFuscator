@@ -7,7 +7,7 @@ import net.myplayplanet.wargearfight.event.GroupUpdateEvent;
 import net.myplayplanet.wargearfight.group.GroupMember;
 import net.myplayplanet.wargearfight.group.PlayerRole;
 import net.myplayplanet.wargearfight.model.WgRegion;
-import com.pro_crafting.mc.worldfuscator.BlockTranslator;
+import com.pro_crafting.mc.worldfuscator.engine.BlockTranslator;
 import com.pro_crafting.mc.worldfuscator.WorldFuscator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

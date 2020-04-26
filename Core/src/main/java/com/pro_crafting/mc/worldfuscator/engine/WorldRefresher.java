@@ -1,12 +1,11 @@
-package com.pro_crafting.mc.worldfuscator;
+package com.pro_crafting.mc.worldfuscator.engine;
 
-import com.pro_crafting.mc.worldfuscator.engine.ChunkPacketProcessor;
-import com.pro_crafting.mc.worldfuscator.engine.MapPacketChunkletProcessor;
 import com.comphenix.protocol.PacketType.Play.Server;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.utility.MinecraftReflection;
+import com.pro_crafting.mc.worldfuscator.WorldFuscator;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;

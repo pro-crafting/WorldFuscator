@@ -3,6 +3,8 @@ package com.pro_crafting.mc.worldfuscator;
 import com.pro_crafting.mc.worldfuscator.engine.BlockDisguiser;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.utility.MinecraftVersion;
+import com.pro_crafting.mc.worldfuscator.engine.BlockTranslator;
+import com.pro_crafting.mc.worldfuscator.engine.WorldRefresher;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 

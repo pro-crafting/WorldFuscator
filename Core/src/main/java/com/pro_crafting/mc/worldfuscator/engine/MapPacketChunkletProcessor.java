@@ -1,8 +1,7 @@
 package com.pro_crafting.mc.worldfuscator.engine;
 
-import com.pro_crafting.mc.worldfuscator.BlockTranslator;
 import com.pro_crafting.mc.worldfuscator.VarIntUtil;
-import com.pro_crafting.mc.worldfuscator.palette.Palette;
+import com.pro_crafting.mc.worldfuscator.engine.palette.Palette;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;

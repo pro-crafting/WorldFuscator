@@ -1,4 +1,4 @@
-package com.pro_crafting.mc.worldfuscator.palette;
+package com.pro_crafting.mc.worldfuscator.engine.palette;
 
 import java.nio.ByteBuffer;
 import java.util.Collection;

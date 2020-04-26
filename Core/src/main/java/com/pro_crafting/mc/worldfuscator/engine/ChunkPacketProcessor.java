@@ -1,4 +1,4 @@
-package com.pro_crafting.mc.worldfuscator.example;
+package com.pro_crafting.mc.worldfuscator.engine;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;

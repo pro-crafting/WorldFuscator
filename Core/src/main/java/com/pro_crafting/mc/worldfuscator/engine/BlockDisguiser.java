@@ -1,6 +1,6 @@
-package com.pro_crafting.mc.worldfuscator.example;
+package com.pro_crafting.mc.worldfuscator.engine;
 
-import com.pro_crafting.mc.worldfuscator.example.ChunkPacketProcessor.ChunkletProcessor;
+import com.pro_crafting.mc.worldfuscator.engine.ChunkPacketProcessor.ChunkletProcessor;
 import com.pro_crafting.mc.worldfuscator.packetwrapper.WrapperPlayServerBlockChange;
 import com.pro_crafting.mc.worldfuscator.packetwrapper.WrapperPlayServerMultiBlockChange;
 import com.comphenix.protocol.PacketType.Play.Server;

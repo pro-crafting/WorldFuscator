@@ -1,4 +1,4 @@
-package com.pro_crafting.mc.worldfuscator.example;
+package com.pro_crafting.mc.worldfuscator.engine;
 
 import com.pro_crafting.mc.worldfuscator.BlockTranslator;
 import com.pro_crafting.mc.worldfuscator.VarIntUtil;

@@ -1,7 +1,7 @@
 package com.pro_crafting.mc.worldfuscator;
 
-import com.pro_crafting.mc.worldfuscator.example.ChunkPacketProcessor;
-import com.pro_crafting.mc.worldfuscator.example.MapPacketChunkletProcessor;
+import com.pro_crafting.mc.worldfuscator.engine.ChunkPacketProcessor;
+import com.pro_crafting.mc.worldfuscator.engine.MapPacketChunkletProcessor;
 import com.comphenix.protocol.PacketType.Play.Server;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;

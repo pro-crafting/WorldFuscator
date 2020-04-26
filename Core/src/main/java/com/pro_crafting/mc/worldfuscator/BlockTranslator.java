@@ -1,6 +1,5 @@
 package com.pro_crafting.mc.worldfuscator;
 
-import com.pro_crafting.mc.worldfuscator.palette.GlobalPaletteAdapter;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -21,8 +20,7 @@ public class BlockTranslator {
     }
 
     public BlockTranslator(Configuration configuration) {
-        this.configuration = configuration;
-        updatePaletteIds();
+        setConfiguration(configuration);
     }
 
     private void updatePaletteIds() {

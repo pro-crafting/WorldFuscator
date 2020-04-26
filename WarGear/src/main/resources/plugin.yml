@@ -1,0 +1,9 @@
+name: WorldFuscator
+version: ${project.parent.version}
+description: Worldfuscator-WarGear Plugin
+website: https://github.com/pro-crafting/WorldFuscator
+api-version: 1.14
+author: Postremus
+main: com.pro_crafting.mc.worldfuscator.wargear.WorldFuscatorImpl
+depend: [ProtocolLib, WarGear-Fight]
+soft-depend: [WarGear-Fight, WorldGuard]

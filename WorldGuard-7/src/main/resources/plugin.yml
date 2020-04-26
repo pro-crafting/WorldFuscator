@@ -1,0 +1,8 @@
+name: WorldFuscator
+version: ${project.parent.version}
+description: Worldfuscator-WorldGuard-7 Plugin
+website: https://github.com/pro-crafting/WorldFuscator
+api-version: 1.14
+author: Postremus
+main: com.pro_crafting.mc.worldfuscator.worldguard7.WorldFuscatorImpl
+depend: [ProtocolLib, WorldGuard]

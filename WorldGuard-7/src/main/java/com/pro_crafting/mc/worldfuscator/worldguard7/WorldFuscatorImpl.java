@@ -1,4 +1,4 @@
-package com.pro_crafting.mc.worldfuscator.worldguard;
+package com.pro_crafting.mc.worldfuscator.worldguard7;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;

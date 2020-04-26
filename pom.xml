@@ -50,6 +50,7 @@
     </properties>
 
     <repositories>
+        <!-- Needed for WarGear-Fight integration -->
         <repository>
             <id>pp-public</id>
             <url>https://nexus.myplayplanet.net/repository/public/</url>

@@ -1,13 +1,11 @@
 package com.pro_crafting.mc.worldfuscator.example;
 
-import lombok.Data;
-import lombok.NonNull;
 
 import java.util.Arrays;
+import java.util.Objects;
 
-@Data
 public class FlexibleStorage {
-    private final @NonNull long[] data;
+    private final long[] data;
     private final int bitsPerEntry;
     private final int size;
     private final long maxEntryValue;
@@ -16,7 +14,13 @@ public class FlexibleStorage {
         this(bitsPerEntry, new long[roundToNearest(size * bitsPerEntry, 64) / 64]);
     }
 
-    public FlexibleStorage(int bitsPerEntry, @NonNull long[] data) {
+    public long[] getData() {
+        return data;
+    }
+
+    public FlexibleStorage(int bitsPerEntry, long[] data) {
+        Objects.requireNonNull(data);
+
         if (bitsPerEntry < 4) {
             bitsPerEntry = 4;
         }
@@ -78,5 +82,33 @@ public class FlexibleStorage {
             int endBitSubIndex = 64 - startBitSubIndex;
             this.data[endIndex] = this.data[endIndex] >>> endBitSubIndex << endBitSubIndex | ((long) value & this.maxEntryValue) >> endBitSubIndex;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FlexibleStorage that = (FlexibleStorage) o;
+        return bitsPerEntry == that.bitsPerEntry &&
+                size == that.size &&
+                maxEntryValue == that.maxEntryValue &&
+                Arrays.equals(data, that.data);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(bitsPerEntry, size, maxEntryValue);
+        result = 31 * result + Arrays.hashCode(data);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "FlexibleStorage{" +
+                "data=" + Arrays.toString(data) +
+                ", bitsPerEntry=" + bitsPerEntry +
+                ", size=" + size +
+                ", maxEntryValue=" + maxEntryValue +
+                '}';
     }
 }

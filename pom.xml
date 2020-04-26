@@ -32,7 +32,6 @@
         <!-- Dependency Versions -->
         <version.worldguard>7.0.2</version.worldguard>
         <version.protocollib>4.4.0</version.protocollib>
-        <version.lombok>1.18.12</version.lombok>
 
         <version.mockito>2.2.15</version.mockito>
         <version.commons-io>2.5</version.commons-io>
@@ -69,15 +68,6 @@
             <url>http://repo.dmulloy2.net/nexus/repository/public/</url>
         </repository>
     </repositories>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${version.lombok}</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
 
     <build>
         <plugins>

@@ -4,8 +4,6 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.comphenix.protocol.wrappers.nbt.NbtBase;
-import lombok.Getter;
-import lombok.Setter;
 import com.pro_crafting.mc.worldfuscator.VarIntUtil;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -34,39 +32,99 @@ public class ChunkPacketProcessor {
     public static boolean isDebugEnabled;
     public static File dataFolder;
 
-    @Getter
-    @Setter
     private int chunkX;
-    @Getter
-    @Setter
     private int chunkZ;
-    @Getter
-    @Setter
     private int primaryBitMask;
-    @Getter
-    @Setter
     private boolean isFullChunk;
-    @Getter
-    @Setter
     private int dataSize;
-    @Getter
-    @Setter
     private byte[] data;
-    @Getter
-    @Setter
     private List<NbtBase<?>> blockEntities;
-    @Getter
-    @Setter
     private int chunkSectionNumber;
-    @Getter
-    @Setter
     private int startIndex;
-    @Getter
-    @Setter
     private World world;
 
     private ChunkPacketProcessor() {
         // Use factory methods
+    }
+
+    public int getChunkX() {
+        return chunkX;
+    }
+
+    public void setChunkX(int chunkX) {
+        this.chunkX = chunkX;
+    }
+
+    public int getChunkZ() {
+        return chunkZ;
+    }
+
+    public void setChunkZ(int chunkZ) {
+        this.chunkZ = chunkZ;
+    }
+
+    public int getPrimaryBitMask() {
+        return primaryBitMask;
+    }
+
+    public void setPrimaryBitMask(int primaryBitMask) {
+        this.primaryBitMask = primaryBitMask;
+    }
+
+    public boolean isFullChunk() {
+        return isFullChunk;
+    }
+
+    public void setFullChunk(boolean fullChunk) {
+        isFullChunk = fullChunk;
+    }
+
+    public int getDataSize() {
+        return dataSize;
+    }
+
+    public void setDataSize(int dataSize) {
+        this.dataSize = dataSize;
+    }
+
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
+    }
+
+    public List<NbtBase<?>> getBlockEntities() {
+        return blockEntities;
+    }
+
+    public void setBlockEntities(List<NbtBase<?>> blockEntities) {
+        this.blockEntities = blockEntities;
+    }
+
+    public int getChunkSectionNumber() {
+        return chunkSectionNumber;
+    }
+
+    public void setChunkSectionNumber(int chunkSectionNumber) {
+        this.chunkSectionNumber = chunkSectionNumber;
+    }
+
+    public int getStartIndex() {
+        return startIndex;
+    }
+
+    public void setStartIndex(int startIndex) {
+        this.startIndex = startIndex;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public void setWorld(World world) {
+        this.world = world;
     }
 
     public static ChunkPacketProcessor from(World world, int chunkX, int chunkZ, int chunkMask,

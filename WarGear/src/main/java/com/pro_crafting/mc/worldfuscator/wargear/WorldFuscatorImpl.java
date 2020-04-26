@@ -36,6 +36,9 @@ public class WorldFuscatorImpl extends WorldFuscator {
         WarGear warGear = WarGear.getPlugin(WarGear.class);
 
         @Override
+        /**
+         * Implementation of hasRights which checks if the player has rights to see all blocks, by checking the side and grop he is on.
+         */
         protected boolean hasRights(Player player, int x, int y, int z, World world) {
             Location location = new Location(world, x, y, z);
             Arena arenaAt = warGear.getArenaManager().getArenaAt(location);
@@ -67,6 +70,10 @@ public class WorldFuscatorImpl extends WorldFuscator {
     private class WarGearListener implements Listener {
 
         @EventHandler(priority = MONITOR)
+        /**
+         * Handles updates to wargear fight groups.
+         * On update of any group, a region of the world is refreshed for all old and new players
+         */
         public void groupUpdateHandler(GroupUpdateEvent event) {
             List<UUID> oldPlayers = getPlayers(event.getOldMembers());
             List<UUID> newPlayers = getPlayers(event.getNewMembers());

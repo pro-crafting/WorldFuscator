@@ -42,6 +42,17 @@ hidden-materials:
  - 'minecraft:red_wool
 ```
 
+All materials in hidden-materials are replaced by endstone.
+
+## Integrations
+Currently, WorldFuscator has Integration Plugins for following region providers:
+* Wargear Fight Plugin
+* WorldGuard
+
+### WorldGuard Integration
+Regions you are recently made a member of are only taken account after a new login onto the server. 
+If you want to refresh worldguard regions on the fly, you can call the WorldFuscatorImpl.updateRegion method.
+
 ## Building:
 
 The project is built using maven.

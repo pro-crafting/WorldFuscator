@@ -1,6 +1,5 @@
 package com.pro_crafting.mc.worldfuscator.wargear;
 
-import com.pro_crafting.mc.worldfuscator.Point;
 import net.myplayplanet.wargearfight.WarGear;
 import net.myplayplanet.wargearfight.arena.Arena;
 import net.myplayplanet.wargearfight.arena.ArenaPosition;
@@ -75,8 +74,8 @@ public class WorldFuscatorImpl extends WorldFuscator {
             WgRegion region = event.getPlayerGroupKey().getRegion();
             getWorldRefresher().updateArea(
                     region.getWorld(),
-                    new Point(region.getMin().getX(), region.getMin().getY(), region.getMin().getZ()),
-                    new Point(region.getMax().getX(), region.getMax().getY(), region.getMax().getZ()),
+                    region.getMin().toLocation(region.getWorld()),
+                    region.getMax().toLocation(region.getWorld()),
                     oldPlayers,
                     newPlayers
             );

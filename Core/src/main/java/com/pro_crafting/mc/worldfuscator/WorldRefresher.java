@@ -9,6 +9,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.utility.MinecraftReflection;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -49,7 +50,7 @@ public class WorldRefresher {
 
     }
 
-    public void updateArea(World world, Point min, Point max, Collection<UUID> oldMembers,
+    public void updateArea(World world, Location min, Location max, Collection<UUID> oldMembers,
                            Collection<UUID> newMembers) {
         if (newMembers.size() == oldMembers.size() &&
                 newMembers.containsAll(oldMembers) &&
@@ -78,8 +79,8 @@ public class WorldRefresher {
         }
 
         Set<Chunk> chunksToUpdate = new HashSet<>();
-        Chunk startChunk = min.toLocation(world).getChunk();
-        Chunk endChunk = max.toLocation(world).getChunk();
+        Chunk startChunk = min.getChunk();
+        Chunk endChunk = max.getChunk();
         for (int cx = startChunk.getX(); cx <= endChunk.getX(); cx++) {
             for (int cz = startChunk.getZ(); cz <= endChunk.getZ(); cz++) {
                 if (debugEnabled) {

@@ -3,6 +3,7 @@ package com.pro_crafting.mc.worldfuscator;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import com.pro_crafting.mc.worldfuscator.palette.GlobalPaletteAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

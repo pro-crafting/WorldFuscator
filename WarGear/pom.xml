@@ -1,51 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <parent>
-    <artifactId>WorldFuscator</artifactId>
-    <groupId>net.myplayplanet</groupId>
-    <version>1.14.0-SNAPSHOT</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.pro-crafting.mc</groupId>
+        <artifactId>WorldFuscator</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>WorldFuscator-WarGear</artifactId>
-  <version>${revision}</version>
+    <artifactId>WorldFuscator-WarGear</artifactId>
 
-  <properties>
-    <projectVersion>1.14.0</projectVersion>
-  </properties>
-
-  <dependencies>
-    <dependency>
-      <groupId>net.myplayplanet</groupId>
-      <artifactId>WorldFuscator-Core</artifactId>
-      <version>1.14.0-SNAPSHOT</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.myplayplanet</groupId>
-      <artifactId>WarGear-Fight</artifactId>
-      <version>1.14.0-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.1</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+    <dependencies>
+        <!-- External Dependencies -->
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>${version.spigot-api}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.pro-crafting.mc</groupId>
+            <artifactId>WorldFuscator-Core</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.myplayplanet</groupId>
+            <artifactId>WarGear-Fight</artifactId>
+            <version>1.14.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>

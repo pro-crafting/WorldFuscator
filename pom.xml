@@ -36,6 +36,7 @@
 
         <version.mockito>2.2.15</version.mockito>
         <version.commons-io>2.5</version.commons-io>
+        <version.spigot-api>1.14.4-R0.1-SNAPSHOT</version.spigot-api>
 
         <!-- Plugin Versions -->
         <version.maven-shade-plugin>3.2.1</version.maven-shade-plugin>
@@ -56,6 +57,10 @@
             <url>https://nexus.myplayplanet.net/repository/public/</url>
         </repository>
         <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
             <id>sk89q-repo</id>
             <url>https://maven.enginehub.org/repo/</url>
         </repository>
@@ -66,13 +71,6 @@
     </repositories>
 
     <dependencies>
-        <dependency>
-            <groupId>com.destroystokyo.paper</groupId>
-            <artifactId>paper-api</artifactId>
-            <version>1.14.4-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

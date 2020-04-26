@@ -22,6 +22,13 @@
 
         <!-- External Dependencies -->
         <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>${version.spigot-api}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-core</artifactId>
             <version>${version.worldguard}</version>

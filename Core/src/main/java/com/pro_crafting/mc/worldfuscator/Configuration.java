@@ -10,25 +10,27 @@ import java.util.Set;
 public class Configuration {
 
     private Set<Material> hideMaterials = new HashSet<>();
+    private Material preferredObfuscationMaterial;
     private boolean debugEnabled;
 
     public Configuration(FileConfiguration configuration) {
         // read material names and get values of Material enum
         List<String> materialNames = configuration.getStringList("hidden-materials");
-        if (materialNames != null) {
-            for (String materialName : materialNames) {
-                Material material = Material.matchMaterial(materialName, false);
-                if (material != null) {
-                    hideMaterials.add(material);
-                }
+        for (String materialName : materialNames) {
+            Material material = Material.matchMaterial(materialName, false);
+            if (material != null) {
+                hideMaterials.add(material);
             }
         }
+
+        String preferredObfuscationBlockName = configuration.getString("referred-obfuscation-material", "minecraft:end_stone");
+        preferredObfuscationMaterial = Material.matchMaterial(preferredObfuscationBlockName);
 
         this.debugEnabled = configuration.getBoolean("debug.enabled", false);
     }
 
-    public Material getPreferredObfuscationBlock() {
-        return Material.END_STONE;
+    public Material getPreferredObfuscationMaterial() {
+        return preferredObfuscationMaterial;
     }
 
     public Set<Material> getHideMaterials() {

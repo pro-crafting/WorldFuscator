@@ -17,7 +17,7 @@ This plugin was originally used on MyPlayPlanet.net, and is now provided by the 
 * High Performance fuscation of blocks
 * Automatic refresh of fuscated blocks based on BlockRegion or Wargear events
 * MC 1.13 compatible
-* Fuscates to Ender Stone (Currently not changeable)
+* Fuscates to Ender Stone (Changeable in the configuration)
 
 ## Debug Mode
 The debug mode prints information about the fuscation in the console. It also allows to save chunks as .mcdp files.
@@ -38,6 +38,7 @@ The files are saved in `plugins/WorldFuscator/chunks/<worldname>`
 ```
 debug:
   enabled: false
+preferred-obfuscation-material: 'minecraft:end_stone'
 hidden-materials:
  - 'minecraft:red_wool
 ```

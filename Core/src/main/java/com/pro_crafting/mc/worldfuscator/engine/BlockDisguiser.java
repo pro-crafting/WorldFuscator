@@ -93,7 +93,7 @@ public class BlockDisguiser {
         Material type = packetWrapper.getBlockData().getType();
         if (this.plugin.getConfiguration().getHideMaterials().contains(type) && plugin.getTranslator().needsTranslation(world, x, y, z, player)) {
             packetWrapper
-                    .setBlockData(WrappedBlockData.createData(this.plugin.getConfiguration().getPreferredObfuscationBlock()));
+                    .setBlockData(WrappedBlockData.createData(this.plugin.getConfiguration().getPreferredObfuscationMaterial()));
         }
     }
 
@@ -107,7 +107,7 @@ public class BlockDisguiser {
             int z = change.getAbsoluteZ();
             Material type = change.getData().getType();
             if (this.plugin.getConfiguration().getHideMaterials().contains(type) && plugin.getTranslator().needsTranslation(world, x, y, z, player)) {
-                change.setData(WrappedBlockData.createData(this.plugin.getConfiguration().getPreferredObfuscationBlock()));
+                change.setData(WrappedBlockData.createData(this.plugin.getConfiguration().getPreferredObfuscationMaterial()));
             }
         }
         packetWrapper.setRecords(array);

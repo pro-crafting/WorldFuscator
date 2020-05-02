@@ -1,3 +1,4 @@
 debug:
   enabled: false
+preferred-obfuscation-material: 'minecraft:end_stone'
 hidden-materials:

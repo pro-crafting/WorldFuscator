@@ -35,6 +35,9 @@ public class BlockTranslator {
         // TODO: Use default block state instead of any
         // But in theory, the first block state should be the default state
         preferedObfuscationGlobalPaletteId = globalPaletteAdapter.getAllStateIds(configuration.getPreferredObfuscationMaterial()).iterator().next();
+        if (configuration.isDebugEnabled()) {
+            System.out.println("Chosen Global Palette Id: " + preferedObfuscationGlobalPaletteId + " as prefered obfuscation material");
+        }
     }
 
     protected boolean hasRights(Player player, int x, int y, int z, World world) {

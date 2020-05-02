@@ -1,25 +1,8 @@
 package com.pro_crafting.mc.worldfuscator.engine.palette;
 
-import java.nio.ByteBuffer;
 import java.util.Collection;
 
 public interface Palette {
-    /**
-     * Initializes the correct Palette type based upon bitsPerblock.
-     * The palette may be read and advanced to a position after the palette
-     *
-     * @param bitsPerBlock No further description provided
-     * @param buffer       chunk data packet, positioned after full chunk boolean
-     * @return No further description provided
-     */
-    static Palette getInstance(byte bitsPerBlock, ByteBuffer buffer) {
-        if (bitsPerBlock < 9) {
-            return new IndirectPalette(buffer);
-        } else {
-            return new DirectPalette();
-        }
-    }
-
     /**
      * Checks if this palette contains any of the specified global palette block state identifier
      *

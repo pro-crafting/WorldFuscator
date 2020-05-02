@@ -2,6 +2,7 @@ package com.pro_crafting.mc.worldfuscator.engine;
 
 import com.pro_crafting.mc.worldfuscator.VarIntUtil;
 import com.pro_crafting.mc.worldfuscator.engine.palette.Palette;
+import com.pro_crafting.mc.worldfuscator.engine.palette.PaletteFactory;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -25,7 +26,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
         short blockCount = buffer.getShort();
         byte bitsPerBlock = buffer.get();
 
-        Palette palette = Palette.getInstance(bitsPerBlock, buffer);
+        Palette palette = PaletteFactory.getInstance(bitsPerBlock, buffer);
 
         int dataLength = VarIntUtil.deserializeVarInt(buffer);
 

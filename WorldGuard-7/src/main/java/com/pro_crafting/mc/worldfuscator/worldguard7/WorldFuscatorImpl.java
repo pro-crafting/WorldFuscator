@@ -69,7 +69,7 @@ public class WorldFuscatorImpl extends WorldFuscator {
             }
 
             // TODO: Also allow a list of visible regions to be configured
-            return ars.queryState(wgPlayer, Flags.ENDERDRAGON_BLOCK_DAMAGE) == StateFlag.State.ALLOW;
+            return ars.queryState(wgPlayer, Flags.ENDERDRAGON_BLOCK_DAMAGE) == StateFlag.State.DENY;
         }
     }
 }

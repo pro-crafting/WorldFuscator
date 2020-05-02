@@ -67,7 +67,7 @@ public class BlockDisguiser {
                             packet = packet.shallowClone();
                             translateMultiBlockChange(packet, world, player);
                         } else if (event.getPacketType() == Server.MAP_CHUNK) {
-                            packet = packet.deepClone();
+                            packet = packet.shallowClone();
                             ChunkPacketProcessor.fromMapPacket(packet, world).process(processor, player, packet);
                         }
 

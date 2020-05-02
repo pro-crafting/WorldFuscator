@@ -1,15 +1,13 @@
 package com.pro_crafting.mc.worldfuscator.worldguard7;
 
-import com.pro_crafting.mc.worldfuscator.engine.BlockTranslator;
 import com.pro_crafting.mc.worldfuscator.WorldFuscator;
+import com.pro_crafting.mc.worldfuscator.engine.BlockTranslator;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.flags.Flags;
-import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
@@ -68,8 +66,9 @@ public class WorldFuscatorImpl extends WorldFuscator {
                 }
             }
 
-            // TODO: Also allow a list of visible regions to be configured
-            return ars.queryState(wgPlayer, Flags.ENDERDRAGON_BLOCK_DAMAGE) == StateFlag.State.DENY;
+            // TODO: Allow a list of visible regions to be configured
+            // If the player is on no region, he can see everything
+            return ars.size() == 0;
         }
     }
 }

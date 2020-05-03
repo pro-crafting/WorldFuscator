@@ -1,17 +1,11 @@
 package com.pro_crafting.mc.worldfuscator.engine.palette;
 
-import org.bukkit.Material;
-
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * The direct palette is a 1:1 mapping to the global palette
  */
 public class DirectPalette implements Palette {
-    private GlobalPaletteAdapter globalPaletteAdapter = new GlobalPaletteAdapter();
-
     /**
      * Uses the global palette, therefore always true
      *
@@ -42,20 +36,5 @@ public class DirectPalette implements Palette {
     @Override
     public Integer translate(Integer globalPaletteId) {
         return globalPaletteId;
-    }
-
-    public Collection<Integer> translateMaterialsToGlobal(Collection<Material> materials) {
-        List<Integer> paletteIndexes = new ArrayList<>();
-
-        if (materials == null) {
-            return paletteIndexes;
-        }
-
-        for (Material material : materials) {
-            Collection<Integer> possibleIds = globalPaletteAdapter.getAllStateIds(material);
-            paletteIndexes.addAll(possibleIds);
-        }
-
-        return paletteIndexes;
     }
 }

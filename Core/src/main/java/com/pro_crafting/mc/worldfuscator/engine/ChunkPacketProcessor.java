@@ -273,6 +273,7 @@ public class ChunkPacketProcessor {
             translate(processor, player);
             if (packet != null) {
                 packet.getByteArrays().write(0, data);
+                packet.getListNbtModifier().write(0, blockEntities);
             }
         }
     }
@@ -288,10 +289,13 @@ public class ChunkPacketProcessor {
 
                 // The lowest block (in x, y, z) in this chunklet
                 Location origin = new Location(world, chunkX << 4, i * 16, chunkZ << 4);
-                processor.processChunklet(origin, buffer, player);
+                processor.processChunkletBlockData(origin, buffer, player);
             }
         }
         this.data = buffer.array();
+
+
+        processor.processChunkletBlockEntities(world, chunkX, chunkZ, blockEntities, player);
     }
 
     private boolean isChunkLoaded(World world, int x, int z) {
@@ -305,6 +309,8 @@ public class ChunkPacketProcessor {
      */
     public interface ChunkletProcessor {
 
-        public void processChunklet(Location origin, ByteBuffer buffer, Player player);
+        public void processChunkletBlockData(Location origin, ByteBuffer buffer, Player player);
+
+        public void processChunkletBlockEntities(World world, int chunkX, int chunkZ, List<NbtBase<?>> blockEntities, Player player);
     }
 }

@@ -1,5 +1,8 @@
 package com.pro_crafting.mc.worldfuscator.engine;
 
+import com.comphenix.protocol.wrappers.nbt.NbtBase;
+import com.comphenix.protocol.wrappers.nbt.NbtCompound;
+import com.comphenix.protocol.wrappers.nbt.NbtFactory;
 import com.pro_crafting.mc.worldfuscator.VarIntUtil;
 import com.pro_crafting.mc.worldfuscator.engine.palette.Palette;
 import com.pro_crafting.mc.worldfuscator.engine.palette.PaletteFactory;
@@ -9,6 +12,8 @@ import org.bukkit.entity.Player;
 
 import java.nio.ByteBuffer;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Implementation of http://wiki.vg/SMP_Map_Format
@@ -21,9 +26,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
         this.blockTranslator = blockTranslator;
     }
 
-    public void processChunklet(Location origin, ByteBuffer buffer, Player player) {
-
-
+    public void processChunkletBlockData(Location origin, ByteBuffer buffer, Player player) {
         short blockCount = buffer.getShort();
         byte bitsPerBlock = buffer.get();
 
@@ -34,11 +37,41 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
         int beforeData = buffer.position();
 
         if (palette.containsAny(blockTranslator.getHiddenGlobalPaletteIds())) {
-            if (!blockTranslator.getWorldFuscatorGuard().hasChunkRights(player, origin.getChunk().getX(), origin.getBlockY()/ 16, origin.getChunk().getZ(), origin.getWorld())) {
+            if (!blockTranslator.getWorldFuscatorGuard().hasAreaRights(player, origin.getBlockX(), origin.getBlockY(), origin.getBlockZ(),origin.getBlockX()+15, origin.getBlockY()+15, origin.getBlockZ()+15, origin.getWorld())) {
                 translateChunkData(origin, buffer, player, bitsPerBlock, palette, dataLength, beforeData);
             }
         }
         buffer.position(beforeData + (dataLength * 8));
+    }
+
+    @Override
+    public void processChunkletBlockEntities(World world, int chunkX, int chunkZ, List<NbtBase<?>> blockEntities, Player player) {
+        if (blockEntities.isEmpty() || blockTranslator.getConfiguration().getHiddenBlockEntityIds().isEmpty()) {
+            return;
+        }
+
+        if (blockTranslator.getWorldFuscatorGuard().hasAreaRights(player, chunkX * 16, 0, chunkZ * 16, chunkX * 16 + 15, 256, chunkZ * 16 +15, world)) {
+            return;
+        }
+
+        Iterator<NbtBase<?>> iterator = blockEntities.iterator();
+        while (iterator.hasNext()) {
+            NbtBase<?> blockEntity = iterator.next();
+            NbtCompound nbtCompound = NbtFactory.asCompound(blockEntity);
+            String id = nbtCompound.getString("id");
+            if (id == null) {
+                break;
+            }
+
+            if (blockTranslator.getConfiguration().getHiddenBlockEntityIds().contains(id)) {
+                int x = nbtCompound.getInteger("x");
+                int y = nbtCompound.getInteger("y");
+                int z = nbtCompound.getInteger("z");
+                if (blockTranslator.needsTranslation(world, x, y, z, player)) {
+                    iterator.remove();
+                }
+            }
+        }
     }
 
     private void translateChunkData(Location origin, ByteBuffer buffer, Player player,

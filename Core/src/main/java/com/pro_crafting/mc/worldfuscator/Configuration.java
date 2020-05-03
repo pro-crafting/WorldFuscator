@@ -12,8 +12,11 @@ public class Configuration {
     private Set<Material> hideMaterials = new HashSet<>();
     private Material preferredObfuscationMaterial;
     private boolean debugEnabled;
+    private Set<String> hiddenBlockEntityIds;
 
     public Configuration(FileConfiguration configuration) {
+        hiddenBlockEntityIds = new HashSet<>(configuration.getStringList("hidden-block-entities"));
+
         // read material names and get values of Material enum
         List<String> materialNames = configuration.getStringList("hidden-materials");
         for (String materialName : materialNames) {
@@ -43,5 +46,9 @@ public class Configuration {
 
     public void setDebugEnabled(boolean debugEnabled) {
         this.debugEnabled = debugEnabled;
+    }
+
+    public Set<String> getHiddenBlockEntityIds() {
+        return hiddenBlockEntityIds;
     }
 }

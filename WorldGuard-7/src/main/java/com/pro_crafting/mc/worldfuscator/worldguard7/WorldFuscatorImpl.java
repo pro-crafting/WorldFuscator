@@ -52,13 +52,13 @@ public class WorldFuscatorImpl extends WorldFuscator {
         WorldGuard wg = com.sk89q.worldguard.WorldGuard.getInstance();
 
         @Override
-        public boolean hasChunkRights(Player player, int chunkX, int chunkY, int chunkZ, World world) {
+        public boolean hasAreaRights(Player player, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, World world) {
             LocalPlayer wgPlayer = wgp.wrapPlayer(player);
             RegionContainer container = wg.getPlatform().getRegionContainer();
 
             // TODO: Maybe use new Spatial Queries api for performance reasons?
 
-            ProtectedRegion region = new ProtectedCuboidRegion("CHUNKS", BlockVector3.at(chunkX*16, chunkY*16, chunkZ*16), BlockVector3.at(chunkX*16+15, chunkY*16+15, chunkZ*16+15));
+            ProtectedRegion region = new ProtectedCuboidRegion("CHUNKS", BlockVector3.at(minX, minY, minZ), BlockVector3.at(maxX, maxY, maxZ));
 
             RegionManager manager = container.get(BukkitAdapter.adapt(world));
             ApplicableRegionSet ars = manager.getApplicableRegions(region);

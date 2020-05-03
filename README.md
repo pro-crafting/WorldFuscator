@@ -39,11 +39,14 @@ The files are saved in `plugins/WorldFuscator/chunks/<worldname>`
 debug:
   enabled: false
 preferred-obfuscation-material: 'minecraft:end_stone'
+hidden-block-entities:
+  - 'minecraft:banner'
 hidden-materials:
  - 'minecraft:red_wool
 ```
 
 All materials in hidden-materials are replaced by endstone.
+All block entities will be replaced by air.
 
 ## Integrations
 Currently, WorldFuscator has Integration Plugins for following region providers:

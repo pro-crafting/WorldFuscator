@@ -66,7 +66,7 @@ public class WorldFuscatorImpl extends WorldFuscator {
             RegionManager manager = container.get(BukkitAdapter.adapt(world));
             ApplicableRegionSet ars = manager.getApplicableRegions(region);
 
-            if (!hasRights(ars, wgPlayer)) {
+            if (!ars.isMemberOfAll(wgPlayer)) {
                 return false;
             }
 
@@ -85,8 +85,8 @@ public class WorldFuscatorImpl extends WorldFuscator {
             RegionManager manager = container.get(BukkitAdapter.adapt(world));
             ApplicableRegionSet ars = manager.getApplicableRegions(BlockVector3.at(x, y, z));
 
-            if (!hasRights(ars, wgPlayer)) {
-                return false;
+            if (hasRights(ars, wgPlayer)) {
+                return true;
             }
 
             // TODO: Allow a list of visible regions to be configured
@@ -99,13 +99,20 @@ public class WorldFuscatorImpl extends WorldFuscator {
          * @return
          */
         private boolean hasRights(ApplicableRegionSet ars, LocalPlayer wgPlayer) {
-            for (ProtectedRegion rg : ars) {
-                if (!rg.isMember(wgPlayer)) {
-                    return false;
+            if (ars.size() == 0) {
+                return true;
+            }
+            int priority = Integer.MIN_VALUE;
+            boolean allowed = false;
+            for (ProtectedRegion region : ars) {
+                if (region.getPriority() > priority) {
+                    priority = region.getPriority();
+
+                    allowed = region.isMember(wgPlayer);
                 }
             }
 
-            return true;
+            return allowed;
         }
     }
 }

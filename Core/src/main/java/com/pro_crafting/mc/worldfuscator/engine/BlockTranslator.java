@@ -13,6 +13,7 @@ import java.util.Set;
 public class BlockTranslator {
 
     private GlobalPaletteAdapter globalPaletteAdapter = new GlobalPaletteAdapter();
+    private WorldFuscatorGuard guard;
 
     private Configuration configuration;
     private List<Integer> hiddenGlobalPaletteIds = new ArrayList<>();
@@ -40,12 +41,8 @@ public class BlockTranslator {
         }
     }
 
-    protected boolean hasRights(Player player, int x, int y, int z, World world) {
-        return false;
-    }
-
     public boolean needsTranslation(World world, int x, int y, int z, Player player) {
-        if (!this.hasRights(player, x, y, z, world)) {
+        if (!guard.hasRights(player, x, y, z, world)) {
             if (configuration.isDebugEnabled()) {
                 System.out.println("No Rights: Translation for " + x + "|" + y + "|" + z + " for " + player.getName());
             }
@@ -72,5 +69,13 @@ public class BlockTranslator {
 
     public Integer getPreferedObfuscationGlobalPaletteId() {
         return preferedObfuscationGlobalPaletteId;
+    }
+
+    public WorldFuscatorGuard getWorldFuscatorGuard() {
+        return guard;
+    }
+
+    public void setWorldFuscatorGuard(WorldFuscatorGuard guard) {
+        this.guard = guard;
     }
 }

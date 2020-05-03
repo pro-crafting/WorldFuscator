@@ -272,7 +272,6 @@ public class ChunkPacketProcessor {
 
             translate(processor, player);
             if (packet != null) {
-
                 packet.getByteArrays().write(0, data);
             }
         }

@@ -1,5 +1,7 @@
 package com.pro_crafting.mc.worldfuscator.wargear;
 
+import com.pro_crafting.mc.worldfuscator.WorldFuscator;
+import com.pro_crafting.mc.worldfuscator.engine.WorldFuscatorGuard;
 import net.myplayplanet.wargearfight.WarGear;
 import net.myplayplanet.wargearfight.arena.Arena;
 import net.myplayplanet.wargearfight.arena.ArenaPosition;
@@ -7,8 +9,6 @@ import net.myplayplanet.wargearfight.event.GroupUpdateEvent;
 import net.myplayplanet.wargearfight.group.GroupMember;
 import net.myplayplanet.wargearfight.group.PlayerRole;
 import net.myplayplanet.wargearfight.model.WgRegion;
-import com.pro_crafting.mc.worldfuscator.engine.BlockTranslator;
-import com.pro_crafting.mc.worldfuscator.WorldFuscator;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -26,12 +26,12 @@ import static org.bukkit.event.EventPriority.MONITOR;
 public class WorldFuscatorImpl extends WorldFuscator {
 
     public void onEnable() {
-        setTranslator(new Translator());
         super.onEnable();
+        super.getTranslator().setWorldFuscatorGuard(new WorldFuscatorGuardImpl());
         Bukkit.getPluginManager().registerEvents(new WarGearListener(), this);
     }
 
-    private class Translator extends BlockTranslator {
+    private class WorldFuscatorGuardImpl extends WorldFuscatorGuard {
 
         WarGear warGear = WarGear.getPlugin(WarGear.class);
 
@@ -39,7 +39,7 @@ public class WorldFuscatorImpl extends WorldFuscator {
         /**
          * Implementation of hasRights which checks if the player has rights to see all blocks, by checking the side and grop he is on.
          */
-        protected boolean hasRights(Player player, int x, int y, int z, World world) {
+        public boolean hasRights(Player player, int x, int y, int z, World world) {
             Location location = new Location(world, x, y, z);
             Arena arenaAt = warGear.getArenaManager().getArenaAt(location);
 

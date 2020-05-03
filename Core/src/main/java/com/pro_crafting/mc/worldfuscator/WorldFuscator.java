@@ -26,6 +26,7 @@ public abstract class WorldFuscator extends JavaPlugin {
 
         this.saveDefaultConfig();
         this.configuration = new Configuration(this.getConfig());
+        translator = new BlockTranslator();
         translator.setConfiguration(this.configuration);
         new BlockDisguiser(this);
         Bukkit.getPluginManager().registerEvents(new WorldFuscatorListener(this), this);

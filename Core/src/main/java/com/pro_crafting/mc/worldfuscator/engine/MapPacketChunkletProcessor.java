@@ -23,6 +23,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
 
     public void processChunklet(Location origin, ByteBuffer buffer, Player player) {
 
+
         short blockCount = buffer.getShort();
         byte bitsPerBlock = buffer.get();
 
@@ -33,7 +34,9 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
         int beforeData = buffer.position();
 
         if (palette.containsAny(blockTranslator.getHiddenGlobalPaletteIds())) {
-            translateChunkData(origin, buffer, player, bitsPerBlock, palette, dataLength, beforeData);
+            if (!blockTranslator.getWorldFuscatorGuard().hasChunkRights(player, origin.getChunk().getX(), origin.getBlockY()/ 16, origin.getChunk().getZ(), origin.getWorld())) {
+                translateChunkData(origin, buffer, player, bitsPerBlock, palette, dataLength, beforeData);
+            }
         }
         buffer.position(beforeData + (dataLength * 8));
     }

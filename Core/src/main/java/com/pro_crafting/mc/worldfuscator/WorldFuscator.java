@@ -24,8 +24,6 @@ public abstract class WorldFuscator extends JavaPlugin {
             return;
         }
 
-        this.saveDefaultConfig();
-        this.configuration = new Configuration(this.getConfig());
         translator = new BlockTranslator();
         translator.setConfiguration(this.configuration);
         new BlockDisguiser(this);
@@ -35,6 +33,15 @@ public abstract class WorldFuscator extends JavaPlugin {
 
     public Configuration getConfiguration() {
         return this.configuration;
+    }
+
+    protected void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
+    protected void prepareDefaultConfiguration() {
+        this.saveDefaultConfig();
+        this.setConfiguration(new Configuration(this.getConfig()));
     }
 
     public BlockTranslator getTranslator() {

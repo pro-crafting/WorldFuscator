@@ -1,5 +1,6 @@
 package com.pro_crafting.mc.worldfuscator.worldguard7;
 
+import com.pro_crafting.mc.worldfuscator.Configuration;
 import com.pro_crafting.mc.worldfuscator.WorldFuscator;
 import com.pro_crafting.mc.worldfuscator.engine.WorldFuscatorGuard;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
@@ -22,6 +23,8 @@ import java.util.UUID;
 public class WorldFuscatorImpl extends WorldFuscator {
 
     public void onEnable() {
+        this.saveDefaultConfig();
+        this.setConfiguration(new Configuration(this.getConfig()));
         super.onEnable();
         super.getTranslator().setWorldFuscatorGuard(new WorldFuscatorGuardImpl());
     }
@@ -63,10 +66,8 @@ public class WorldFuscatorImpl extends WorldFuscator {
             RegionManager manager = container.get(BukkitAdapter.adapt(world));
             ApplicableRegionSet ars = manager.getApplicableRegions(region);
 
-            for (ProtectedRegion rg : ars) {
-                if (rg.isMember(wgPlayer)) {
-                    return true;
-                }
+            if (!hasRights(ars, wgPlayer)) {
+                return false;
             }
 
             // TODO: Allow a list of visible regions to be configured
@@ -84,15 +85,27 @@ public class WorldFuscatorImpl extends WorldFuscator {
             RegionManager manager = container.get(BukkitAdapter.adapt(world));
             ApplicableRegionSet ars = manager.getApplicableRegions(BlockVector3.at(x, y, z));
 
-            for (ProtectedRegion rg : ars) {
-                if (rg.isMember(wgPlayer)) {
-                    return true;
-                }
+            if (!hasRights(ars, wgPlayer)) {
+                return false;
             }
 
             // TODO: Allow a list of visible regions to be configured
             // If the player is on no region, he can see everything
             return ars.size() == 0;
+        }
+
+        /**
+         * If the player is not a member of any of these regions, he has no rights
+         * @return
+         */
+        private boolean hasRights(ApplicableRegionSet ars, LocalPlayer wgPlayer) {
+            for (ProtectedRegion rg : ars) {
+                if (!rg.isMember(wgPlayer)) {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }

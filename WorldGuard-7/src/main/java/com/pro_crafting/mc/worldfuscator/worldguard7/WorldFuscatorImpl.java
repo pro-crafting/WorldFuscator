@@ -66,8 +66,8 @@ public class WorldFuscatorImpl extends WorldFuscator {
             RegionManager manager = container.get(BukkitAdapter.adapt(world));
             ApplicableRegionSet ars = manager.getApplicableRegions(region);
 
-            if (!ars.isMemberOfAll(wgPlayer)) {
-                return false;
+            if (ars.isMemberOfAll(wgPlayer)) {
+                return true;
             }
 
             // TODO: Allow a list of visible regions to be configured

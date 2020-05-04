@@ -26,7 +26,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
         this.blockTranslator = blockTranslator;
     }
 
-    public void processChunkletBlockData(Location origin, ByteBuffer buffer, Player player) {
+    public boolean processChunkletBlockData(Location origin, ByteBuffer buffer, Player player) {
         short blockCount = buffer.getShort();
         byte bitsPerBlock = buffer.get();
 
@@ -36,22 +36,25 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
 
         int beforeData = buffer.position();
 
+        boolean didFuscate = false;
         if (palette.containsAny(blockTranslator.getHiddenGlobalPaletteIds())) {
             if (!blockTranslator.getWorldFuscatorGuard().hasAreaRights(player, origin.getBlockX(), origin.getBlockY(), origin.getBlockZ(),origin.getBlockX()+15, origin.getBlockY()+15, origin.getBlockZ()+15, origin.getWorld())) {
-                translateChunkData(origin, buffer, player, bitsPerBlock, palette, dataLength, beforeData);
+                didFuscate = translateChunkData(origin, buffer, player, bitsPerBlock, palette, dataLength, beforeData);
             }
         }
         buffer.position(beforeData + (dataLength * 8));
+
+        return didFuscate;
     }
 
     @Override
-    public void processChunkletBlockEntities(World world, int chunkX, int chunkZ, List<NbtBase<?>> blockEntities, Player player) {
+    public boolean processChunkletBlockEntities(World world, int chunkX, int chunkZ, List<NbtBase<?>> blockEntities, Player player) {
         if (blockEntities.isEmpty() || blockTranslator.getConfiguration().getHiddenBlockEntityIds().isEmpty()) {
-            return;
+            return false;
         }
 
         if (blockTranslator.getWorldFuscatorGuard().hasAreaRights(player, chunkX * 16, 0, chunkZ * 16, chunkX * 16 + 15, 256, chunkZ * 16 +15, world)) {
-            return;
+            return false;
         }
 
         Iterator<NbtBase<?>> iterator = blockEntities.iterator();
@@ -72,9 +75,11 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
                 }
             }
         }
+
+        return true;
     }
 
-    private void translateChunkData(Location origin, ByteBuffer buffer, Player player,
+    private boolean translateChunkData(Location origin, ByteBuffer buffer, Player player,
                                     int bitsPerBlock, Palette palette, int dataLength, int beforeData) {
         World world = origin.getWorld();
         int originX = origin.getBlockX();
@@ -126,5 +131,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
             buffer.position(beforeData);
             buffer.asLongBuffer().put(flexibleStorage.getBacking());
         }
+
+        return didFuscate;
     }
 }

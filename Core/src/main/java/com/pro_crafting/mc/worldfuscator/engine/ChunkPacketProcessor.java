@@ -232,7 +232,7 @@ public class ChunkPacketProcessor {
         return clone(this);
     }
 
-    public void process(ChunkletProcessor processor, Player player, PacketContainer packet) {
+    public PacketContainer process(ChunkletProcessor processor, Player player, PacketContainer packet) {
         // Compute chunk number
         for (int i = 0; i < CHUNK_SEGMENTS; i++) {
             if ((primaryBitMask & (1 << i)) > 0) {
@@ -269,33 +269,36 @@ public class ChunkPacketProcessor {
 
         // Make sure the chunk is loaded
         if (isChunkLoaded(world, chunkX, chunkZ)) {
-
-            translate(processor, player);
-            if (packet != null) {
-                packet.getByteArrays().write(0, data);
-                packet.getListNbtModifier().write(0, blockEntities);
+            boolean didFuscate = translate(processor, player);
+            if (packet != null && didFuscate) {
+                PacketContainer clonedPacket = packet.shallowClone();
+                clonedPacket.getByteArrays().write(0, data);
+                clonedPacket.getListNbtModifier().write(0, blockEntities);
+                return clonedPacket;
             }
         }
+
+        return packet;
     }
 
-    private void translate(ChunkletProcessor processor, Player player) {
+    private boolean translate(ChunkletProcessor processor, Player player) {
         // Loop over 16x16x16 chunks in the 16x256x16 column
 
         ByteBuffer buffer = ByteBuffer.wrap(this.data);
 
+        boolean didFuscate = false;
         for (int i = 0; i < 16; i++) {
             // If the bitmask indicates this chunk is sent
             if ((primaryBitMask & 1 << i) > 0) {
 
                 // The lowest block (in x, y, z) in this chunklet
                 Location origin = new Location(world, chunkX << 4, i * 16, chunkZ << 4);
-                processor.processChunkletBlockData(origin, buffer, player);
+                didFuscate = processor.processChunkletBlockData(origin, buffer, player) || didFuscate;
             }
         }
         this.data = buffer.array();
-
-
-        processor.processChunkletBlockEntities(world, chunkX, chunkZ, blockEntities, player);
+        didFuscate = processor.processChunkletBlockEntities(world, chunkX, chunkZ, blockEntities, player) || didFuscate;
+        return didFuscate;
     }
 
     private boolean isChunkLoaded(World world, int x, int z) {
@@ -309,8 +312,8 @@ public class ChunkPacketProcessor {
      */
     public interface ChunkletProcessor {
 
-        public void processChunkletBlockData(Location origin, ByteBuffer buffer, Player player);
+        public boolean processChunkletBlockData(Location origin, ByteBuffer buffer, Player player);
 
-        public void processChunkletBlockEntities(World world, int chunkX, int chunkZ, List<NbtBase<?>> blockEntities, Player player);
+        public boolean processChunkletBlockEntities(World world, int chunkX, int chunkZ, List<NbtBase<?>> blockEntities, Player player);
     }
 }

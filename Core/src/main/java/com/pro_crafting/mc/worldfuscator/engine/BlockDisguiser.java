@@ -64,8 +64,7 @@ public class BlockDisguiser {
                         } else if (event.getPacketType() == Server.MULTI_BLOCK_CHANGE) {
                             packet = translateMultiBlockChange(packet, world, player);
                         } else if (event.getPacketType() == Server.MAP_CHUNK) {
-                            packet = packet.shallowClone();
-                            ChunkPacketProcessor.fromMapPacket(packet, world).process(processor, player, packet);
+                            packet = ChunkPacketProcessor.fromMapPacket(packet, world).process(processor, player, packet);
                         }
 
                         event.setPacket(packet);
@@ -90,7 +89,7 @@ public class BlockDisguiser {
         Material type = packet.getBlockData().read(0).getType();
         if (this.plugin.getConfiguration().getHideMaterials().contains(type) && plugin.getTranslator().needsTranslation(world, x, y, z, player)) {
             PacketContainer clonedPacket = packet.shallowClone();
-            clonedPacket.getBlockData().write(0, WrappedBlockData .createData(this.plugin.getConfiguration().getPreferredObfuscationMaterial()));
+            clonedPacket.getBlockData().write(0, WrappedBlockData.createData(this.plugin.getConfiguration().getPreferredObfuscationMaterial()));
             return clonedPacket;
         }
 
@@ -100,7 +99,7 @@ public class BlockDisguiser {
     private PacketContainer translateMultiBlockChange(PacketContainer packet, World world, Player player)
             throws FieldAccessException {
         boolean didFuscate = false;
-        MultiBlockChangeInfo[] array = packet.getMultiBlockChangeInfoArrays().read(0);
+        MultiBlockChangeInfo[] array = packet.getMultiBlockChangeInfoArrays().read(0).clone();
         for (MultiBlockChangeInfo change : array) {
             int x = change.getAbsoluteX();
             int y = change.getY();

@@ -1,8 +1,5 @@
 package com.pro_crafting.mc.worldfuscator.engine;
 
-import com.pro_crafting.mc.worldfuscator.engine.ChunkPacketProcessor.ChunkletProcessor;
-import com.pro_crafting.mc.worldfuscator.packetwrapper.WrapperPlayServerBlockChange;
-import com.pro_crafting.mc.worldfuscator.packetwrapper.WrapperPlayServerMultiBlockChange;
 import com.comphenix.protocol.PacketType.Play.Server;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.ListenerPriority;
@@ -10,9 +7,11 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.FieldAccessException;
+import com.comphenix.protocol.wrappers.BlockPosition;
 import com.comphenix.protocol.wrappers.MultiBlockChangeInfo;
 import com.comphenix.protocol.wrappers.WrappedBlockData;
 import com.pro_crafting.mc.worldfuscator.WorldFuscator;
+import com.pro_crafting.mc.worldfuscator.engine.ChunkPacketProcessor.ChunkletProcessor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -61,10 +60,10 @@ public class BlockDisguiser {
 
                         World world = player.getWorld();
                         if (event.getPacketType() == Server.BLOCK_CHANGE) {
-                            packet = packet.shallowClone();
+                            packet = packet.deepClone();
                             translateBlockChange(packet, world, player);
                         } else if (event.getPacketType() == Server.MULTI_BLOCK_CHANGE) {
-                            packet = packet.shallowClone();
+                            packet = packet.deepClone();
                             translateMultiBlockChange(packet, world, player);
                         } else if (event.getPacketType() == Server.MAP_CHUNK) {
                             packet = packet.shallowClone();
@@ -85,22 +84,20 @@ public class BlockDisguiser {
 
     private void translateBlockChange(PacketContainer packet, World world, Player player)
             throws FieldAccessException {
-        WrapperPlayServerBlockChange packetWrapper = new WrapperPlayServerBlockChange(packet);
-        int x = packetWrapper.getLocation().getX();
-        int y = packetWrapper.getLocation().getY();
-        int z = packetWrapper.getLocation().getZ();
+        BlockPosition blockPosition = packet.getBlockPositionModifier().read(0);
+        int x = blockPosition.getX();
+        int y = blockPosition.getY();
+        int z = blockPosition.getZ();
 
-        Material type = packetWrapper.getBlockData().getType();
+        Material type = packet.getBlockData().read(0).getType();
         if (this.plugin.getConfiguration().getHideMaterials().contains(type) && plugin.getTranslator().needsTranslation(world, x, y, z, player)) {
-            packetWrapper
-                    .setBlockData(WrappedBlockData.createData(this.plugin.getConfiguration().getPreferredObfuscationMaterial()));
+            packet.getBlockData().write(0, WrappedBlockData .createData(this.plugin.getConfiguration().getPreferredObfuscationMaterial()));
         }
     }
 
     private void translateMultiBlockChange(PacketContainer packet, World world, Player player)
             throws FieldAccessException {
-        WrapperPlayServerMultiBlockChange packetWrapper = new WrapperPlayServerMultiBlockChange(packet);
-        MultiBlockChangeInfo[] array = packetWrapper.getRecords();
+        MultiBlockChangeInfo[] array = packet.getMultiBlockChangeInfoArrays().read(0);
         for (MultiBlockChangeInfo change : array) {
             int x = change.getAbsoluteX();
             int y = change.getY();
@@ -110,6 +107,6 @@ public class BlockDisguiser {
                 change.setData(WrappedBlockData.createData(this.plugin.getConfiguration().getPreferredObfuscationMaterial()));
             }
         }
-        packetWrapper.setRecords(array);
+        packet.getMultiBlockChangeInfoArrays().write(0, array);
     }
 }

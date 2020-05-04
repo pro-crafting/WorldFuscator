@@ -1,6 +1,5 @@
 package com.pro_crafting.mc.worldfuscator.engine;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 // see: https://github.com/GlowstoneMC/Glowstone/blob/bcfd021cc28e9b64ec87f5b12ddf3ef0fc6380ed/src/main/java/net/glowstone/util/VariableValueArray.java
@@ -29,8 +28,7 @@ public final class VariableValueArray implements Cloneable {
         }
 
         this.bitsPerValue = bitsPerEntry;
-        // TODO: PERFORMANCE Is copying needed here? Maybe this helps with leakage, i.e. other player seeing the fuscation
-        this.backing = Arrays.copyOf(data, data.length);
+        this.backing = data;
 
         this.capacity = this.backing.length * 64 / this.bitsPerValue;
         this.valueMask = (1L << this.bitsPerValue) - 1;

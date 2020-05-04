@@ -1,5 +1,6 @@
 debug:
   enabled: false
+fuscation-mode: CHUNK_AND_BLOCK
 preferred-obfuscation-material: 'minecraft:end_stone'
 hidden-block-entities:
 hidden-materials:

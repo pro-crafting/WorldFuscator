@@ -11,7 +11,8 @@ import com.comphenix.protocol.wrappers.BlockPosition;
 import com.comphenix.protocol.wrappers.MultiBlockChangeInfo;
 import com.comphenix.protocol.wrappers.WrappedBlockData;
 import com.pro_crafting.mc.worldfuscator.WorldFuscator;
-import com.pro_crafting.mc.worldfuscator.engine.ChunkPacketProcessor.ChunkletProcessor;
+import com.pro_crafting.mc.worldfuscator.engine.processor.ChunkletProcessor;
+import com.pro_crafting.mc.worldfuscator.engine.processor.ChunkletProcessorFactory;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -41,7 +42,8 @@ public class BlockDisguiser {
     }
 
     private void registerListener(Plugin plugin) {
-        final ChunkletProcessor processor = new MapPacketChunkletProcessor(this.plugin.getTranslator());
+        ChunkletProcessorFactory chunkletProcessorFactory = new ChunkletProcessorFactory(this.plugin);
+        final ChunkletProcessor processor = chunkletProcessorFactory.getProcessor();
 
         PacketAdapter listener = new PacketAdapter(plugin, ListenerPriority.LOWEST,
                 Server.BLOCK_CHANGE, Server.MULTI_BLOCK_CHANGE, Server.MAP_CHUNK) {

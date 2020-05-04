@@ -60,11 +60,9 @@ public class BlockDisguiser {
 
                         World world = player.getWorld();
                         if (event.getPacketType() == Server.BLOCK_CHANGE) {
-                            packet = packet.deepClone();
-                            translateBlockChange(packet, world, player);
+                            packet = translateBlockChange(packet, world, player);
                         } else if (event.getPacketType() == Server.MULTI_BLOCK_CHANGE) {
-                            packet = packet.deepClone();
-                            translateMultiBlockChange(packet, world, player);
+                            packet = translateMultiBlockChange(packet, world, player);
                         } else if (event.getPacketType() == Server.MAP_CHUNK) {
                             packet = packet.shallowClone();
                             ChunkPacketProcessor.fromMapPacket(packet, world).process(processor, player, packet);
@@ -82,7 +80,7 @@ public class BlockDisguiser {
         }
     }
 
-    private void translateBlockChange(PacketContainer packet, World world, Player player)
+    private PacketContainer translateBlockChange(PacketContainer packet, World world, Player player)
             throws FieldAccessException {
         BlockPosition blockPosition = packet.getBlockPositionModifier().read(0);
         int x = blockPosition.getX();
@@ -91,12 +89,17 @@ public class BlockDisguiser {
 
         Material type = packet.getBlockData().read(0).getType();
         if (this.plugin.getConfiguration().getHideMaterials().contains(type) && plugin.getTranslator().needsTranslation(world, x, y, z, player)) {
-            packet.getBlockData().write(0, WrappedBlockData .createData(this.plugin.getConfiguration().getPreferredObfuscationMaterial()));
+            PacketContainer clonedPacket = packet.shallowClone();
+            clonedPacket.getBlockData().write(0, WrappedBlockData .createData(this.plugin.getConfiguration().getPreferredObfuscationMaterial()));
+            return clonedPacket;
         }
+
+        return packet;
     }
 
-    private void translateMultiBlockChange(PacketContainer packet, World world, Player player)
+    private PacketContainer translateMultiBlockChange(PacketContainer packet, World world, Player player)
             throws FieldAccessException {
+        boolean didFuscate = false;
         MultiBlockChangeInfo[] array = packet.getMultiBlockChangeInfoArrays().read(0);
         for (MultiBlockChangeInfo change : array) {
             int x = change.getAbsoluteX();
@@ -105,8 +108,15 @@ public class BlockDisguiser {
             Material type = change.getData().getType();
             if (this.plugin.getConfiguration().getHideMaterials().contains(type) && plugin.getTranslator().needsTranslation(world, x, y, z, player)) {
                 change.setData(WrappedBlockData.createData(this.plugin.getConfiguration().getPreferredObfuscationMaterial()));
+                didFuscate = true;
             }
         }
-        packet.getMultiBlockChangeInfoArrays().write(0, array);
+
+        if (didFuscate) {
+            PacketContainer clonedPacket = packet.shallowClone();
+            clonedPacket.getMultiBlockChangeInfoArrays().write(0, array);
+            return clonedPacket;
+        }
+        return packet;
     }
 }

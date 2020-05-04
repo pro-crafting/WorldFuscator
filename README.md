@@ -38,6 +38,7 @@ The files are saved in `plugins/WorldFuscator/chunks/<worldname>`
 ```
 debug:
   enabled: false
+fuscation-mode: CHUNK_AND_BLOCK
 preferred-obfuscation-material: 'minecraft:end_stone'
 hidden-block-entities:
   - 'minecraft:banner'
@@ -47,6 +48,10 @@ hidden-materials:
 
 All materials in hidden-materials are replaced by endstone.
 All block entities will be replaced by air.
+
+### Fuscation Modes
+* CHUNK_AND_BLOCK
+In this fuscation mode, chunk and blocks are checked if the player has rights. This allows for perfect fuscation in tight spaces.
 
 ## Integrations
 Currently, WorldFuscator has Integration Plugins for following region providers:

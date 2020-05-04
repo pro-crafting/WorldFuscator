@@ -163,7 +163,7 @@ public class ChunkPacketProcessor {
         processor.setChunkZ(ints.read(1));
         processor.setFullChunk(packet.getBooleans().read(0));
         processor.setPrimaryBitMask(ints.read(2));
-        processor.setData(byteArray.read(0));
+        processor.setData(byteArray.read(0).clone());
 
         processor.setBlockEntities(packet.getListNbtModifier().read(0));
 

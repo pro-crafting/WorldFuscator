@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Implementation of http://wiki.vg/SMP_Map_Format
+ * Implementation of http://wiki.vg/SMP_Map_Format, checking all blocks for fuscation
  */
 public class ChunkAndBlockChunkletProcessor implements ChunkletProcessor {
 

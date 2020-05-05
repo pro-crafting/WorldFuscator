@@ -26,7 +26,7 @@ public class Configuration {
             }
         }
 
-        String preferredObfuscationBlockName = configuration.getString("referred-obfuscation-material", "minecraft:end_stone");
+        String preferredObfuscationBlockName = configuration.getString("preferred-obfuscation-material", "minecraft:end_stone");
         preferredObfuscationMaterial = Material.matchMaterial(preferredObfuscationBlockName);
 
         this.debugEnabled = configuration.getBoolean("debug.enabled", false);

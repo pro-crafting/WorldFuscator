@@ -17,10 +17,10 @@ import java.util.List;
  * Implementation of http://wiki.vg/SMP_Map_Format, checking only the chunklet pallette.
  * Only the palette is fuscated.
  */
-public class ChunkChunkletProcessor implements ChunkletProcessor {
+public class ChunkPaletteChunkletProcessor implements ChunkletProcessor {
     private final BlockTranslator blockTranslator;
 
-    public ChunkChunkletProcessor(BlockTranslator blockTranslator) {
+    public ChunkPaletteChunkletProcessor(BlockTranslator blockTranslator) {
         this.blockTranslator = blockTranslator;
     }
 

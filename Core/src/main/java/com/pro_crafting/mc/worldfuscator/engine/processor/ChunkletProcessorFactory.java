@@ -15,7 +15,7 @@ public class ChunkletProcessorFactory {
     public ChunkletProcessor getProcessor() {
         switch (plugin.getConfiguration().getFuscationMode()) {
             case CHUNK_PALETTE:
-                return new ChunkChunkletProcessor(blockTranslator);
+                return new ChunkPaletteChunkletProcessor(blockTranslator);
             case CHUNK_AND_BLOCK:
             default:
                 return new ChunkAndBlockChunkletProcessor(blockTranslator);

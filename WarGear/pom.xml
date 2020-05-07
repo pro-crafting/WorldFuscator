@@ -9,6 +9,15 @@
 
     <artifactId>WorldFuscator-WarGear</artifactId>
 
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
     <dependencies>
         <!-- External Dependencies -->
         <dependency>

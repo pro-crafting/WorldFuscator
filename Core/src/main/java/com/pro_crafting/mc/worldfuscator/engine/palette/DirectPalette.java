@@ -1,6 +1,7 @@
 package com.pro_crafting.mc.worldfuscator.engine.palette;
 
-import java.util.Collection;
+
+import it.unimi.dsi.fastutil.ints.IntList;
 
 /**
  * The direct palette is a 1:1 mapping to the global palette
@@ -13,28 +14,28 @@ public class DirectPalette implements Palette {
      * @return No further description provided
      */
     @Override
-    public boolean containsAny(Collection<Integer> materials) {
+    public boolean containsAny(IntList materials) {
         return true;
     }
 
     @Override
-    public boolean contains(Integer globalPaletteId) {
+    public boolean contains(int globalPaletteId) {
         return true;
     }
 
     @Override
-    public Integer searchAnyNonMatching(Collection<Integer> globalPaletteIds) {
+    public int searchAnyNonMatching(IntList globalPaletteIds) {
         // Should never be called anyways..
         return -1;
     }
 
     @Override
-    public Collection<Integer> translate(Collection<Integer> materials) {
+    public IntList translate(IntList materials) {
         return materials;
     }
 
     @Override
-    public Integer translate(Integer globalPaletteId) {
+    public int translate(int globalPaletteId) {
         return globalPaletteId;
     }
 }

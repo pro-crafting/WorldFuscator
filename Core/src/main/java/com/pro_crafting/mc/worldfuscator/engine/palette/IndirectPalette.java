@@ -1,16 +1,15 @@
 package com.pro_crafting.mc.worldfuscator.engine.palette;
 
 import com.pro_crafting.mc.worldfuscator.VarIntUtil;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class IndirectPalette implements Palette {
-    private Map<Integer, Integer> globalPaletteIdToPaletteIndex = new HashMap<>();
+    private Int2IntMap globalPaletteIdToPaletteIndex = new Int2IntOpenHashMap();
 
     public IndirectPalette(ByteBuffer buffer) {
         int paletteLength = VarIntUtil.deserializeVarInt(buffer);
@@ -23,43 +22,47 @@ public class IndirectPalette implements Palette {
     }
 
     @Override
-    public boolean containsAny(Collection<Integer> globalPaletteIds) {
-        for (Integer paletteId : globalPaletteIds) {
-            if (globalPaletteIdToPaletteIndex.containsKey(paletteId)) {
+    public boolean containsAny(IntList globalPaletteIds) {
+        for (int i = 0; i < globalPaletteIds.size(); i++) {
+            if (globalPaletteIdToPaletteIndex.containsKey(globalPaletteIds.getInt(i))) {
                 return true;
             }
         }
+
         return false;
     }
 
     @Override
-    public boolean contains(Integer globalPaletteId) {
+    public boolean contains(int globalPaletteId) {
         return globalPaletteIdToPaletteIndex.containsKey(globalPaletteId);
     }
 
     @Override
-    public Integer searchAnyNonMatching(Collection<Integer> globalPaletteIds) {
-        for (Map.Entry<Integer, Integer> globalPaleteIdPaleteId : globalPaletteIdToPaletteIndex.entrySet()) {
-            if (!globalPaletteIds.contains(globalPaleteIdPaleteId.getKey())) {
-                return globalPaleteIdPaleteId.getValue();
+    public int searchAnyNonMatching(IntList globalPaletteIds) {
+        for (Int2IntMap.Entry next : globalPaletteIdToPaletteIndex.int2IntEntrySet()) {
+            if (!globalPaletteIds.contains(next.getIntKey())) {
+                return next.getIntValue();
             }
         }
         return -1;
     }
 
     @Override
-    public Collection<Integer> translate(Collection<Integer> globalPaletteIds) {
-        List<Integer> paletteIndizes = new ArrayList<>();
+    public IntList translate(IntList globalPaletteIds) {
 
-        for (Integer globalId : globalPaletteIds) {
-            paletteIndizes.add(globalPaletteIdToPaletteIndex.get(globalId));
+        IntList paletteIndizes = new IntArrayList();
+
+        for (int i = 0; i < globalPaletteIds.size(); i++) {
+            if (globalPaletteIdToPaletteIndex.containsKey(globalPaletteIds.getInt(i))) {
+                paletteIndizes.add(globalPaletteIdToPaletteIndex.get(globalPaletteIds.getInt(i)));
+            }
         }
 
         return paletteIndizes;
     }
 
     @Override
-    public Integer translate(Integer globalPaletteId) {
+    public int translate(int globalPaletteId) {
         return globalPaletteIdToPaletteIndex.get(globalPaletteId);
     }
 }

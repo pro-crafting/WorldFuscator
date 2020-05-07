@@ -1,14 +1,15 @@
 package com.pro_crafting.mc.worldfuscator.engine.palette;
 
 import com.comphenix.protocol.utility.MinecraftReflection;
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import org.bukkit.Material;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Responsible for providing access to the global palette.
@@ -16,7 +17,7 @@ import java.util.Collection;
  * This class uses reflection. For ease of migration to newer minecraft versions, this class should contain as few lines as possible.
  */
 public class GlobalPaletteAdapter {
-    private static final Multimap<Material, Integer> materialToGlobalPaletteId = ArrayListMultimap.create();
+    private static final Map<Material, IntList> materialToGlobalPaletteId = new HashMap<>();
 
     private Method getBlock;
     private Method getStates;
@@ -46,19 +47,25 @@ public class GlobalPaletteAdapter {
      * @param material No further description provided
      * @return all possible state ids, never null
      */
-    public Collection<Integer> getAllStateIds(Material material) {
+    public IntList getAllStateIds(Material material) {
         if (!materialToGlobalPaletteId.containsKey(material)) {
             try {
                 Object block = getBlock.invoke(null, material);
                 Object states = getStates.invoke(block);
                 Object stateList = getStateList.invoke(states);
+                @SuppressWarnings("unchecked")
                 ImmutableList<Object> casted = (ImmutableList<Object>) stateList;
+
+                IntList globalPaletteList = new IntArrayList(casted.size());
 
                 for (Object blockData : casted) {
                     int id = (int) getCombinedId.invoke(block, blockData);
-                    materialToGlobalPaletteId.put(material, id);
+                    globalPaletteList.add(id);
                 }
 
+                materialToGlobalPaletteId.put(material, globalPaletteList);
+
+                return globalPaletteList;
             } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }

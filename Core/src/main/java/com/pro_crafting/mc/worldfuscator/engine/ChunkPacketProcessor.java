@@ -78,7 +78,7 @@ public class ChunkPacketProcessor {
         boolean didFuscate = false;
         for (int i = 0; i < 16; i++) {
             // If the bitmask indicates this chunk is sent
-            // The bitmask is from the ground up
+            // The bitmask is from the ground up, with the least significant bit being the bottum
             if ((chunkData.primaryBitMask & 1 << i) > 0) {
 
                 // The lowest block (in x, y, z) in this chunklet

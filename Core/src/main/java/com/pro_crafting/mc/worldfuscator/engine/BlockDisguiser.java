@@ -24,7 +24,6 @@ import org.bukkit.plugin.Plugin;
  */
 public class BlockDisguiser {
 
-    private final MapPacketChunkletProcessor mapPacketChunkletProcessor;
     // The current listener
     private PacketAdapter listener;
     private WorldFuscator plugin;
@@ -36,7 +35,6 @@ public class BlockDisguiser {
      */
     public BlockDisguiser(WorldFuscator parent) {
         this.plugin = parent;
-        this.mapPacketChunkletProcessor = new MapPacketChunkletProcessor(this.plugin.getTranslator());
         registerListener(parent);
         ChunkPacketProcessor.dataFolder = parent.getDataFolder();
         ChunkPacketProcessor.isDebugEnabled = parent.getConfiguration().isDebugEnabled();
@@ -45,31 +43,30 @@ public class BlockDisguiser {
     private void registerListener(Plugin plugin) {
         final ChunkletProcessor processor = new MapPacketChunkletProcessor(this.plugin.getTranslator());
 
-        ProtocolLibrary.getProtocolManager().addPacketListener(
-                listener = new PacketAdapter(plugin, ListenerPriority.HIGHEST,
-                        Server.BLOCK_CHANGE, Server.MULTI_BLOCK_CHANGE, Server.MAP_CHUNK) {
+        ProtocolLibrary.getProtocolManager().getAsynchronousManager().registerAsyncHandler(listener = new PacketAdapter(plugin, ListenerPriority.HIGHEST,
+                Server.BLOCK_CHANGE, Server.MULTI_BLOCK_CHANGE, Server.MAP_CHUNK) {
 
-                    public void onPacketSending(PacketEvent event) {
-                        Player player = event.getPlayer();
+            public void onPacketSending(PacketEvent event) {
+                Player player = event.getPlayer();
 
-                        if (player.hasPermission("worldfuscator.bypass")) {
-                            return;
-                        }
+                if (player.hasPermission("worldfuscator.bypass")) {
+                    return;
+                }
 
-                        PacketContainer packet = event.getPacket();
+                PacketContainer packet = event.getPacket();
 
-                        World world = player.getWorld();
-                        if (event.getPacketType() == Server.BLOCK_CHANGE) {
-                            packet = translateBlockChange(packet, world, player);
-                        } else if (event.getPacketType() == Server.MULTI_BLOCK_CHANGE) {
-                            packet = translateMultiBlockChange(packet, world, player);
-                        } else if (event.getPacketType() == Server.MAP_CHUNK) {
-                            packet = ChunkPacketProcessor.fromMapPacket(packet, world).process(processor, player, packet);
-                        }
+                World world = player.getWorld();
+                if (event.getPacketType() == Server.BLOCK_CHANGE) {
+                    packet = translateBlockChange(packet, world, player);
+                } else if (event.getPacketType() == Server.MULTI_BLOCK_CHANGE) {
+                    packet = translateMultiBlockChange(packet, world, player);
+                } else if (event.getPacketType() == Server.MAP_CHUNK) {
+                    packet = ChunkPacketProcessor.fromMapPacket(packet, world).process(processor, player, packet);
+                }
 
-                        event.setPacket(packet);
-                    }
-                });
+                event.setPacket(packet);
+            }
+        }).start(Runtime.getRuntime().availableProcessors());
     }
 
     public void close() {

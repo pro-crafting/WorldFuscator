@@ -50,7 +50,8 @@ All materials in hidden-materials are replaced by endstone.
 All block entities will be replaced by air.
 
 ### Fuscation Modes
-* CHUNK_AND_BLOCK
+* CHUNK_AND_BLOCK `Stable`
+
 In this fuscation mode, chunk and blocks are checked if the player has rights. This allows for perfect fuscation in tight spaces.
 
 ## Integrations
@@ -86,4 +87,4 @@ See also the list of [contributors](https://github.com/Postremus/WorldFuscator/c
 
 ## License
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details

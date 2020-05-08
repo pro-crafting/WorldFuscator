@@ -65,6 +65,7 @@ public class ChunkPacketProcessor {
     }
 
     public PacketContainer process(ChunkPacketData chunkData, ChunkletProcessor processor, Player player, PacketContainer packet) {
+        writeDebugChunkFiles(chunkData);
         // Compute chunk number
         for (int i = 0; i < CHUNK_SEGMENTS; i++) {
             if ((chunkData.primaryBitMask & (1 << i)) > 0) {

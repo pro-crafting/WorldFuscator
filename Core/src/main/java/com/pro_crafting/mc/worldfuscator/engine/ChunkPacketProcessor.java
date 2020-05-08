@@ -268,14 +268,12 @@ public class ChunkPacketProcessor {
         int blockSize = 4096 * chunkSectionNumber;
 
         // Make sure the chunk is loaded
-        if (isChunkLoaded(world, chunkX, chunkZ)) {
-            boolean didFuscate = translate(processor, player);
-            if (packet != null && didFuscate) {
-                PacketContainer clonedPacket = packet.shallowClone();
-                clonedPacket.getByteArrays().write(0, data);
-                clonedPacket.getListNbtModifier().write(0, blockEntities);
-                return clonedPacket;
-            }
+        boolean didFuscate = translate(processor, player);
+        if (packet != null && didFuscate) {
+            PacketContainer clonedPacket = packet.shallowClone();
+            clonedPacket.getByteArrays().write(0, data);
+            clonedPacket.getListNbtModifier().write(0, blockEntities);
+            return clonedPacket;
         }
 
         return packet;
@@ -299,10 +297,6 @@ public class ChunkPacketProcessor {
         this.data = buffer.array();
         didFuscate = processor.processChunkletBlockEntities(world, chunkX, chunkZ, blockEntities, player) || didFuscate;
         return didFuscate;
-    }
-
-    private boolean isChunkLoaded(World world, int x, int z) {
-        return world.isChunkLoaded(x, z);
     }
 
     /**

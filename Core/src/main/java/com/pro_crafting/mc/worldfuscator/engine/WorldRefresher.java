@@ -27,7 +27,8 @@ import java.util.UUID;
 public class WorldRefresher {
 
     private final WorldFuscator plugin;
-    private ChunkAndBlockChunkletProcessor processor;
+    private final ChunkAndBlockChunkletProcessor processor;
+    private final ChunkPacketProcessor chunkPacketProcessor;
     private Method chunkHandle;
     private Constructor<?> chunkPacketConstructor;
 
@@ -36,6 +37,8 @@ public class WorldRefresher {
         this.plugin = plugin;
         processor = new ChunkAndBlockChunkletProcessor(
                 this.plugin.getTranslator());
+
+        this.chunkPacketProcessor = new ChunkPacketProcessor();
 
         Class<?> craftChunk = MinecraftReflection.getCraftBukkitClass("CraftChunk");
         try {
@@ -111,10 +114,8 @@ public class WorldRefresher {
 
                 for (Player player : players) {
                     World world = chunk.getWorld();
-                    packet = ChunkPacketProcessor.clone(packet, world);
-                    ChunkPacketProcessor
-                            .fromMapPacket(packet, world).process(
-                            processor, player, packet);
+                    packet = ChunkPacketData.clone(packet, world);
+                    chunkPacketProcessor.process(ChunkPacketData.fromMapPacket(packet, world), processor, player, packet);
                     protocolManager.sendServerPacket(player, packet, false);
                 }
             } catch (InvocationTargetException | IllegalAccessException | InstantiationException e) {

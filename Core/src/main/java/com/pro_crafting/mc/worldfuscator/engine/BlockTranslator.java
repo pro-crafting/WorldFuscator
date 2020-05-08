@@ -1,13 +1,13 @@
 package com.pro_crafting.mc.worldfuscator.engine;
 
 import com.pro_crafting.mc.worldfuscator.Configuration;
+import com.pro_crafting.mc.worldfuscator.engine.palette.GlobalPaletteAdapter;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import com.pro_crafting.mc.worldfuscator.engine.palette.GlobalPaletteAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 public class BlockTranslator {
@@ -16,8 +16,8 @@ public class BlockTranslator {
     private WorldFuscatorGuard guard;
 
     private Configuration configuration;
-    private List<Integer> hiddenGlobalPaletteIds = new ArrayList<>();
-    private Integer preferedObfuscationGlobalPaletteId;
+    private IntList hiddenGlobalPaletteIds = new IntArrayList();
+    private int preferedObfuscationGlobalPaletteId;
 
     public BlockTranslator() {
     }
@@ -35,7 +35,7 @@ public class BlockTranslator {
 
         // TODO: Use default block state instead of any
         // But in theory, the first block state should be the default state
-        preferedObfuscationGlobalPaletteId = globalPaletteAdapter.getAllStateIds(configuration.getPreferredObfuscationMaterial()).iterator().next();
+        preferedObfuscationGlobalPaletteId = globalPaletteAdapter.getAllStateIds(configuration.getPreferredObfuscationMaterial()).getInt(0);
         if (configuration.isDebugEnabled()) {
             System.out.println("Chosen Global Palette Id: " + preferedObfuscationGlobalPaletteId + " as prefered obfuscation material");
         }
@@ -63,11 +63,11 @@ public class BlockTranslator {
         updatePaletteIds();
     }
 
-    public List<Integer> getHiddenGlobalPaletteIds() {
+    public IntList getHiddenGlobalPaletteIds() {
         return hiddenGlobalPaletteIds;
     }
 
-    public Integer getPreferedObfuscationGlobalPaletteId() {
+    public int getPreferedObfuscationGlobalPaletteId() {
         return preferedObfuscationGlobalPaletteId;
     }
 

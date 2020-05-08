@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -34,7 +35,7 @@
         <version.mockito>2.2.15</version.mockito>
         <version.commons-io>2.5</version.commons-io>
         <version.spigot-api>1.14.4-R0.1-SNAPSHOT</version.spigot-api>
-
+        <version.fastutil>8.2.2</version.fastutil>
         <!-- Plugin Versions -->
         <version.maven-shade-plugin>3.2.1</version.maven-shade-plugin>
         <version.sonar-maven-plugin>3.4.1.1168</version.sonar-maven-plugin>

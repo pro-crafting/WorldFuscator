@@ -1,6 +1,6 @@
 package com.pro_crafting.mc.worldfuscator.engine.palette;
 
-import java.util.Collection;
+import it.unimi.dsi.fastutil.ints.IntList;
 
 public interface Palette {
     /**
@@ -9,7 +9,7 @@ public interface Palette {
      * @param globalPaletteIds global palette ids to search for
      * @return true if any of the global palette ids found in palette, otherwise false
      */
-    boolean containsAny(Collection<Integer> globalPaletteIds);
+    boolean containsAny(IntList globalPaletteIds);
 
     /**
      * Checks if this palette contains the specified global palette block state identifier
@@ -17,7 +17,7 @@ public interface Palette {
      * @param globalPaletteId No further description provided
      * @return true if this palette contains the specified global palette block state identifier, otherwise false
      */
-    boolean contains(Integer globalPaletteId);
+    boolean contains(int globalPaletteId);
 
     /**
      * Searches for any palette index whose global palette id does not exists in the given list of ids
@@ -25,7 +25,7 @@ public interface Palette {
      * @param globalPaletteIds No further description provided
      * @return No further description provided
      */
-    Integer searchAnyNonMatching(Collection<Integer> globalPaletteIds);
+    int searchAnyNonMatching(IntList globalPaletteIds);
 
     /**
      * Translates global palette ids to its corresponding palette index. The palette index is always used in the chunk packet.
@@ -33,7 +33,7 @@ public interface Palette {
      * @param globalPaletteIds global palette ids to translate
      * @return Collection of palette indexes
      */
-    Collection<Integer> translate(Collection<Integer> globalPaletteIds);
+    IntList translate(IntList globalPaletteIds);
 
     /**
      * Translate a global palette id to the corresponding pallte index. The palette index is always used in the chunk packet.
@@ -41,5 +41,5 @@ public interface Palette {
      * @param globalPaletteId No further description provided
      * @return palette index
      */
-    Integer translate(Integer globalPaletteId);
+    int translate(int globalPaletteId);
 }

@@ -6,12 +6,12 @@ import com.comphenix.protocol.wrappers.nbt.NbtFactory;
 import com.pro_crafting.mc.worldfuscator.VarIntUtil;
 import com.pro_crafting.mc.worldfuscator.engine.palette.Palette;
 import com.pro_crafting.mc.worldfuscator.engine.palette.PaletteFactory;
+import it.unimi.dsi.fastutil.ints.IntList;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.nio.ByteBuffer;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -100,7 +100,7 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
         }
 
         // Translate the hidden states from global ids to palette ids
-        Collection<Integer> hiddenPaletteIds = palette.translate(this.blockTranslator.getHiddenGlobalPaletteIds());
+        IntList hiddenPaletteIds = palette.translate(this.blockTranslator.getHiddenGlobalPaletteIds());
 
         long[] blockIndizes = new long[dataLength];
         buffer.asLongBuffer().get(blockIndizes);

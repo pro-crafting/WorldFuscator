@@ -27,7 +27,8 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
     }
 
     public boolean processChunkletBlockData(Location origin, ByteBuffer buffer, Player player) {
-        short blockCount = buffer.getShort();
+        // skip short blockCount - we do not need it
+        buffer.position(buffer.position() + 2);
         byte bitsPerBlock = buffer.get();
 
         Palette palette = PaletteFactory.getInstance(bitsPerBlock, buffer);

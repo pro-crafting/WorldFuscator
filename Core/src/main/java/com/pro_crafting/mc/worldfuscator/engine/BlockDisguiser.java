@@ -43,7 +43,7 @@ public class BlockDisguiser {
     private void registerListener(Plugin plugin) {
         final ChunkletProcessor processor = new MapPacketChunkletProcessor(this.plugin.getTranslator());
 
-        ProtocolLibrary.getProtocolManager().getAsynchronousManager().registerAsyncHandler(listener = new PacketAdapter(plugin, ListenerPriority.HIGHEST,
+        ProtocolLibrary.getProtocolManager().getAsynchronousManager().registerAsyncHandler(listener = new PacketAdapter(plugin, ListenerPriority.LOWEST,
                 Server.BLOCK_CHANGE, Server.MULTI_BLOCK_CHANGE, Server.MAP_CHUNK) {
 
             public void onPacketSending(PacketEvent event) {
@@ -60,7 +60,7 @@ public class BlockDisguiser {
                     packet = translateBlockChange(packet, world, player);
                 } else if (event.getPacketType() == Server.MULTI_BLOCK_CHANGE) {
                     packet = translateMultiBlockChange(packet, world, player);
-                } else if (event.getPacketType() == Server.MAP_CHUNK) {
+                } else {
                     packet = ChunkPacketProcessor.fromMapPacket(packet, world).process(processor, player, packet);
                 }
 

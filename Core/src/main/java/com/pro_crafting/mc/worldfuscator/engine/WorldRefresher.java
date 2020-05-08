@@ -6,6 +6,7 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.utility.MinecraftReflection;
 import com.pro_crafting.mc.worldfuscator.WorldFuscator;
+import com.pro_crafting.mc.worldfuscator.engine.processor.ChunkAndBlockChunkletProcessor;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -26,14 +27,14 @@ import java.util.UUID;
 public class WorldRefresher {
 
     private final WorldFuscator plugin;
-    private MapPacketChunkletProcessor processor;
+    private ChunkAndBlockChunkletProcessor processor;
     private Method chunkHandle;
     private Constructor<?> chunkPacketConstructor;
 
 
     public WorldRefresher(WorldFuscator plugin) {
         this.plugin = plugin;
-        processor = new MapPacketChunkletProcessor(
+        processor = new ChunkAndBlockChunkletProcessor(
                 this.plugin.getTranslator());
 
         Class<?> craftChunk = MinecraftReflection.getCraftBukkitClass("CraftChunk");

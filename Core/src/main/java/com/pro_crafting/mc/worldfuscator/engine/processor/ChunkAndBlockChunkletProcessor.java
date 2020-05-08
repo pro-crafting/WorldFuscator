@@ -1,9 +1,11 @@
-package com.pro_crafting.mc.worldfuscator.engine;
+package com.pro_crafting.mc.worldfuscator.engine.processor;
 
 import com.comphenix.protocol.wrappers.nbt.NbtBase;
 import com.comphenix.protocol.wrappers.nbt.NbtCompound;
 import com.comphenix.protocol.wrappers.nbt.NbtFactory;
 import com.pro_crafting.mc.worldfuscator.VarIntUtil;
+import com.pro_crafting.mc.worldfuscator.engine.BlockTranslator;
+import com.pro_crafting.mc.worldfuscator.engine.VariableValueArray;
 import com.pro_crafting.mc.worldfuscator.engine.palette.Palette;
 import com.pro_crafting.mc.worldfuscator.engine.palette.PaletteFactory;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -16,13 +18,13 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Implementation of http://wiki.vg/SMP_Map_Format
+ * Implementation of http://wiki.vg/SMP_Map_Format, checking all blocks for fuscation
  */
-public class MapPacketChunkletProcessor implements ChunkPacketProcessor.ChunkletProcessor {
+public class ChunkAndBlockChunkletProcessor implements ChunkletProcessor {
 
     private final BlockTranslator blockTranslator;
 
-    public MapPacketChunkletProcessor(BlockTranslator blockTranslator) {
+    public ChunkAndBlockChunkletProcessor(BlockTranslator blockTranslator) {
         this.blockTranslator = blockTranslator;
     }
 

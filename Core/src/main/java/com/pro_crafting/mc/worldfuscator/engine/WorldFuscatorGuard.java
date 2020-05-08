@@ -9,4 +9,8 @@ public abstract class WorldFuscatorGuard {
     }
 
     public abstract boolean hasRights(Player player, int x, int y, int z, World world);
+
+    public boolean isThreadSafe() {
+        return true;
+    }
 }

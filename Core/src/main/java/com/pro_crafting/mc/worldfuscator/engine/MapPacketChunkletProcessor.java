@@ -80,6 +80,12 @@ public class MapPacketChunkletProcessor implements ChunkPacketProcessor.Chunklet
         return true;
     }
 
+    @Override
+    public boolean isThreadSafe() {
+        // We do not access any unsafe api here, check if our guard is thread safe
+        return blockTranslator.getWorldFuscatorGuard().isThreadSafe();
+    }
+
     private boolean translateChunkData(Location origin, ByteBuffer buffer, Player player,
                                     int bitsPerBlock, Palette palette, int dataLength, int beforeData) {
         World world = origin.getWorld();

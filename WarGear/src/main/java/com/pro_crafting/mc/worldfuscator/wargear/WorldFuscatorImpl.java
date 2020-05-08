@@ -25,12 +25,18 @@ import static org.bukkit.event.EventPriority.MONITOR;
 
 public class WorldFuscatorImpl extends WorldFuscator {
 
+    private final WorldFuscatorGuardImpl guard = new WorldFuscatorGuardImpl();
+
     public void onEnable() {
         prepareDefaultConfiguration();
 
         super.onEnable();
-        super.getTranslator().setWorldFuscatorGuard(new WorldFuscatorGuardImpl());
         Bukkit.getPluginManager().registerEvents(new WarGearListener(), this);
+    }
+
+    @Override
+    public WorldFuscatorGuard getWorldFuscatorGuard() {
+        return guard;
     }
 
     private class WorldFuscatorGuardImpl extends WorldFuscatorGuard {

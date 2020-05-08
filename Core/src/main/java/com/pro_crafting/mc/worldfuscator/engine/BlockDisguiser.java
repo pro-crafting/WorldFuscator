@@ -43,7 +43,7 @@ public class BlockDisguiser {
     private void registerListener(Plugin plugin) {
         final ChunkletProcessor processor = new MapPacketChunkletProcessor(this.plugin.getTranslator());
 
-        ProtocolLibrary.getProtocolManager().getAsynchronousManager().registerAsyncHandler(listener = new PacketAdapter(plugin, ListenerPriority.LOWEST,
+        PacketAdapter listener = new PacketAdapter(plugin, ListenerPriority.LOWEST,
                 Server.BLOCK_CHANGE, Server.MULTI_BLOCK_CHANGE, Server.MAP_CHUNK) {
 
             public void onPacketSending(PacketEvent event) {
@@ -66,7 +66,13 @@ public class BlockDisguiser {
 
                 event.setPacket(packet);
             }
-        }).start(Runtime.getRuntime().availableProcessors());
+        };
+
+        if (processor.isThreadSafe()) {
+            ProtocolLibrary.getProtocolManager().getAsynchronousManager().registerAsyncHandler(listener).start(Runtime.getRuntime().availableProcessors());
+        } else {
+            ProtocolLibrary.getProtocolManager().addPacketListener(listener);
+        }
     }
 
     public void close() {

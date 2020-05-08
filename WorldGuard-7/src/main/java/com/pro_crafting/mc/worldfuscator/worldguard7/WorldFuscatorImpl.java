@@ -22,11 +22,17 @@ import java.util.UUID;
 
 public class WorldFuscatorImpl extends WorldFuscator {
 
+    private final WorldFuscatorGuardImpl guard = new WorldFuscatorGuardImpl();
+
     public void onEnable() {
         this.saveDefaultConfig();
         this.setConfiguration(new Configuration(this.getConfig()));
         super.onEnable();
-        super.getTranslator().setWorldFuscatorGuard(new WorldFuscatorGuardImpl());
+    }
+
+    @Override
+    public WorldFuscatorGuard getWorldFuscatorGuard() {
+        return guard;
     }
 
     public void updateRegion(World world, String id, Collection<UUID> oldMembers, Collection<UUID> newMembers) {
@@ -34,7 +40,6 @@ public class WorldFuscatorImpl extends WorldFuscator {
             Bukkit.getLogger().info("Chunk refresh of region: " + id);
         }
 
-        WorldGuardPlugin wgp = WorldGuardPlugin.inst();
         WorldGuard wg = com.sk89q.worldguard.WorldGuard.getInstance();
 
         RegionContainer container = wg.getPlatform().getRegionContainer();

@@ -4,7 +4,6 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.pro_crafting.mc.worldfuscator.VarIntUtil;
 import com.pro_crafting.mc.worldfuscator.engine.processor.ChunkletProcessor;
 import org.bukkit.Location;
-import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -18,17 +17,10 @@ import java.nio.ByteBuffer;
  * @author Kristian
  */
 public class ChunkPacketProcessor {
-
-    // Useful Minecraft constants
-    protected static final int BYTES_PER_NIBBLE_PART = 2048;
-    protected static final int CHUNK_SEGMENTS = 16;
-    protected static final int NIBBLES_REQUIRED = 4;
-    protected static final int BIOME_ARRAY_LENGTH = 256;
-
     public static boolean isDebugEnabled;
     public static File dataFolder;
 
-    private static void writeDebugChunkFiles(ChunkPacketData chunkPacketData) {
+    private void writeDebugChunkFiles(ChunkPacketData chunkPacketData) {
         if (!isDebugEnabled) {
             return;
         }
@@ -66,41 +58,7 @@ public class ChunkPacketProcessor {
 
     public PacketContainer process(ChunkPacketData chunkData, ChunkletProcessor processor, Player player, PacketContainer packet) {
         writeDebugChunkFiles(chunkData);
-        // Compute chunk number
-        for (int i = 0; i < CHUNK_SEGMENTS; i++) {
-            if ((chunkData.primaryBitMask & (1 << i)) > 0) {
-                chunkData.chunkSectionNumber++;
-            }
-        }
 
-        // There's no sun/moon in the end or in the nether, so Minecraft doesn't sent any skylight information
-        // This optimization was added in 1.4.6. Note that ideally you should get this from the "f" (skylight) field.
-        int skylightCount = 1;
-        if (chunkData.world != null) {
-            skylightCount = chunkData.world.getEnvironment() == Environment.NORMAL ? 1 : 0;
-        }
-
-        // The total size of a chunk is the number of blocks sent (depends on the number of sections) multiplied by the
-        // amount of bytes per block. This last figure can be calculated by adding together all the data parts:
-        //   For any block:
-        //    * Block ID          -   8 bits per block (byte)
-        //    * Block metadata    -   4 bits per block (nibble)
-        //    * Block light array -   4 bits per block
-        //   If 'worldProvider.skylight' is TRUE
-        //    * Sky light array   -   4 bits per block
-        //   If the segment has extra data:
-        //    * Add array         -   4 bits per block
-        //   Biome array - only if the entire chunk (has continous) is sent:
-        //    * Biome array       -   256 bytes
-        //
-        // A section has 16 * 16 * 16 = 4096 blocks.
-        int size = BYTES_PER_NIBBLE_PART * (
-                (NIBBLES_REQUIRED + skylightCount) * chunkData.chunkSectionNumber) +
-                (chunkData.isFullChunk ? BIOME_ARRAY_LENGTH : 0);
-
-        int blockSize = 4096 * chunkData.chunkSectionNumber;
-
-        // Make sure the chunk is loaded
         boolean didFuscate = translate(chunkData, processor, player);
         if (packet != null && didFuscate) {
             PacketContainer clonedPacket = packet.shallowClone();
@@ -120,6 +78,7 @@ public class ChunkPacketProcessor {
         boolean didFuscate = false;
         for (int i = 0; i < 16; i++) {
             // If the bitmask indicates this chunk is sent
+            // The bitmask is from the ground up
             if ((chunkData.primaryBitMask & 1 << i) > 0) {
 
                 // The lowest block (in x, y, z) in this chunklet

@@ -13,10 +13,8 @@ public class ChunkPacketData {
     int chunkZ;
     int primaryBitMask;
     boolean isFullChunk;
-    int dataSize;
     byte[] data;
     List<NbtBase<?>> blockEntities;
-    int chunkSectionNumber;
     int startIndex;
     World world;
 

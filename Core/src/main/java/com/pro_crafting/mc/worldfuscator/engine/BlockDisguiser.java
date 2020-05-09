@@ -16,7 +16,6 @@ import com.pro_crafting.mc.worldfuscator.engine.processor.ChunkletProcessorFacto
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 /**
  * Simple class that can be used to alter the apperance of a number of blocks.
@@ -41,7 +40,7 @@ public class BlockDisguiser {
         ChunkPacketProcessor.isDebugEnabled = parent.getConfiguration().isDebugEnabled();
     }
 
-    private void registerListener(Plugin plugin) {
+    private void registerListener(WorldFuscator plugin) {
         ChunkletProcessorFactory chunkletProcessorFactory = new ChunkletProcessorFactory(this.plugin);
         final ChunkletProcessor processor = chunkletProcessorFactory.getProcessor();
         final ChunkPacketProcessor chunkPacketProcessor = new ChunkPacketProcessor();
@@ -71,8 +70,9 @@ public class BlockDisguiser {
             }
         };
 
-        if (processor.isThreadSafe()) {
-            ProtocolLibrary.getProtocolManager().getAsynchronousManager().registerAsyncHandler(listener).start(Runtime.getRuntime().availableProcessors());
+        // TODO: More testing about protocollib async handling
+        if (plugin.getConfiguration().getAsyncWorkerCount() > 0 && processor.isThreadSafe()) {
+            ProtocolLibrary.getProtocolManager().getAsynchronousManager().registerAsyncHandler(listener).start(plugin.getConfiguration().getAsyncWorkerCount());
         } else {
             ProtocolLibrary.getProtocolManager().addPacketListener(listener);
         }

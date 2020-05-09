@@ -3,8 +3,8 @@ package com.pro_crafting.mc.worldfuscator.engine.palette;
 import com.pro_crafting.mc.worldfuscator.VarIntUtil;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -25,9 +25,9 @@ public class IndirectPalette implements Palette {
     }
 
     @Override
-    public boolean containsAny(IntList globalPaletteIds) {
-        for (int i = 0; i < globalPaletteIds.size(); i++) {
-            if (globalPaletteIdToPaletteIndex.containsKey(globalPaletteIds.getInt(i))) {
+    public boolean containsAny(IntSet globalPaletteIds) {
+        for (Int2IntMap.Entry next : globalPaletteIdToPaletteIndex.int2IntEntrySet()) {
+            if (globalPaletteIds.contains(next.getIntKey())) {
                 return true;
             }
         }
@@ -41,7 +41,7 @@ public class IndirectPalette implements Palette {
     }
 
     @Override
-    public int searchAnyNonMatching(IntList globalPaletteIds) {
+    public int searchAnyNonMatching(IntSet globalPaletteIds) {
         for (Int2IntMap.Entry next : globalPaletteIdToPaletteIndex.int2IntEntrySet()) {
             if (!globalPaletteIds.contains(next.getIntKey())) {
                 return next.getIntValue();
@@ -51,15 +51,15 @@ public class IndirectPalette implements Palette {
     }
 
     @Override
-    public IntList translate(IntList globalPaletteIds) {
+    public IntSet translate(IntSet globalPaletteIds) {
 
-        IntList paletteIndizes = new IntArrayList();
+        IntSet paletteIndizes = new IntOpenHashSet();
 
-        for (int i = 0; i < globalPaletteIds.size(); i++) {
-            if (globalPaletteIdToPaletteIndex.containsKey(globalPaletteIds.getInt(i))) {
-                paletteIndizes.add(globalPaletteIdToPaletteIndex.get(globalPaletteIds.getInt(i)));
+        globalPaletteIds.forEach((int value) -> {
+            if (globalPaletteIdToPaletteIndex.containsKey(value)) {
+                paletteIndizes.add(globalPaletteIdToPaletteIndex.get(value));
             }
-        }
+        });
 
         return paletteIndizes;
     }
@@ -69,7 +69,7 @@ public class IndirectPalette implements Palette {
         return globalPaletteIdToPaletteIndex.get(globalPaletteId);
     }
 
-    public void replace(IntList globalPaletteIds, Integer globalPaletteId) {
+    public void replace(IntSet globalPaletteIds, Integer globalPaletteId) {
         Integer paletteIndex = translate(globalPaletteId);
 
         if (paletteIndex == null) {

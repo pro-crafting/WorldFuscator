@@ -1,6 +1,6 @@
 package com.pro_crafting.mc.worldfuscator.engine.palette;
 
-import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.ints.IntSet;
 
 public interface Palette {
     /**
@@ -9,7 +9,7 @@ public interface Palette {
      * @param globalPaletteIds global palette ids to search for
      * @return true if any of the global palette ids found in palette, otherwise false
      */
-    boolean containsAny(IntList globalPaletteIds);
+    boolean containsAny(IntSet globalPaletteIds);
 
     /**
      * Checks if this palette contains the specified global palette block state identifier
@@ -25,7 +25,7 @@ public interface Palette {
      * @param globalPaletteIds No further description provided
      * @return No further description provided
      */
-    int searchAnyNonMatching(IntList globalPaletteIds);
+    int searchAnyNonMatching(IntSet globalPaletteIds);
 
     /**
      * Translates global palette ids to its corresponding palette index. The palette index is always used in the chunk packet.
@@ -33,7 +33,7 @@ public interface Palette {
      * @param globalPaletteIds global palette ids to translate
      * @return Collection of palette indexes
      */
-    IntList translate(IntList globalPaletteIds);
+    IntSet translate(IntSet globalPaletteIds);
 
     /**
      * Translate a global palette id to the corresponding pallte index. The palette index is always used in the chunk packet.

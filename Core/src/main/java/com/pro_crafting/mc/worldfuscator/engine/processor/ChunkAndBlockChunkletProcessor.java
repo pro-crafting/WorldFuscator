@@ -8,7 +8,7 @@ import com.pro_crafting.mc.worldfuscator.engine.BlockTranslator;
 import com.pro_crafting.mc.worldfuscator.engine.VariableValueArray;
 import com.pro_crafting.mc.worldfuscator.engine.palette.Palette;
 import com.pro_crafting.mc.worldfuscator.engine.palette.PaletteFactory;
-import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -109,7 +109,7 @@ public class ChunkAndBlockChunkletProcessor implements ChunkletProcessor {
         }
 
         // Translate the hidden states from global ids to palette ids
-        IntList hiddenPaletteIds = palette.translate(this.blockTranslator.getHiddenGlobalPaletteIds());
+        IntSet hiddenPaletteIds = palette.translate(this.blockTranslator.getHiddenGlobalPaletteIds());
 
         long[] blockIndizes = new long[dataLength];
         buffer.asLongBuffer().get(blockIndizes);

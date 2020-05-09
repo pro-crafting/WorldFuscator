@@ -2,7 +2,7 @@ package com.pro_crafting.mc.worldfuscator;
 
 import java.nio.ByteBuffer;
 
-// Aus dem 1.9.1 MC Server (PacketSerializer)
+// taken from 1.9.1 mc server (PacketSerializer class)
 public class VarIntUtil {
 
     public static int deserializeVarInt(ByteBuffer buf) {

@@ -2,8 +2,8 @@ package com.pro_crafting.mc.worldfuscator.engine;
 
 import com.pro_crafting.mc.worldfuscator.Configuration;
 import com.pro_crafting.mc.worldfuscator.engine.palette.GlobalPaletteAdapter;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -16,7 +16,7 @@ public class BlockTranslator {
     private WorldFuscatorGuard guard;
 
     private Configuration configuration;
-    private IntList hiddenGlobalPaletteIds = new IntArrayList();
+    private IntSet hiddenGlobalPaletteIds = new IntOpenHashSet();
     private int preferedObfuscationGlobalPaletteId;
 
     public BlockTranslator() {
@@ -63,7 +63,7 @@ public class BlockTranslator {
         updatePaletteIds();
     }
 
-    public IntList getHiddenGlobalPaletteIds() {
+    public IntSet getHiddenGlobalPaletteIds() {
         return hiddenGlobalPaletteIds;
     }
 

@@ -39,6 +39,8 @@ The files are saved in `plugins/WorldFuscator/chunks/<worldname>`
 debug:
   enabled: false
 fuscation-mode: CHUNK_AND_BLOCK
+async:
+  worker-count: 0
 preferred-obfuscation-material: 'minecraft:end_stone'
 hidden-block-entities:
   - 'minecraft:banner'
@@ -48,6 +50,9 @@ hidden-materials:
 
 All materials in hidden-materials are replaced by endstone.
 All block entities will be replaced by air.
+
+WorldFuscator can optionally run in async mode. Specifiy the number of worker threads for this feature. `worker-count` of 0 means, that the plugin will completly run on the main thread.
+You should not have more workers than you have system threads available. 
 
 ### Fuscation Modes
 * CHUNK_AND_BLOCK `Stable`

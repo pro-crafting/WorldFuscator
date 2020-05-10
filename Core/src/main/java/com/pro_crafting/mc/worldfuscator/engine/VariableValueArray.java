@@ -6,7 +6,6 @@ import java.util.Objects;
 public final class VariableValueArray implements Cloneable {
 
     private final long[] backing;
-    private final int capacity;
     private final int bitsPerValue;
     private final long valueMask;
 
@@ -30,7 +29,6 @@ public final class VariableValueArray implements Cloneable {
         this.bitsPerValue = bitsPerEntry;
         this.backing = data;
 
-        this.capacity = this.backing.length * 64 / this.bitsPerValue;
         this.valueMask = (1L << this.bitsPerValue) - 1;
     }
 
@@ -42,8 +40,6 @@ public final class VariableValueArray implements Cloneable {
      * @throws IndexOutOfBoundsException if {@code index} is out of range
      */
     public int get(int index) {
-        checkIndex(index);
-
         index *= bitsPerValue;
         int i0 = index >> 6;
         int i1 = index & 0x3f;
@@ -67,8 +63,6 @@ public final class VariableValueArray implements Cloneable {
      * @throws IllegalArgumentException if {@code value} is out of range
      */
     public void set(int index, int value) {
-        checkIndex(index);
-
         if (value < 0) {
             throw new IllegalArgumentException(String
                     .format("value (%s) must not be negative", value));
@@ -88,18 +82,6 @@ public final class VariableValueArray implements Cloneable {
         if (i2 > 64) {
             i0++;
             backing[i0] = backing[i0] & ~((1L << i2 - 64) - 1L) | value >> 64 - i1;
-        }
-    }
-
-    private void checkIndex(int index) {
-        if (index < 0) {
-            throw new IndexOutOfBoundsException(String
-                    .format("index (%s) must not be negative", index));
-        }
-        if (index >= capacity) {
-            throw new IndexOutOfBoundsException(String
-                    .format("index (%s) must not be greater than the capacity (%s)", index,
-                            capacity));
         }
     }
 }

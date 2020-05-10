@@ -113,17 +113,9 @@ public class WorldFuscatorImpl extends WorldFuscator {
             if (ars.size() == 0) {
                 return true;
             }
-            int priority = Integer.MIN_VALUE;
-            boolean allowed = false;
-            for (ProtectedRegion region : ars) {
-                if (region.getPriority() > priority) {
-                    priority = region.getPriority();
 
-                    allowed = region.isMember(wgPlayer);
-                }
-            }
-
-            return allowed;
+            ProtectedRegion highest = ars.iterator().next();
+            return highest.isMember(wgPlayer);
         }
 
         private RegionManager getRegionManager(World world) {

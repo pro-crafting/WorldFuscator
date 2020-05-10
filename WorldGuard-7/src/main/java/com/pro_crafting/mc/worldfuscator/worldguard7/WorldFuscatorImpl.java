@@ -18,7 +18,9 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class WorldFuscatorImpl extends WorldFuscator {
 
@@ -59,6 +61,10 @@ public class WorldFuscatorImpl extends WorldFuscator {
         WorldGuardPlugin wgp = WorldGuardPlugin.inst();
         WorldGuard wg = com.sk89q.worldguard.WorldGuard.getInstance();
 
+        // TODO: Clear this map on reload
+        // Reload of plugin is currently not implemented, therefore we do not need to worry about it
+        private final Map<String, RegionManager> regionManagers = new ConcurrentHashMap<>();
+
         @Override
         public boolean hasAreaRights(Player player, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, World world) {
             LocalPlayer wgPlayer = wgp.wrapPlayer(player);
@@ -68,7 +74,8 @@ public class WorldFuscatorImpl extends WorldFuscator {
 
             ProtectedRegion region = new ProtectedCuboidRegion("CHUNKS", BlockVector3.at(minX, minY, minZ), BlockVector3.at(maxX, maxY, maxZ));
 
-            RegionManager manager = container.get(BukkitAdapter.adapt(world));
+            RegionManager manager = getRegionManager(world);
+
             ApplicableRegionSet ars = manager.getApplicableRegions(region);
 
             if (ars.isMemberOfAll(wgPlayer)) {
@@ -83,11 +90,10 @@ public class WorldFuscatorImpl extends WorldFuscator {
         @Override
         public boolean hasRights(Player player, int x, int y, int z, World world) {
             LocalPlayer wgPlayer = wgp.wrapPlayer(player);
-            RegionContainer container = wg.getPlatform().getRegionContainer();
 
             // TODO: Maybe use new Spatial Queries api for performance reasons?
 
-            RegionManager manager = container.get(BukkitAdapter.adapt(world));
+            RegionManager manager = getRegionManager(world);
             ApplicableRegionSet ars = manager.getApplicableRegions(BlockVector3.at(x, y, z));
 
             if (hasRights(ars, wgPlayer)) {
@@ -118,6 +124,16 @@ public class WorldFuscatorImpl extends WorldFuscator {
             }
 
             return allowed;
+        }
+
+        private RegionManager getRegionManager(World world) {
+            RegionManager manager = regionManagers.get(world.getName());
+            if (manager == null) {
+                manager = wg.getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world));
+                regionManagers.put(world.getName(), manager);
+            }
+
+            return manager;
         }
     }
 }

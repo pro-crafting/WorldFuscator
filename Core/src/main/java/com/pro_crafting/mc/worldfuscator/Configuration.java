@@ -21,7 +21,7 @@ public class Configuration {
         this.debugEnabled = configuration.getBoolean("debug.enabled", false);
         this.fuscationMode = FuscationMode.valueOf(configuration.getString("fuscation-mode", FuscationMode.CHUNK_AND_BLOCK.name()));
 
-        this.asyncWorkerCount = configuration.getInt("async.worker-count", -1);
+        this.asyncWorkerCount = configuration.getInt("async.worker-count", 0);
 
         String preferredObfuscationBlockName = configuration.getString("referred-obfuscation-material", "minecraft:end_stone");
         preferredObfuscationMaterial = Material.matchMaterial(preferredObfuscationBlockName);

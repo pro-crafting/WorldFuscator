@@ -55,11 +55,11 @@ public class IndirectPalette implements Palette {
 
         IntSet paletteIndizes = new IntOpenHashSet();
 
-        globalPaletteIds.forEach((int value) -> {
-            if (globalPaletteIdToPaletteIndex.containsKey(value)) {
-                paletteIndizes.add(globalPaletteIdToPaletteIndex.get(value));
+        for (Int2IntMap.Entry next : globalPaletteIdToPaletteIndex.int2IntEntrySet()) {
+            if (globalPaletteIds.contains(next.getIntKey())) {
+                paletteIndizes.add(next.getIntValue());
             }
-        });
+        }
 
         return paletteIndizes;
     }

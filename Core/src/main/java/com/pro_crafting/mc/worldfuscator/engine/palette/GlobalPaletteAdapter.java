@@ -8,8 +8,6 @@ import org.bukkit.Material;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Responsible for providing access to the global palette.
@@ -17,8 +15,6 @@ import java.util.Map;
  * This class uses reflection. For ease of migration to newer minecraft versions, this class should contain as few lines as possible.
  */
 public class GlobalPaletteAdapter {
-    private static final Map<Material, IntList> materialToGlobalPaletteId = new HashMap<>();
-
     private Method getBlock;
     private Method getStates;
     private Method getStateList;
@@ -48,29 +44,25 @@ public class GlobalPaletteAdapter {
      * @return all possible state ids, never null
      */
     public IntList getAllStateIds(Material material) {
-        if (!materialToGlobalPaletteId.containsKey(material)) {
-            try {
-                Object block = getBlock.invoke(null, material);
-                Object states = getStates.invoke(block);
-                Object stateList = getStateList.invoke(states);
-                @SuppressWarnings("unchecked")
-                ImmutableList<Object> casted = (ImmutableList<Object>) stateList;
+        try {
+            Object block = getBlock.invoke(null, material);
+            Object states = getStates.invoke(block);
+            Object stateList = getStateList.invoke(states);
+            @SuppressWarnings("unchecked")
+            ImmutableList<Object> casted = (ImmutableList<Object>) stateList;
 
-                IntList globalPaletteList = new IntArrayList(casted.size());
+            IntList globalPaletteList = new IntArrayList(casted.size());
 
-                for (Object blockData : casted) {
-                    int id = (int) getCombinedId.invoke(block, blockData);
-                    globalPaletteList.add(id);
-                }
-
-                materialToGlobalPaletteId.put(material, globalPaletteList);
-
-                return globalPaletteList;
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
+            for (Object blockData : casted) {
+                int id = (int) getCombinedId.invoke(block, blockData);
+                globalPaletteList.add(id);
             }
+
+            return globalPaletteList;
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
         }
 
-        return materialToGlobalPaletteId.get(material);
+        return new IntArrayList();
     }
 }

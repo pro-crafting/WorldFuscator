@@ -6,8 +6,12 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import org.bukkit.Material;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Responsible for providing access to the global palette.
@@ -17,8 +21,11 @@ import java.lang.reflect.Method;
 public class GlobalPaletteAdapter {
     private Method getBlock;
     private Method getStates;
-    private Method getStateList;
+    private Method getBlockDataList;
     private Method getCombinedId;
+    private Method getRegistryMaterialsIterator;
+
+    private Field iRegistryBlock;
 
     public GlobalPaletteAdapter() {
         Class<?> craftMagicNumbers = MinecraftReflection.getCraftBukkitClass("util.CraftMagicNumbers");
@@ -30,8 +37,14 @@ public class GlobalPaletteAdapter {
             getCombinedId = blockClass.getMethod("getCombinedId", MinecraftReflection.getIBlockDataClass());
 
             Class<?> blockStateList = MinecraftReflection.getMinecraftClass("BlockStateList");
-            getStateList = blockStateList.getDeclaredMethod("a");
-        } catch (NoSuchMethodException e) {
+            getBlockDataList = blockStateList.getDeclaredMethod("a");
+
+            Class<?> registryMaterials = MinecraftReflection.getMinecraftClass("RegistryMaterials");
+            getRegistryMaterialsIterator = registryMaterials.getDeclaredMethod("iterator");
+
+            Class<?> iRegistry = MinecraftReflection.getMinecraftClass("IRegistry");
+            iRegistryBlock = iRegistry.getDeclaredField("BLOCK");
+        } catch (NoSuchMethodException | NoSuchFieldException e) {
             e.printStackTrace();
         }
     }
@@ -47,14 +60,14 @@ public class GlobalPaletteAdapter {
         try {
             Object block = getBlock.invoke(null, material);
             Object states = getStates.invoke(block);
-            Object stateList = getStateList.invoke(states);
+            Object stateList = getBlockDataList.invoke(states);
             @SuppressWarnings("unchecked")
             ImmutableList<Object> casted = (ImmutableList<Object>) stateList;
 
             IntList globalPaletteList = new IntArrayList(casted.size());
 
             for (Object blockData : casted) {
-                int id = (int) getCombinedId.invoke(block, blockData);
+                int id = (int) getCombinedId.invoke(null, blockData);
                 globalPaletteList.add(id);
             }
 
@@ -63,6 +76,43 @@ public class GlobalPaletteAdapter {
             e.printStackTrace();
         }
 
+        return new IntArrayList();
+    }
+
+    public IntList getAllStateIds(List<Set<String>> requestedStateList) {
+        if (requestedStateList == null || requestedStateList.isEmpty()) {
+            return new IntArrayList();
+        }
+
+        try {
+            Object o = iRegistryBlock.get(null);
+            @SuppressWarnings("unchecked")
+            Iterator<Object> blockIterator = (Iterator<Object>)getRegistryMaterialsIterator.invoke(o);
+
+            IntList globalPaletteList = new IntArrayList();
+            while (blockIterator.hasNext()) {
+                Object block = blockIterator.next();
+
+                Object states = getStates.invoke(block);
+                @SuppressWarnings("unchecked")
+                ImmutableList<Object> blockDataList =  (ImmutableList<Object>)getBlockDataList.invoke(states);
+
+                for (Object blockData : blockDataList) {
+                    for (Set<String> requestedStates : requestedStateList) {
+                        for (String requestedState : requestedStates) {
+                            if (blockData.toString().contains(requestedState)) {
+                                int id = (int) getCombinedId.invoke(null, blockData);
+                                globalPaletteList.add(id);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return globalPaletteList;
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
         return new IntArrayList();
     }
 }

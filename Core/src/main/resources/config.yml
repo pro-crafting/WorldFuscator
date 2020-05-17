@@ -5,5 +5,8 @@ async:
 # Workers threads to use. 0 means async is disabled, and everything will run on main thread. Should be max equal to core thread of system.
   worker-count: 0
 preferred-obfuscation-material: 'minecraft:end_stone'
-hidden-block-entities:
-hidden-materials:
+hidden:
+  block-entities:
+  block:
+    material:
+    block-data:

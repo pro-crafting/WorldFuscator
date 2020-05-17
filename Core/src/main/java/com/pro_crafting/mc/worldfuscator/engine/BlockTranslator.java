@@ -2,6 +2,7 @@ package com.pro_crafting.mc.worldfuscator.engine;
 
 import com.pro_crafting.mc.worldfuscator.Configuration;
 import com.pro_crafting.mc.worldfuscator.engine.palette.GlobalPaletteAdapter;
+import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import org.bukkit.Material;
@@ -13,6 +14,7 @@ import java.util.Set;
 public class BlockTranslator {
 
     private GlobalPaletteAdapter globalPaletteAdapter = new GlobalPaletteAdapter();
+    private BlockStateService blockDataService = new BlockStateService();
     private WorldFuscatorGuard guard;
 
     private Configuration configuration;
@@ -32,6 +34,9 @@ public class BlockTranslator {
         for (Material hideMaterial : hideMaterials) {
             hiddenGlobalPaletteIds.addAll(globalPaletteAdapter.getAllStateIds(hideMaterial));
         }
+
+        IntList matchingHidenBlockStateGlobalPaletteIds = blockDataService.getMatchingGlobalPaletteIds(configuration.getHideBlockData());
+        hiddenGlobalPaletteIds.addAll(matchingHidenBlockStateGlobalPaletteIds);
 
         // TODO: Use default block state instead of any
         // But in theory, the first block state should be the default state

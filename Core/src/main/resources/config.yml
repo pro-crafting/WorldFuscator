@@ -6,7 +6,6 @@ async:
   worker-count: 0
 preferred-obfuscation-material: 'minecraft:end_stone'
 hidden:
-  block-entities:
   block:
-    material:
-    block-data:
+    entities:
+    filter:

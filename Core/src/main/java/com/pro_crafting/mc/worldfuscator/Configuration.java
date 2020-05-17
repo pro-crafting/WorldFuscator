@@ -12,7 +12,7 @@ public class Configuration {
 
     private boolean debugEnabled;
     private FuscationMode fuscationMode;
-    private Set<Material> hideMaterials = new HashSet<>();
+    private List<String> hiddenMaterialFilters;
     private Material preferredObfuscationMaterial;
     private Set<String> hiddenBlockEntityIds;
     private int asyncWorkerCount;
@@ -23,26 +23,16 @@ public class Configuration {
 
         this.asyncWorkerCount = configuration.getInt("async.worker-count", 0);
 
-        String preferredObfuscationBlockName = configuration.getString("referred-obfuscation-material", "minecraft:end_stone");
+        String preferredObfuscationBlockName = configuration.getString("preferred-obfuscation-material", "minecraft:end_stone");
         preferredObfuscationMaterial = Material.matchMaterial(preferredObfuscationBlockName);
 
-        hiddenBlockEntityIds = new HashSet<>(configuration.getStringList("hidden-block-entities"));
-        // read material names and get values of Material enum
-        List<String> materialNames = configuration.getStringList("hidden-materials");
-        for (String materialName : materialNames) {
-            Material material = Material.matchMaterial(materialName, false);
-            if (material != null) {
-                hideMaterials.add(material);
-            }
-        }
+        hiddenBlockEntityIds = new HashSet<>(configuration.getStringList("hidden.block.entities"));
+        // read material filters
+        hiddenMaterialFilters = configuration.getStringList("hidden.block.filters");
     }
 
     public Material getPreferredObfuscationMaterial() {
         return preferredObfuscationMaterial;
-    }
-
-    public Set<Material> getHideMaterials() {
-        return this.hideMaterials;
     }
 
     public boolean isDebugEnabled() {
@@ -63,5 +53,9 @@ public class Configuration {
 
     public int getAsyncWorkerCount() {
         return asyncWorkerCount;
+    }
+
+    public List<String> getHiddenMaterialFilters() {
+        return hiddenMaterialFilters;
     }
 }

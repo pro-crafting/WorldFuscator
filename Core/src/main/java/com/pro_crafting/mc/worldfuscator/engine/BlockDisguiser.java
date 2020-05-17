@@ -13,9 +13,10 @@ import com.comphenix.protocol.wrappers.WrappedBlockData;
 import com.pro_crafting.mc.worldfuscator.WorldFuscator;
 import com.pro_crafting.mc.worldfuscator.engine.processor.ChunkletProcessor;
 import com.pro_crafting.mc.worldfuscator.engine.processor.ChunkletProcessorFactory;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Simple class that can be used to alter the apperance of a number of blocks.
@@ -92,8 +93,15 @@ public class BlockDisguiser {
         int y = blockPosition.getY();
         int z = blockPosition.getZ();
 
-        Material type = packet.getBlockData().read(0).getType();
-        if (this.plugin.getConfiguration().getHideMaterials().contains(type) && plugin.getTranslator().needsTranslation(world, x, y, z, player)) {
+        int globalPaletteId;
+        try {
+            globalPaletteId = NMSReflection.getCombinedId(packet.getBlockData().read(0).getHandle());
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+            return packet;
+        }
+
+        if (this.plugin.getTranslator().getHiddenGlobalPaletteIds().contains(globalPaletteId) && plugin.getTranslator().needsTranslation(world, x, y, z, player)) {
             PacketContainer clonedPacket = packet.shallowClone();
             clonedPacket.getBlockData().write(0, WrappedBlockData.createData(this.plugin.getConfiguration().getPreferredObfuscationMaterial()));
             return clonedPacket;
@@ -110,8 +118,14 @@ public class BlockDisguiser {
             int x = change.getAbsoluteX();
             int y = change.getY();
             int z = change.getAbsoluteZ();
-            Material type = change.getData().getType();
-            if (this.plugin.getConfiguration().getHideMaterials().contains(type) && plugin.getTranslator().needsTranslation(world, x, y, z, player)) {
+            int globalPaletteId;
+            try {
+                globalPaletteId = NMSReflection.getCombinedId(change.getData().getHandle());
+            } catch (InvocationTargetException | IllegalAccessException e) {
+                e.printStackTrace();
+                continue;
+            }
+            if (this.plugin.getTranslator().getHiddenGlobalPaletteIds().contains(globalPaletteId) && plugin.getTranslator().needsTranslation(world, x, y, z, player)) {
                 change.setData(WrappedBlockData.createData(this.plugin.getConfiguration().getPreferredObfuscationMaterial()));
                 didFuscate = true;
             }

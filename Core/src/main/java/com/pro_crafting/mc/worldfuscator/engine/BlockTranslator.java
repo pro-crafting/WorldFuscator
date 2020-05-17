@@ -2,17 +2,16 @@ package com.pro_crafting.mc.worldfuscator.engine;
 
 import com.pro_crafting.mc.worldfuscator.Configuration;
 import com.pro_crafting.mc.worldfuscator.engine.palette.GlobalPaletteAdapter;
+import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-
-import java.util.Set;
 
 public class BlockTranslator {
 
     private GlobalPaletteAdapter globalPaletteAdapter = new GlobalPaletteAdapter();
+    private BlockFilterAdapter blockFilterAdapter = new BlockFilterAdapter();
     private WorldFuscatorGuard guard;
 
     private Configuration configuration;
@@ -28,15 +27,13 @@ public class BlockTranslator {
 
     private void updatePaletteIds() {
         // Initialize list with global palette ids to hide
-        Set<Material> hideMaterials = configuration.getHideMaterials();
-        for (Material hideMaterial : hideMaterials) {
-            hiddenGlobalPaletteIds.addAll(globalPaletteAdapter.getAllStateIds(hideMaterial));
-        }
+        IntList matchingHidenBlockStateGlobalPaletteIds = blockFilterAdapter.getMatchingGlobalPaletteIds(configuration.getHiddenMaterialFilters());
+        hiddenGlobalPaletteIds.addAll(matchingHidenBlockStateGlobalPaletteIds);
 
-        // TODO: Use default block state instead of any
-        // But in theory, the first block state should be the default state
-        preferedObfuscationGlobalPaletteId = globalPaletteAdapter.getAllStateIds(configuration.getPreferredObfuscationMaterial()).getInt(0);
-        if (configuration.isDebugEnabled()) {
+            // TODO: Use default block state instead of any
+            // But in theory, the first block state should be the default state
+            preferedObfuscationGlobalPaletteId = globalPaletteAdapter.getAllStateIds(configuration.getPreferredObfuscationMaterial()).getInt(0);
+            if (configuration.isDebugEnabled()) {
             System.out.println("Chosen Global Palette Id: " + preferedObfuscationGlobalPaletteId + " as prefered obfuscation material");
         }
     }

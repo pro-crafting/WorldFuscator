@@ -42,13 +42,17 @@ fuscation-mode: CHUNK_AND_BLOCK
 async:
   worker-count: 0
 preferred-obfuscation-material: 'minecraft:end_stone'
-hidden-block-entities:
-  - 'minecraft:banner'
-hidden-materials:
- - 'minecraft:red_wool
+hidden:
+  block:
+    entities:
+      - 'minecraft:banner'
+    filters:
+      - 'minecraft:red_wool
+      - 'minecraft:sticky_piston[extended=true]'
+      - '[waterlogged=true]
 ```
 
-All materials in hidden-materials are replaced by endstone.
+All blocks matching the filters will be replaced by end stone.
 All block entities will be replaced by air.
 
 WorldFuscator can optionally run in async mode. Specifiy the number of worker threads for this feature. `worker-count` of 0 means, that the plugin will completly run on the main thread.

@@ -28,7 +28,7 @@ public class Configuration {
 
         hiddenBlockEntityIds = new HashSet<>(configuration.getStringList("hidden.block.entities"));
         // read material filters
-        hiddenMaterialFilters = configuration.getStringList("hidden.block.filter");
+        hiddenMaterialFilters = configuration.getStringList("hidden.block.filters");
     }
 
     public Material getPreferredObfuscationMaterial() {

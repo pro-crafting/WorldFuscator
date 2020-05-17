@@ -8,4 +8,4 @@ preferred-obfuscation-material: 'minecraft:end_stone'
 hidden:
   block:
     entities:
-    filter:
+    filters:

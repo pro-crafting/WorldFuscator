@@ -38,6 +38,8 @@ public class NMSReflection {
         }
     }
 
+    private NMSReflection() { }
+
     /**
      * Gets the combined id from an nms blockData using the block registry
      * @param blockData

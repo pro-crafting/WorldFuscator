@@ -22,10 +22,10 @@ public class ChunkPacketData {
                                             byte[] data, boolean isContinuous) {
         ChunkPacketData chunkData = new ChunkPacketData();
         chunkData.world = world;
-        chunkData.chunkX = chunkX;     // packet.a;
-        chunkData.chunkZ = chunkZ;     // packet.b;
-        chunkData.primaryBitMask = chunkMask;  // packet.c;
-        chunkData.data = data;  // packet.inflatedBuffer;
+        chunkData.chunkX = chunkX;
+        chunkData.chunkZ = chunkZ;
+        chunkData.primaryBitMask = chunkMask;
+        chunkData.data = data;
         chunkData.startIndex = 0;
         chunkData.isFullChunk = isContinuous;
 

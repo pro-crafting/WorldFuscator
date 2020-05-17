@@ -3,6 +3,10 @@ package com.pro_crafting.mc.worldfuscator.engine.palette;
 import java.nio.ByteBuffer;
 
 public class PaletteFactory {
+    private PaletteFactory() {
+
+    }
+
     /**
      * Initializes the correct Palette type based upon bitsPerblock.
      * The palette may be read and advanced to a position after the palette

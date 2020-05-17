@@ -26,7 +26,6 @@ import java.lang.reflect.InvocationTargetException;
 public class BlockDisguiser {
 
     // The current listener
-    private PacketAdapter listener;
     private WorldFuscator plugin;
 
     /**
@@ -76,13 +75,6 @@ public class BlockDisguiser {
             ProtocolLibrary.getProtocolManager().getAsynchronousManager().registerAsyncHandler(listener).start(plugin.getConfiguration().getAsyncWorkerCount());
         } else {
             ProtocolLibrary.getProtocolManager().addPacketListener(listener);
-        }
-    }
-
-    public void close() {
-        if (listener != null) {
-            ProtocolLibrary.getProtocolManager().removePacketListener(listener);
-            listener = null;
         }
     }
 

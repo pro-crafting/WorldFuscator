@@ -39,7 +39,7 @@ public class WorldFuscatorImpl extends WorldFuscator {
         return guard;
     }
 
-    private class WorldFuscatorGuardImpl extends WorldFuscatorGuard {
+    private static class WorldFuscatorGuardImpl implements WorldFuscatorGuard {
 
         WarGear warGear = WarGear.getPlugin(WarGear.class);
 

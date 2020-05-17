@@ -56,7 +56,7 @@ public class WorldFuscatorImpl extends WorldFuscator {
         );
     }
 
-    private class WorldFuscatorGuardImpl extends WorldFuscatorGuard {
+    private static class WorldFuscatorGuardImpl implements WorldFuscatorGuard {
 
         WorldGuardPlugin wgp = WorldGuardPlugin.inst();
         WorldGuard wg = com.sk89q.worldguard.WorldGuard.getInstance();
@@ -68,7 +68,6 @@ public class WorldFuscatorImpl extends WorldFuscator {
         @Override
         public boolean hasAreaRights(Player player, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, World world) {
             LocalPlayer wgPlayer = wgp.wrapPlayer(player);
-            RegionContainer container = wg.getPlatform().getRegionContainer();
 
             // TODO: Maybe use new Spatial Queries api for performance reasons?
 

@@ -5,6 +5,7 @@ import com.pro_crafting.mc.worldfuscator.engine.palette.GlobalPaletteAdapter;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -30,23 +31,23 @@ public class BlockTranslator {
         IntList matchingHidenBlockStateGlobalPaletteIds = blockFilterAdapter.getMatchingGlobalPaletteIds(configuration.getHiddenMaterialFilters());
         hiddenGlobalPaletteIds.addAll(matchingHidenBlockStateGlobalPaletteIds);
 
-            // TODO: Use default block state instead of any
-            // But in theory, the first block state should be the default state
-            preferedObfuscationGlobalPaletteId = globalPaletteAdapter.getAllStateIds(configuration.getPreferredObfuscationMaterial()).getInt(0);
-            if (configuration.isDebugEnabled()) {
-            System.out.println("Chosen Global Palette Id: " + preferedObfuscationGlobalPaletteId + " as prefered obfuscation material");
+        // TODO: Use default block state instead of any
+        // But in theory, the first block state should be the default state
+        preferedObfuscationGlobalPaletteId = globalPaletteAdapter.getAllStateIds(configuration.getPreferredObfuscationMaterial()).getInt(0);
+        if (configuration.isDebugEnabled()) {
+            Bukkit.getLogger().info("Chosen Global Palette Id: " + preferedObfuscationGlobalPaletteId + " as prefered obfuscation material");
         }
     }
 
     public boolean needsTranslation(World world, int x, int y, int z, Player player) {
         if (!guard.hasRights(player, x, y, z, world)) {
             if (configuration.isDebugEnabled()) {
-                System.out.println("No Rights: Translation for " + x + "|" + y + "|" + z + " for " + player.getName());
+                Bukkit.getLogger().info("No Rights: Translation for " + x + "|" + y + "|" + z + " for " + player.getName());
             }
             return true;
         }
         if (configuration.isDebugEnabled()) {
-            System.out.println("Passed: Translation for " + x + "|" + y + "|" + z + " for " + player.getName());
+            Bukkit.getLogger().info("Passed: Translation for " + x + "|" + y + "|" + z + " for " + player.getName());
         }
         return false;
     }

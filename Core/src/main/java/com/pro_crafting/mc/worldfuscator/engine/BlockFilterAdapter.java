@@ -55,7 +55,6 @@ public class BlockFilterAdapter {
     private Set<String> split(String blockStateValue) {
         String normalized = blockStateValue.replace('[', ' ').replace(']', ' ').trim();
         String[] split = normalized.split(",");
-        Set<String> splitState = Arrays.stream(split).collect(Collectors.toSet());
-        return splitState;
+        return Arrays.stream(split).collect(Collectors.toSet());
     }
 }

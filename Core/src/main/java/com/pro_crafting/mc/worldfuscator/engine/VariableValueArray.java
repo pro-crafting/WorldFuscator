@@ -3,7 +3,7 @@ package com.pro_crafting.mc.worldfuscator.engine;
 import java.util.Objects;
 
 // see: https://github.com/GlowstoneMC/Glowstone/blob/bcfd021cc28e9b64ec87f5b12ddf3ef0fc6380ed/src/main/java/net/glowstone/util/VariableValueArray.java
-public final class VariableValueArray implements Cloneable {
+public final class VariableValueArray {
 
     private final long[] backing;
     private final int bitsPerValue;

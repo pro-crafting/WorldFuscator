@@ -13,6 +13,7 @@ import com.comphenix.protocol.wrappers.WrappedBlockData;
 import com.pro_crafting.mc.worldfuscator.WorldFuscator;
 import com.pro_crafting.mc.worldfuscator.engine.processor.ChunkletProcessor;
 import com.pro_crafting.mc.worldfuscator.engine.processor.ChunkletProcessorFactory;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -41,6 +42,11 @@ public class BlockDisguiser {
     }
 
     private void registerListener(WorldFuscator plugin) {
+        if (this.plugin.getTranslator().getHiddenGlobalPaletteIds() == null || this.plugin.getTranslator().getHiddenGlobalPaletteIds().isEmpty()) {
+            Bukkit.getLogger().info("No blocks found that should be fuscated. Not doing anything.");
+            return;
+        }
+
         ChunkletProcessorFactory chunkletProcessorFactory = new ChunkletProcessorFactory(this.plugin);
         final ChunkletProcessor processor = chunkletProcessorFactory.getProcessor();
         final ChunkPacketProcessor chunkPacketProcessor = new ChunkPacketProcessor();

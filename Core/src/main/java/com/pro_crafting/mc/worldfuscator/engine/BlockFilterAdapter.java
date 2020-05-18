@@ -25,6 +25,9 @@ public class BlockFilterAdapter {
 
         List<Set<String>> requestedStateList = new ArrayList<>();
         for (String filter : filters) {
+            if (filter == null) {
+                continue;
+            }
             Material material = Material.matchMaterial(filter);
             if (material != null) {
                 globalPaletteIdList.addAll(globalPaletteAdapter.getAllStateIds(material, null));

@@ -41,7 +41,7 @@ debug:
 fuscation-mode: CHUNK_AND_BLOCK
 async:
   worker-count: 0
-preferred-obfuscation-material: 'minecraft:end_stone'
+preferred-obfuscation-filter: 'minecraft:end_stone'
 hidden:
   block:
     entities:

@@ -1,7 +1,6 @@
 package com.pro_crafting.mc.worldfuscator;
 
 import com.pro_crafting.mc.worldfuscator.engine.processor.FuscationMode;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.HashSet;
@@ -13,7 +12,7 @@ public class Configuration {
     private boolean debugEnabled;
     private FuscationMode fuscationMode;
     private List<String> hiddenMaterialFilters;
-    private Material preferredObfuscationMaterial;
+    private String preferredObfuscationFilter;
     private Set<String> hiddenBlockEntityIds;
     private int asyncWorkerCount;
 
@@ -23,16 +22,15 @@ public class Configuration {
 
         this.asyncWorkerCount = configuration.getInt("async.worker-count", 0);
 
-        String preferredObfuscationBlockName = configuration.getString("preferred-obfuscation-material", "minecraft:end_stone");
-        preferredObfuscationMaterial = Material.matchMaterial(preferredObfuscationBlockName);
+        this.preferredObfuscationFilter = configuration.getString("preferred-obfuscation-filter", "minecraft:end_stone");
 
-        hiddenBlockEntityIds = new HashSet<>(configuration.getStringList("hidden.block.entities"));
+        this.hiddenBlockEntityIds = new HashSet<>(configuration.getStringList("hidden.block.entities"));
         // read material filters
-        hiddenMaterialFilters = configuration.getStringList("hidden.block.filters");
+        this.hiddenMaterialFilters = configuration.getStringList("hidden.block.filters");
     }
 
-    public Material getPreferredObfuscationMaterial() {
-        return preferredObfuscationMaterial;
+    public String getPreferredObfuscationFilter() {
+        return preferredObfuscationFilter;
     }
 
     public boolean isDebugEnabled() {

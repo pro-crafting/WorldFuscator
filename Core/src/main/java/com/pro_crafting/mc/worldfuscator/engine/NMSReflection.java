@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 public class NMSReflection {
     public static Method CRAFTMAGIGNUMBERS_GET_BLOCK;
     public static Method BLOCK_GET_STATES;
+    public static Method BLOCK_GET_BY_COMBINED_ID;
     public static Method BLOCK_GET_COMBINED_ID;
     public static Method BLOCKSTATELIST_GET_BLOCK_DATA_LIST;
     public static Method REGISTRYMATERIAL_GET_ITERATOR;
@@ -23,6 +24,7 @@ public class NMSReflection {
 
             Class<?> blockClass = MinecraftReflection.getBlockClass();
             BLOCK_GET_STATES = blockClass.getDeclaredMethod("getStates");
+            BLOCK_GET_BY_COMBINED_ID = blockClass.getDeclaredMethod("getByCombinedId", int.class);
             BLOCK_GET_COMBINED_ID = blockClass.getMethod("getCombinedId", MinecraftReflection.getIBlockDataClass());
 
             Class<?> blockStateList = MinecraftReflection.getMinecraftClass("BlockStateList");
@@ -46,6 +48,14 @@ public class NMSReflection {
      * @return
      */
     public static int getCombinedId(Object blockData) throws InvocationTargetException, IllegalAccessException {
-        return (int) NMSReflection.BLOCK_GET_COMBINED_ID.invoke(null, blockData);
+        return (int) BLOCK_GET_COMBINED_ID.invoke(null, blockData);
+    }
+
+    /**
+     * Get the block data from the block registry by id
+     * @return
+     */
+    public static Object getFromId(int id) throws IllegalAccessException, InvocationTargetException {
+        return BLOCK_GET_BY_COMBINED_ID.invoke(null, id);
     }
 }

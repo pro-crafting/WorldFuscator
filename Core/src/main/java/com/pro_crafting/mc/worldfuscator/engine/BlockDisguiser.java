@@ -101,7 +101,13 @@ public class BlockDisguiser {
 
         if (this.plugin.getTranslator().getHiddenGlobalPaletteIds().contains(globalPaletteId) && plugin.getTranslator().needsTranslation(world, x, y, z, player)) {
             PacketContainer clonedPacket = packet.shallowClone();
-            clonedPacket.getBlockData().write(0, WrappedBlockData.createData(this.plugin.getConfiguration().getPreferredObfuscationMaterial()));
+            Object blockData = null;
+            try {
+                blockData = NMSReflection.getFromId(plugin.getTranslator().getPreferedObfuscationGlobalPaletteId());
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+            clonedPacket.getBlockData().write(0, WrappedBlockData.fromHandle(blockData));
             return clonedPacket;
         }
 
@@ -124,7 +130,13 @@ public class BlockDisguiser {
                 continue;
             }
             if (this.plugin.getTranslator().getHiddenGlobalPaletteIds().contains(globalPaletteId) && plugin.getTranslator().needsTranslation(world, x, y, z, player)) {
-                change.setData(WrappedBlockData.createData(this.plugin.getConfiguration().getPreferredObfuscationMaterial()));
+                Object blockData = null;
+                try {
+                    blockData = NMSReflection.getFromId(plugin.getTranslator().getPreferedObfuscationGlobalPaletteId());
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+                change.setData(WrappedBlockData.fromHandle(blockData));
                 didFuscate = true;
             }
         }

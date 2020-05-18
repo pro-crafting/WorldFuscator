@@ -9,6 +9,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
+
 public class BlockTranslator {
 
     private GlobalPaletteAdapter globalPaletteAdapter = new GlobalPaletteAdapter();
@@ -31,11 +33,12 @@ public class BlockTranslator {
         IntList matchingHidenBlockStateGlobalPaletteIds = blockFilterAdapter.getMatchingGlobalPaletteIds(configuration.getHiddenMaterialFilters());
         hiddenGlobalPaletteIds.addAll(matchingHidenBlockStateGlobalPaletteIds);
 
-        // TODO: Use default block state instead of any
-        // But in theory, the first block state should be the default state
-        preferedObfuscationGlobalPaletteId = globalPaletteAdapter.getAllStateIds(configuration.getPreferredObfuscationMaterial(), null).getInt(0);
+        IntList matchingGlobalPaletteIds = blockFilterAdapter.getMatchingGlobalPaletteIds(Collections.singleton(configuration.getPreferredObfuscationFilter()));
+        if (!matchingGlobalPaletteIds.isEmpty()) {
+            preferedObfuscationGlobalPaletteId = matchingGlobalPaletteIds.getInt(0);
+        }
         if (configuration.isDebugEnabled()) {
-            Bukkit.getLogger().info("Chosen Global Palette Id: " + preferedObfuscationGlobalPaletteId + " as prefered obfuscation material");
+            Bukkit.getLogger().info("Chosen Global Palette Id: " + preferedObfuscationGlobalPaletteId + " as prefered obfuscation block state");
         }
     }
 

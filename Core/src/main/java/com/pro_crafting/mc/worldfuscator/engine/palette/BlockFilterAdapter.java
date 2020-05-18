@@ -1,6 +1,5 @@
-package com.pro_crafting.mc.worldfuscator.engine;
+package com.pro_crafting.mc.worldfuscator.engine.palette;
 
-import com.pro_crafting.mc.worldfuscator.engine.palette.GlobalPaletteAdapter;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import org.bukkit.Bukkit;

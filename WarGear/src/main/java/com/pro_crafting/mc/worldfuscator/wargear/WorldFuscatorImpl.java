@@ -1,7 +1,7 @@
 package com.pro_crafting.mc.worldfuscator.wargear;
 
 import com.pro_crafting.mc.worldfuscator.WorldFuscator;
-import com.pro_crafting.mc.worldfuscator.engine.WorldFuscatorGuard;
+import com.pro_crafting.mc.worldfuscator.engine.guard.WorldFuscatorGuard;
 import net.myplayplanet.wargearfight.WarGear;
 import net.myplayplanet.wargearfight.arena.Arena;
 import net.myplayplanet.wargearfight.arena.ArenaPosition;

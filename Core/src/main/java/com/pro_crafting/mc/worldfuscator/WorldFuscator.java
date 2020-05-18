@@ -2,9 +2,9 @@ package com.pro_crafting.mc.worldfuscator;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.utility.MinecraftVersion;
-import com.pro_crafting.mc.worldfuscator.engine.BlockDisguiser;
+import com.pro_crafting.mc.worldfuscator.engine.WorldFuscatorEngine;
 import com.pro_crafting.mc.worldfuscator.engine.BlockTranslator;
-import com.pro_crafting.mc.worldfuscator.engine.WorldFuscatorGuard;
+import com.pro_crafting.mc.worldfuscator.engine.guard.WorldFuscatorGuard;
 import com.pro_crafting.mc.worldfuscator.engine.WorldRefresher;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -28,8 +28,7 @@ public abstract class WorldFuscator extends JavaPlugin {
         translator = new BlockTranslator();
         translator.setConfiguration(this.configuration);
         translator.setWorldFuscatorGuard(getWorldFuscatorGuard());
-        new BlockDisguiser(this);
-        Bukkit.getPluginManager().registerEvents(new WorldFuscatorListener(this), this);
+        WorldFuscatorEngine.start(this);
         this.worldRefresher = new WorldRefresher(this);
     }
 
@@ -48,10 +47,6 @@ public abstract class WorldFuscator extends JavaPlugin {
 
     public BlockTranslator getTranslator() {
         return translator;
-    }
-
-    protected void setTranslator(BlockTranslator translator) {
-        this.translator = translator;
     }
 
     public WorldRefresher getWorldRefresher() {

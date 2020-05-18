@@ -53,8 +53,8 @@ public class ChunkPacketProcessor {
             fos.write(bb.array());
         } catch (IOException e) {
             e.printStackTrace();
-        }
     }
+}
 
     public PacketContainer process(ChunkPacketData chunkData, ChunkletProcessor processor, Player player, PacketContainer packet) {
         writeDebugChunkFiles(chunkData);

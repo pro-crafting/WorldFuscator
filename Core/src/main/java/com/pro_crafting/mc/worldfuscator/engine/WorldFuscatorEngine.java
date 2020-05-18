@@ -10,6 +10,7 @@ import com.comphenix.protocol.reflect.FieldAccessException;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import com.comphenix.protocol.wrappers.MultiBlockChangeInfo;
 import com.comphenix.protocol.wrappers.WrappedBlockData;
+import com.pro_crafting.mc.worldfuscator.NMSReflection;
 import com.pro_crafting.mc.worldfuscator.WorldFuscator;
 import com.pro_crafting.mc.worldfuscator.engine.processor.ChunkletProcessor;
 import com.pro_crafting.mc.worldfuscator.engine.processor.ChunkletProcessorFactory;
@@ -19,29 +20,25 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
 
-/**
- * Simple class that can be used to alter the apperance of a number of blocks.
- *
- * @author Kristian
- */
-public class BlockDisguiser {
+public class WorldFuscatorEngine {
 
     // The current listener
     private WorldFuscator plugin;
 
-    /**
-     * Construct a new block changer.
-     *
-     * @param parent - the owner Plugin.
-     */
-    public BlockDisguiser(WorldFuscator parent) {
+    private WorldFuscatorEngine(WorldFuscator parent) {
         this.plugin = parent;
-        registerListener(parent);
         ChunkPacketProcessor.dataFolder = parent.getDataFolder();
         ChunkPacketProcessor.isDebugEnabled = parent.getConfiguration().isDebugEnabled();
     }
 
-    private void registerListener(WorldFuscator plugin) {
+    public static WorldFuscatorEngine start(WorldFuscator parent) {
+        WorldFuscatorEngine engine = new WorldFuscatorEngine(parent);
+        engine.registerListener();
+
+        return engine;
+    }
+
+    private void registerListener() {
         if (this.plugin.getTranslator().getHiddenGlobalPaletteIds() == null || this.plugin.getTranslator().getHiddenGlobalPaletteIds().isEmpty()) {
             Bukkit.getLogger().info("No blocks found that should be fuscated. Not doing anything.");
             return;
@@ -51,7 +48,7 @@ public class BlockDisguiser {
         final ChunkletProcessor processor = chunkletProcessorFactory.getProcessor();
         final ChunkPacketProcessor chunkPacketProcessor = new ChunkPacketProcessor();
 
-        PacketAdapter listener = new PacketAdapter(plugin, ListenerPriority.LOWEST,
+        PacketAdapter listener = new PacketAdapter(this.plugin, ListenerPriority.LOWEST,
                 Server.BLOCK_CHANGE, Server.MULTI_BLOCK_CHANGE, Server.MAP_CHUNK) {
 
             public void onPacketSending(PacketEvent event) {

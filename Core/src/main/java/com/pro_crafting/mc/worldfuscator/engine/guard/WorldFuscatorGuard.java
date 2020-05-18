@@ -1,4 +1,4 @@
-package com.pro_crafting.mc.worldfuscator.engine;
+package com.pro_crafting.mc.worldfuscator.engine.guard;
 
 import org.bukkit.World;
 import org.bukkit.entity.Player;

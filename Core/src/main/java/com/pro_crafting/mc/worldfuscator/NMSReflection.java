@@ -1,4 +1,4 @@
-package com.pro_crafting.mc.worldfuscator.engine;
+package com.pro_crafting.mc.worldfuscator;
 
 import com.comphenix.protocol.utility.MinecraftReflection;
 import org.bukkit.Material;

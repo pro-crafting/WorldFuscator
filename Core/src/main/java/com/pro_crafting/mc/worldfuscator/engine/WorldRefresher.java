@@ -24,6 +24,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * @deprecated Not tested for 1.14+
+ */
+@Deprecated
 public class WorldRefresher {
 
     private final WorldFuscator plugin;

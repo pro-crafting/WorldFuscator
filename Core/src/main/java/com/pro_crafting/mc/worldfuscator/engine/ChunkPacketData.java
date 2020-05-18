@@ -18,20 +18,6 @@ public class ChunkPacketData {
     int startIndex;
     World world;
 
-    public static ChunkPacketData from(World world, int chunkX, int chunkZ, int chunkMask,
-                                            byte[] data, boolean isContinuous) {
-        ChunkPacketData chunkData = new ChunkPacketData();
-        chunkData.world = world;
-        chunkData.chunkX = chunkX;
-        chunkData.chunkZ = chunkZ;
-        chunkData.primaryBitMask = chunkMask;
-        chunkData.data = data;
-        chunkData.startIndex = 0;
-        chunkData.isFullChunk = isContinuous;
-
-        return chunkData;
-    }
-
     /**
      * Construct a chunk packet processor from a givne MAP_CHUNK packet.
      *

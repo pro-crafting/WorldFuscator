@@ -1,6 +1,8 @@
 package com.pro_crafting.mc.worldfuscator.engine;
 
 import com.pro_crafting.mc.worldfuscator.Configuration;
+import com.pro_crafting.mc.worldfuscator.engine.guard.WorldFuscatorGuard;
+import com.pro_crafting.mc.worldfuscator.engine.palette.BlockFilterAdapter;
 import com.pro_crafting.mc.worldfuscator.engine.palette.GlobalPaletteAdapter;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
@@ -22,10 +24,6 @@ public class BlockTranslator {
     private int preferedObfuscationGlobalPaletteId;
 
     public BlockTranslator() {
-    }
-
-    public BlockTranslator(Configuration configuration) {
-        setConfiguration(configuration);
     }
 
     private void updatePaletteIds() {

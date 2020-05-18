@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,15 +27,16 @@ public class BlockFilterAdapter {
         for (String filter : filters) {
             Material material = Material.matchMaterial(filter);
             if (material != null) {
-                globalPaletteIdList.addAll(globalPaletteAdapter.getAllStateIds(material));
+                globalPaletteIdList.addAll(globalPaletteAdapter.getAllStateIds(material, null));
                 continue;
             }
 
             try {
                 BlockData blockData = Bukkit.createBlockData(filter);
-                globalPaletteIdList.add(NMSReflection.getCombinedId(blockData));
+                filter = filter.replace(blockData.getMaterial().getKey().toString(), "");
+                globalPaletteIdList.addAll(globalPaletteAdapter.getAllStateIds(blockData.getMaterial(), split(filter)));
                 continue;
-            } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException ex) {
+            } catch (IllegalArgumentException ex) {
                 // No valid data string in format minecraft:material[waterlogged=true]
                 // It may be a simple filter
             }

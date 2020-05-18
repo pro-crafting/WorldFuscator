@@ -33,7 +33,7 @@ public class BlockTranslator {
 
         // TODO: Use default block state instead of any
         // But in theory, the first block state should be the default state
-        preferedObfuscationGlobalPaletteId = globalPaletteAdapter.getAllStateIds(configuration.getPreferredObfuscationMaterial()).getInt(0);
+        preferedObfuscationGlobalPaletteId = globalPaletteAdapter.getAllStateIds(configuration.getPreferredObfuscationMaterial(), null).getInt(0);
         if (configuration.isDebugEnabled()) {
             Bukkit.getLogger().info("Chosen Global Palette Id: " + preferedObfuscationGlobalPaletteId + " as prefered obfuscation material");
         }

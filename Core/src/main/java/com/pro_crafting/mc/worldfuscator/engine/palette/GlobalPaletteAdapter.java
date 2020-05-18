@@ -22,9 +22,10 @@ public class GlobalPaletteAdapter {
      * This id is also used when transfering the state of a block through the network.
      *
      * @param material No further description provided
+     * @param requestedStates Optionally, check if the block data matches all states
      * @return all possible state ids, never null
      */
-    public IntList getAllStateIds(Material material) {
+    public IntList getAllStateIds(Material material, Set<String> requestedStates) {
         try {
             Object block = NMSReflection.CRAFTMAGIGNUMBERS_GET_BLOCK.invoke(null, material);
             Object states = NMSReflection.BLOCK_GET_STATES.invoke(block);
@@ -33,7 +34,9 @@ public class GlobalPaletteAdapter {
 
             IntList globalPaletteList = new IntArrayList(blockDataList.size());
             for (Object blockData : blockDataList) {
-                globalPaletteList.add(NMSReflection.getCombinedId(blockData));
+                if (requestedStates == null || requestedStates.isEmpty() || matches(blockData, requestedStates)) {
+                    globalPaletteList.add(NMSReflection.getCombinedId(blockData));
+                }
             }
 
             return globalPaletteList;
@@ -64,10 +67,8 @@ public class GlobalPaletteAdapter {
 
                 for (Object blockData : blockDataList) {
                     for (Set<String> requestedStates : requestedStateList) {
-                        for (String requestedState : requestedStates) {
-                            if (blockData.toString().contains(requestedState)) {
-                                globalPaletteList.add(NMSReflection.getCombinedId(blockData));
-                            }
+                        if (matches(blockData, requestedStates)) {
+                            globalPaletteList.add(NMSReflection.getCombinedId(blockData));
                         }
                     }
                 }
@@ -78,5 +79,21 @@ public class GlobalPaletteAdapter {
             e.printStackTrace();
         }
         return new IntArrayList();
+    }
+
+    /**
+     * Check if the Minecraft blockData matches all of the requested block states
+     * @param blockData
+     * @param requestedStates
+     * @return true if the block data matches all states
+     */
+    private boolean matches(Object blockData, Set<String> requestedStates) {
+        for (String requestedState : requestedStates) {
+            if (!blockData.toString().contains(requestedState)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

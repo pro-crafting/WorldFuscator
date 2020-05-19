@@ -10,6 +10,10 @@ import org.bukkit.entity.Player;
 public class WorldFuscatorGuardDebuggingWrapper implements WorldFuscatorGuard {
     private WorldFuscatorGuard delegate;
 
+    public WorldFuscatorGuardDebuggingWrapper(WorldFuscatorGuard delegate) {
+        this.delegate = delegate;
+    }
+
     @Override
     public boolean hasAreaRights(Player player, int minX, int minY, int minZ, int maxX, int maxY, int maxZ, World world) {
         boolean hasAreaRights = delegate.hasAreaRights(player, minX, minY, minZ, maxX, maxY, maxZ, world);

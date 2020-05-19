@@ -73,7 +73,7 @@ public class ChunkAndBlockChunkletProcessor implements ChunkletProcessor {
                 int x = nbtCompound.getInteger("x");
                 int y = nbtCompound.getInteger("y");
                 int z = nbtCompound.getInteger("z");
-                if (blockTranslator.needsTranslation(world, x, y, z, player)) {
+                if (!blockTranslator.getWorldFuscatorGuard().hasRights(player, x, y, z, world)) {
                     iterator.remove();
                 }
             }
@@ -127,8 +127,7 @@ public class ChunkAndBlockChunkletProcessor implements ChunkletProcessor {
                     int z = originZ + posZ;
 
                     int paletteIdBefore = flexibleStorage.get(index);
-
-                    if (hiddenPaletteIds.contains(paletteIdBefore) && blockTranslator.needsTranslation(world, x, y, z, player)) {
+                    if (hiddenPaletteIds.contains(paletteIdBefore) && !blockTranslator.getWorldFuscatorGuard().hasRights(player, x, y, z, world)) {
                         flexibleStorage.set(index, obfuscationPaletteId);
                         didFuscate = true;
                     }

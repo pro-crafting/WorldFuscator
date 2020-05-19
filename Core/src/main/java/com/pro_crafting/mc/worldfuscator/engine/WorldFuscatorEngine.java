@@ -7,48 +7,52 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.FieldAccessException;
+import com.comphenix.protocol.utility.MinecraftVersion;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import com.comphenix.protocol.wrappers.MultiBlockChangeInfo;
 import com.comphenix.protocol.wrappers.WrappedBlockData;
 import com.pro_crafting.mc.worldfuscator.NMSReflection;
-import com.pro_crafting.mc.worldfuscator.WorldFuscator;
 import com.pro_crafting.mc.worldfuscator.engine.processor.ChunkletProcessor;
 import com.pro_crafting.mc.worldfuscator.engine.processor.ChunkletProcessorFactory;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.InvocationTargetException;
 
 public class WorldFuscatorEngine {
 
-    // The current listener
-    private WorldFuscator plugin;
+    private JavaPlugin parent;
+    private BlockTranslator translator;
 
-    private WorldFuscatorEngine(WorldFuscator parent) {
-        this.plugin = parent;
-        ChunkPacketProcessor.dataFolder = parent.getDataFolder();
-        ChunkPacketProcessor.isDebugEnabled = parent.getConfiguration().isDebugEnabled();
+    public WorldFuscatorEngine(JavaPlugin parent, BlockTranslator translator) {
+        this.parent = parent;
+        this.translator = translator;
     }
 
-    public static WorldFuscatorEngine start(WorldFuscator parent) {
-        WorldFuscatorEngine engine = new WorldFuscatorEngine(parent);
-        engine.registerListener();
+    public void start() {
+        MinecraftVersion minecraftVersion = ProtocolLibrary.getProtocolManager().getMinecraftVersion();
 
-        return engine;
+        if (MinecraftVersion.AQUATIC_UPDATE.compareTo(minecraftVersion) > 0) {
+            Bukkit.getLogger().info("WorldFuscatorEngine only works for 1.13.0 and up");
+            Bukkit.getPluginManager().disablePlugin(parent);
+            return;
+        }
+        registerListener();
     }
 
     private void registerListener() {
-        if (this.plugin.getTranslator().getHiddenGlobalPaletteIds() == null || this.plugin.getTranslator().getHiddenGlobalPaletteIds().isEmpty()) {
+        if (this.translator.getHiddenGlobalPaletteIds() == null || this.translator.getHiddenGlobalPaletteIds().isEmpty()) {
             Bukkit.getLogger().info("No blocks found that should be fuscated. Not doing anything.");
             return;
         }
 
-        ChunkletProcessorFactory chunkletProcessorFactory = new ChunkletProcessorFactory(this.plugin);
+        ChunkletProcessorFactory chunkletProcessorFactory = new ChunkletProcessorFactory(translator);
         final ChunkletProcessor processor = chunkletProcessorFactory.getProcessor();
-        final ChunkPacketProcessor chunkPacketProcessor = new ChunkPacketProcessor();
+        final ChunkPacketProcessor chunkPacketProcessor = new ChunkPacketProcessor(parent.getDataFolder(), translator.getConfiguration().isDebugEnabled());
 
-        PacketAdapter listener = new PacketAdapter(this.plugin, ListenerPriority.LOWEST,
+        PacketAdapter listener = new PacketAdapter(this.parent, ListenerPriority.LOWEST,
                 Server.BLOCK_CHANGE, Server.MULTI_BLOCK_CHANGE, Server.MAP_CHUNK) {
 
             public void onPacketSending(PacketEvent event) {
@@ -74,8 +78,8 @@ public class WorldFuscatorEngine {
         };
 
         // TODO: More testing about protocollib async handling
-        if (plugin.getConfiguration().getAsyncWorkerCount() > 0 && processor.isThreadSafe()) {
-            ProtocolLibrary.getProtocolManager().getAsynchronousManager().registerAsyncHandler(listener).start(plugin.getConfiguration().getAsyncWorkerCount());
+        if (translator.getConfiguration().getAsyncWorkerCount() > 0 && processor.isThreadSafe()) {
+            ProtocolLibrary.getProtocolManager().getAsynchronousManager().registerAsyncHandler(listener).start(translator.getConfiguration().getAsyncWorkerCount());
         } else {
             ProtocolLibrary.getProtocolManager().addPacketListener(listener);
         }
@@ -96,11 +100,11 @@ public class WorldFuscatorEngine {
             return packet;
         }
 
-        if (this.plugin.getTranslator().getHiddenGlobalPaletteIds().contains(globalPaletteId) && plugin.getTranslator().needsTranslation(world, x, y, z, player)) {
+        if (this.translator.getHiddenGlobalPaletteIds().contains(globalPaletteId) && !translator.getWorldFuscatorGuard().hasRights(player, x, y, z, world)) {
             PacketContainer clonedPacket = packet.shallowClone();
             Object blockData = null;
             try {
-                blockData = NMSReflection.getFromId(plugin.getTranslator().getPreferedObfuscationGlobalPaletteId());
+                blockData = NMSReflection.getFromId(translator.getPreferedObfuscationGlobalPaletteId());
             } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }
@@ -126,10 +130,10 @@ public class WorldFuscatorEngine {
                 e.printStackTrace();
                 continue;
             }
-            if (this.plugin.getTranslator().getHiddenGlobalPaletteIds().contains(globalPaletteId) && plugin.getTranslator().needsTranslation(world, x, y, z, player)) {
+            if (translator.getHiddenGlobalPaletteIds().contains(globalPaletteId) && !translator.getWorldFuscatorGuard().hasRights(player, x, y, z, world)) {
                 Object blockData = null;
                 try {
-                    blockData = NMSReflection.getFromId(plugin.getTranslator().getPreferedObfuscationGlobalPaletteId());
+                    blockData = NMSReflection.getFromId(translator.getPreferedObfuscationGlobalPaletteId());
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }

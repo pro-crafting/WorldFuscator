@@ -17,8 +17,13 @@ import java.nio.ByteBuffer;
  * @author Kristian
  */
 public class ChunkPacketProcessor {
-    public static boolean isDebugEnabled;
-    public static File dataFolder;
+    public boolean isDebugEnabled;
+    public File dataFolder;
+
+    public ChunkPacketProcessor(File dataFolder, boolean debugEnabled) {
+        this.dataFolder = dataFolder;
+        this.isDebugEnabled = debugEnabled;
+    }
 
     private void writeDebugChunkFiles(ChunkPacketData chunkPacketData) {
         if (!isDebugEnabled) {
@@ -53,8 +58,8 @@ public class ChunkPacketProcessor {
             fos.write(bb.array());
         } catch (IOException e) {
             e.printStackTrace();
+        }
     }
-}
 
     public PacketContainer process(ChunkPacketData chunkData, ChunkletProcessor processor, Player player, PacketContainer packet) {
         writeDebugChunkFiles(chunkData);

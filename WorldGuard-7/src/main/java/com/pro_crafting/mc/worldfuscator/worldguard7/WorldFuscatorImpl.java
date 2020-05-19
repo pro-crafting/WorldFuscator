@@ -1,7 +1,6 @@
 package com.pro_crafting.mc.worldfuscator.worldguard7;
 
 import com.pro_crafting.mc.worldfuscator.Configuration;
-import com.pro_crafting.mc.worldfuscator.WorldFuscator;
 import com.pro_crafting.mc.worldfuscator.engine.guard.WorldFuscatorGuard;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
@@ -10,13 +9,15 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collection;
 import java.util.UUID;
 
-public class WorldFuscatorImpl extends WorldFuscator {
+public class WorldFuscatorImpl extends JavaPlugin {
 
     private final WorldFuscatorGuardImpl guard = new WorldFuscatorGuardImpl();
+
 
     public void onEnable() {
         this.saveDefaultConfig();

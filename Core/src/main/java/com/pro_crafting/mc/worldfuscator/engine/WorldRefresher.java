@@ -5,13 +5,13 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.utility.MinecraftReflection;
-import com.pro_crafting.mc.worldfuscator.WorldFuscator;
 import com.pro_crafting.mc.worldfuscator.engine.processor.ChunkAndBlockChunkletProcessor;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -30,19 +30,21 @@ import java.util.UUID;
 @Deprecated
 public class WorldRefresher {
 
-    private final WorldFuscator plugin;
+    private final JavaPlugin plugin;
     private final ChunkAndBlockChunkletProcessor processor;
     private final ChunkPacketProcessor chunkPacketProcessor;
+    private final BlockTranslator translator;
     private Method chunkHandle;
     private Constructor<?> chunkPacketConstructor;
 
 
-    public WorldRefresher(WorldFuscator plugin) {
+    public WorldRefresher(JavaPlugin plugin, BlockTranslator translator) {
         this.plugin = plugin;
+        this.translator = translator;
         processor = new ChunkAndBlockChunkletProcessor(
-                this.plugin.getTranslator());
+                translator);
 
-        this.chunkPacketProcessor = new ChunkPacketProcessor();
+        this.chunkPacketProcessor = new ChunkPacketProcessor(plugin.getDataFolder(), translator.getConfiguration().isDebugEnabled());
 
         Class<?> craftChunk = MinecraftReflection.getCraftBukkitClass("CraftChunk");
         try {
@@ -77,7 +79,7 @@ public class WorldRefresher {
             }
         }
 
-        boolean debugEnabled = plugin.getConfiguration().isDebugEnabled();
+        boolean debugEnabled = this.translator.getConfiguration().isDebugEnabled();
         if (debugEnabled) {
             Bukkit.getLogger().info("Old players: " + Arrays.toString(oldMembers.toArray()));
             Bukkit.getLogger().info("New players: " + Arrays.toString(newMembers.toArray()));

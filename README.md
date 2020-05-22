@@ -30,11 +30,12 @@ This includes:
 
 At the same time, .chunk files are written. These contain only informaion about the blocks.
 
-This is enabled either by changing the configuration file, or by wielding the mighty BLAZE_ROD.
+This is enabled by changing the configuration file.
 
 The files are saved in `plugins/WorldFuscator/chunks/<worldname>`
 
 ## Example Configuration
+The configuration is saved as `plugins/WorldFsucator/config-worldfuscator.yml`.
 ```
 debug:
   enabled: false

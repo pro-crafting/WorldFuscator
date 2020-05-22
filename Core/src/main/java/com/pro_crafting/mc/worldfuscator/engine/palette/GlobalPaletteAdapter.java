@@ -1,7 +1,7 @@
 package com.pro_crafting.mc.worldfuscator.engine.palette;
 
 import com.google.common.collect.ImmutableList;
-import com.pro_crafting.mc.worldfuscator.engine.NMSReflection;
+import com.pro_crafting.mc.worldfuscator.NMSReflection;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import org.bukkit.Material;

@@ -35,6 +35,7 @@ This is enabled by changing the configuration file.
 The files are saved in `plugins/WorldFuscator/chunks/<worldname>`
 
 ## Example Configuration
+The configuration is saved as `plugins/WorldFsucator/config-worldfuscator.yml`.
 ```
 debug:
   enabled: false

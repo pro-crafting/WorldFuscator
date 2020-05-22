@@ -1,6 +1,10 @@
 package com.pro_crafting.mc.worldfuscator.wargear;
 
-import com.pro_crafting.mc.worldfuscator.WorldFuscator;
+import com.pro_crafting.mc.worldfuscator.Configuration;
+import com.pro_crafting.mc.worldfuscator.ConfigurationService;
+import com.pro_crafting.mc.worldfuscator.engine.BlockTranslator;
+import com.pro_crafting.mc.worldfuscator.engine.WorldFuscatorEngine;
+import com.pro_crafting.mc.worldfuscator.engine.WorldRefresher;
 import com.pro_crafting.mc.worldfuscator.engine.guard.WorldFuscatorGuard;
 import net.myplayplanet.wargearfight.WarGear;
 import net.myplayplanet.wargearfight.arena.Arena;
@@ -12,9 +16,11 @@ import net.myplayplanet.wargearfight.model.WgRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Collection;
 import java.util.List;
@@ -23,20 +29,25 @@ import java.util.stream.Collectors;
 
 import static org.bukkit.event.EventPriority.MONITOR;
 
-public class WorldFuscatorImpl extends WorldFuscator {
+public class WorldFuscatorImpl extends JavaPlugin {
 
     private final WorldFuscatorGuardImpl guard = new WorldFuscatorGuardImpl();
+    private final BlockTranslator translator = new BlockTranslator();
+    private WorldRefresher refresher;
 
     public void onEnable() {
-        prepareDefaultConfiguration();
+        ConfigurationService.saveDefaultConfiguration(this, "worldfuscator-config.yml");
+        YamlConfiguration yamlConfiguration = ConfigurationService.loadConfigurationFile(this, "worldfuscator-config.yml");
+        Configuration configuration = new Configuration(yamlConfiguration);
 
-        super.onEnable();
+        translator.updateConfiguration(configuration, guard);
+
+        translator.updateConfiguration(configuration, guard);
+        refresher = new WorldRefresher(this, translator);
+
+        WorldFuscatorEngine engine = new WorldFuscatorEngine(this, translator);
+        engine.start();
         Bukkit.getPluginManager().registerEvents(new WarGearListener(), this);
-    }
-
-    @Override
-    public WorldFuscatorGuard getWorldFuscatorGuard() {
-        return guard;
     }
 
     private static class WorldFuscatorGuardImpl implements WorldFuscatorGuard {
@@ -87,7 +98,7 @@ public class WorldFuscatorImpl extends WorldFuscator {
             List<UUID> newPlayers = getPlayers(event.getNewMembers());
 
             WgRegion region = event.getPlayerGroupKey().getRegion();
-            getWorldRefresher().updateArea(
+            refresher.updateArea(
                     region.getWorld(),
                     region.getMin().toLocation(region.getWorld()),
                     region.getMax().toLocation(region.getWorld()),

@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.pro-crafting</groupId>
         <artifactId>pc-parent</artifactId>
-        <version>9</version>
+        <version>10</version>
     </parent>
 
     <groupId>com.pro-crafting.mc</groupId>
@@ -30,20 +30,9 @@
         <version.worldguard>7.0.2</version.worldguard>
         <version.protocollib>4.4.0</version.protocollib>
 
-        <version.mockito>2.2.15</version.mockito>
         <version.commons-io>2.5</version.commons-io>
         <version.spigot-api>1.14.4-R0.1-SNAPSHOT</version.spigot-api>
         <version.fastutil>8.2.2</version.fastutil>
-        <!-- Plugin Versions -->
-        <version.maven-shade-plugin>3.2.1</version.maven-shade-plugin>
-        <version.sonar-maven-plugin>3.4.1.1168</version.sonar-maven-plugin>
-
-        <!-- Setting -->
-        <maven.compiler.target>11</maven.compiler.target>
-        <maven.compiler.source>11</maven.compiler.source>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <sonar.organization>pro-crafting</sonar.organization>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <repositories>
@@ -66,7 +55,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>${version.maven-shade-plugin}</version>
                 <executions>
                     <execution>
                         <phase>package</phase>

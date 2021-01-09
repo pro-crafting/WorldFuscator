@@ -23,7 +23,6 @@
     <modules>
         <module>Core</module>
         <module>WorldGuard-7</module>
-        <module>WarGear</module>
     </modules>
 
     <properties>
@@ -48,11 +47,6 @@
     </properties>
 
     <repositories>
-        <!-- Needed for WarGear-Fight integration -->
-        <repository>
-            <id>pp-public</id>
-            <url>https://nexus.myplayplanet.net/repository/public/</url>
-        </repository>
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>

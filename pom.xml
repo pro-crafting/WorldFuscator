@@ -28,7 +28,7 @@
     <properties>
         <!-- Dependency Versions -->
         <version.worldguard>7.0.2</version.worldguard>
-        <version.protocollib>4.4.0</version.protocollib>
+        <version.protocollib>4.6.0</version.protocollib>
 
         <version.commons-io>2.5</version.commons-io>
         <version.spigot-api>1.14.4-R0.1-SNAPSHOT</version.spigot-api>

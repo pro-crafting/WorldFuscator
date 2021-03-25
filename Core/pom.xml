@@ -23,6 +23,13 @@
             <version>${version.protocollib}</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>${version.protocollib}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil</artifactId>

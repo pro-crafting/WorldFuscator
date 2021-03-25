@@ -40,8 +40,6 @@ The configuration is saved as `plugins/WorldFsucator/config-worldfuscator.yml`.
 debug:
   enabled: false
 fuscation-mode: CHUNK_AND_BLOCK
-async:
-  worker-count: 0
 preferred-obfuscation-filter: 'minecraft:end_stone'
 hidden:
   block:
@@ -55,9 +53,7 @@ hidden:
 
 All blocks matching the filters will be replaced by end stone.
 All block entities will be replaced by air.
-
-WorldFuscator can optionally run in async mode. Specifiy the number of worker threads for this feature. `worker-count` of 0 means, that the plugin will completly run on the main thread.
-You should not have more workers than you have system threads available. 
+Filter can contain multiple comma seperated blockstates
 
 ### Fuscation Modes
 * CHUNK_AND_BLOCK `Stable`
@@ -90,8 +86,8 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Martin Panzer** - *Initial work* - [Postremus](https://github.com/Postremus)
-* **MyPlayPlanet** - *Updating to new MC Versions* - [MyPlayPlanet](https://myplayplanet.net) 
+* **Martin Panzer** - *Initial work, 1.15 support* - [Postremus](https://github.com/Postremus)
+* **MyPlayPlanet** - *Maintenance* - [MyPlayPlanet](https://myplayplanet.net) 
 
 See also the list of [contributors](https://github.com/Postremus/WorldFuscator/contributors) who participated in this project.
 

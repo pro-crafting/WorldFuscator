@@ -1,7 +1,6 @@
 package com.pro_crafting.mc.worldfuscator.engine;
 
-import com.comphenix.packetwrapper.WrapperPlayServerBlockBreak;
-import com.comphenix.packetwrapper.WrapperPlayServerBlockChange;
+import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.PacketType.Play.Server;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.ListenerPriority;
@@ -25,8 +24,8 @@ import java.lang.reflect.InvocationTargetException;
 
 public class WorldFuscatorEngine {
 
-    private JavaPlugin parent;
-    private BlockTranslator translator;
+    private final JavaPlugin parent;
+    private final BlockTranslator translator;
 
     public WorldFuscatorEngine(JavaPlugin parent, BlockTranslator translator) {
         this.parent = parent;
@@ -57,7 +56,6 @@ public class WorldFuscatorEngine {
                 Server.BLOCK_CHANGE,
                 Server.MULTI_BLOCK_CHANGE,
                 Server.MAP_CHUNK,
-                Server.BLOCK_ACTION,
                 Server.BLOCK_BREAK) {
 
             public void onPacketSending(PacketEvent event) {
@@ -69,15 +67,14 @@ public class WorldFuscatorEngine {
 
                 PacketContainer packet = event.getPacket();
 
+                PacketType packetType = event.getPacketType();
                 World world = player.getWorld();
-                if (event.getPacketType() == Server.BLOCK_CHANGE) {
-                    packet = translateBlockChange(packet, world, player);
-                } else if (event.getPacketType() == Server.MULTI_BLOCK_CHANGE) {
+                if (packetType == Server.BLOCK_CHANGE || packetType == Server.BLOCK_BREAK) {
+                    packet = translateSingleBlock(packet, world, player);
+                } else if (packetType == Server.MULTI_BLOCK_CHANGE) {
                     packet = translateMultiBlockChange(packet, world, player);
-                } else if (event.getPacketType() == Server.MAP_CHUNK) {
+                } else if (packetType== Server.MAP_CHUNK) {
                     packet = chunkPacketProcessor.process(ChunkPacketData.fromMapPacket(packet, world), processor, player, packet);
-                } else if (event.getPacketType() == Server.BLOCK_BREAK) {
-                    packet = translateBlockBreak(packet, world, player);
                 }
 
                 event.setPacket(packet);
@@ -91,24 +88,9 @@ public class WorldFuscatorEngine {
         }
     }
 
-
-    private PacketContainer translateBlockBreak(PacketContainer packet, World world, Player player)
-            throws FieldAccessException {
-        WrapperPlayServerBlockBreak wrapper = new WrapperPlayServerBlockBreak(packet);
-        BlockPosition blockPosition = wrapper.getLocation();
-        WrappedBlockData blockData = wrapper.getBlock();
-        return translateSingleBlock(packet,world,player,blockPosition,blockData);
-    }
-
-    private PacketContainer translateBlockChange(PacketContainer packet, World world, Player player)
-            throws FieldAccessException {
-        WrapperPlayServerBlockChange wrapper = new WrapperPlayServerBlockChange(packet);
-        BlockPosition blockPosition = wrapper.getLocation();
-        WrappedBlockData blockData = wrapper.getBlockData();
-        return translateSingleBlock(packet,world,player,blockPosition,blockData);
-    }
-
-    private PacketContainer translateSingleBlock(PacketContainer packet, World world, Player player, BlockPosition blockPosition, WrappedBlockData wrappedBlockData) {
+    private PacketContainer translateSingleBlock(PacketContainer packet, World world, Player player){
+        BlockPosition blockPosition = packet.getBlockPositionModifier().read(0);
+        WrappedBlockData wrappedBlockData = packet.getBlockData().read(0);
         int x = blockPosition.getX();
         int y = blockPosition.getY();
         int z = blockPosition.getZ();

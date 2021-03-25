@@ -17,12 +17,6 @@
             <version>${version.spigot-api}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib</artifactId>
-            <version>${version.protocollib}</version>
-            <scope>provided</scope>
-        </dependency>
 
         <dependency>
             <groupId>com.comphenix.protocol</groupId>

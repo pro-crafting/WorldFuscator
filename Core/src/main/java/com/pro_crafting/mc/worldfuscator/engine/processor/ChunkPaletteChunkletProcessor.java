@@ -63,9 +63,4 @@ public class ChunkPaletteChunkletProcessor implements ChunkletProcessor {
         // TODO: FIX THIS
         return false;
     }
-
-    @Override
-    public boolean isThreadSafe() {
-        return true;
-    }
 }

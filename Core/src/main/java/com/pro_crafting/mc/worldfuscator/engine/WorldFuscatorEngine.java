@@ -59,7 +59,6 @@ public class WorldFuscatorEngine {
                 Server.BLOCK_BREAK) {
 
             public void onPacketSending(PacketEvent event) {
-//                System.out.println("SEND " + event.getPacketType().name());
                 Player player = event.getPlayer();
                 if (player.hasPermission("worldfuscator.bypass")) {
                     return;
@@ -81,11 +80,7 @@ public class WorldFuscatorEngine {
             }
         };
 
-        if (translator.getConfiguration().getAsyncWorkerCount() > 0 && processor.isThreadSafe()) {
-            ProtocolLibrary.getProtocolManager().getAsynchronousManager().registerAsyncHandler(listener).start(translator.getConfiguration().getAsyncWorkerCount());
-        } else {
-            ProtocolLibrary.getProtocolManager().addPacketListener(listener);
-        }
+        ProtocolLibrary.getProtocolManager().addPacketListener(listener);
     }
 
     private PacketContainer translateSingleBlock(PacketContainer packet, World world, Player player){

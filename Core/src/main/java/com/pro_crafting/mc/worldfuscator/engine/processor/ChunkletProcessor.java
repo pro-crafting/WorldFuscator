@@ -18,6 +18,4 @@ public interface ChunkletProcessor {
     public boolean processChunkletBlockData(Location origin, ByteBuffer buffer, Player player);
 
     public boolean processChunkletBlockEntities(World world, int chunkX, int chunkZ, List<NbtBase<?>> blockEntities, Player player);
-
-    public boolean isThreadSafe();
 }

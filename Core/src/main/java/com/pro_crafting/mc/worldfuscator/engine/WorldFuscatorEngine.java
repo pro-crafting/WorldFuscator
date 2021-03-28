@@ -56,10 +56,12 @@ public class WorldFuscatorEngine {
                 Server.BLOCK_CHANGE,
                 Server.MULTI_BLOCK_CHANGE,
                 Server.MAP_CHUNK,
-                Server.BLOCK_BREAK) {
+                Server.BLOCK_BREAK,
+                Server.BLOCK_ACTION) {
 
             public void onPacketSending(PacketEvent event) {
                 Player player = event.getPlayer();
+
                 if (player.hasPermission("worldfuscator.bypass")) {
                     return;
                 }
@@ -69,11 +71,13 @@ public class WorldFuscatorEngine {
                 PacketType packetType = event.getPacketType();
                 World world = player.getWorld();
                 if (packetType == Server.BLOCK_CHANGE || packetType == Server.BLOCK_BREAK) {
-                    packet = translateSingleBlock(packet, world, player);
+                    packet = translateSingleBlock(packet, player);
                 } else if (packetType == Server.MULTI_BLOCK_CHANGE) {
                     packet = translateMultiBlockChange(packet, world, player);
                 } else if (packetType== Server.MAP_CHUNK) {
                     packet = chunkPacketProcessor.process(ChunkPacketData.fromMapPacket(packet, world), processor, player, packet);
+                } else if (packetType == Server.BLOCK_ACTION) {
+                    event.setCancelled(hasNoRights(packet, player));
                 }
 
                 event.setPacket(packet);
@@ -83,13 +87,16 @@ public class WorldFuscatorEngine {
         ProtocolLibrary.getProtocolManager().addPacketListener(listener);
     }
 
-    private PacketContainer translateSingleBlock(PacketContainer packet, World world, Player player){
+    private boolean hasNoRights(PacketContainer packet, Player player) {
         BlockPosition blockPosition = packet.getBlockPositionModifier().read(0);
-        WrappedBlockData wrappedBlockData = packet.getBlockData().read(0);
         int x = blockPosition.getX();
         int y = blockPosition.getY();
         int z = blockPosition.getZ();
+        return !translator.getWorldFuscatorGuard().hasRights(player, x, y, z, player.getWorld());
+    }
 
+    private PacketContainer translateSingleBlock(PacketContainer packet, Player player) {
+        WrappedBlockData wrappedBlockData = packet.getBlockData().read(0);
         int globalPaletteId;
         try {
             globalPaletteId = NMSReflection.getCombinedId(wrappedBlockData.getHandle());
@@ -98,7 +105,7 @@ public class WorldFuscatorEngine {
             return packet;
         }
 
-        if (this.translator.getHiddenGlobalPaletteIds().contains(globalPaletteId) && !translator.getWorldFuscatorGuard().hasRights(player, x, y, z, world)) {
+        if (this.translator.getHiddenGlobalPaletteIds().contains(globalPaletteId) && hasNoRights(packet, player)) {
             PacketContainer clonedPacket = packet.shallowClone();
             Object blockData = null;
             try {

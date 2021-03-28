@@ -14,13 +14,10 @@ public class Configuration {
     private List<String> hiddenMaterialFilters;
     private String preferredObfuscationFilter;
     private Set<String> hiddenBlockEntityIds;
-    private int asyncWorkerCount;
 
     public Configuration(FileConfiguration configuration) {
         this.debugEnabled = configuration.getBoolean("debug.enabled", false);
         this.fuscationMode = FuscationMode.valueOf(configuration.getString("fuscation-mode", FuscationMode.CHUNK_AND_BLOCK.name()));
-
-        this.asyncWorkerCount = configuration.getInt("async.worker-count", 0);
 
         this.preferredObfuscationFilter = configuration.getString("preferred-obfuscation-filter", "minecraft:end_stone");
 
@@ -47,10 +44,6 @@ public class Configuration {
 
     public FuscationMode getFuscationMode() {
         return fuscationMode;
-    }
-
-    public int getAsyncWorkerCount() {
-        return asyncWorkerCount;
     }
 
     public List<String> getHiddenMaterialFilters() {
